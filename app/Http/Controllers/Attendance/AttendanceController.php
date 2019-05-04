@@ -36,7 +36,7 @@ class AttendanceController extends Controller
     protected function listAttendance()
     {
         if ($this->hasNoListsToday()) {
-            Employee::with(['locale'])->get()->map(function ($item, $key) {
+            Employee::with(['locale'])->active()->get()->map(function ($item, $key) {
                 Attendance::create([
                     'employee_id' => $item->id,
                     'locale_id' => $item->locale['id'],

@@ -27,4 +27,11 @@ class AttendanceRequest extends FormRequest
             'start' => 'required_with:end'
         ];
     }
+
+    public function messages()
+    {
+        return [
+            'start.required_with' => 'The time in field is required when time out is present.'
+        ];
+    }
 }

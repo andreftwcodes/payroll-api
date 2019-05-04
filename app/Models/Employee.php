@@ -36,6 +36,11 @@ class Employee extends Model
         return $this;
     }
 
+    public function scopeActive($query)
+    {
+        return $query->where('status', 'active');
+    }
+
     public function rate()
     {
         return $this->hasOne(Rate::class);

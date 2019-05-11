@@ -20,3 +20,10 @@ Route::resource('roles', 'RoleController');
 Route::resource('deductions', 'DeductionController');
 Route::resource('locales', 'LocaleController');
 Route::resource('attendances', 'Attendance\AttendanceController');
+
+Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
+    $grossPay = (new \App\Libraries\Calculator($request))->getGrossPay();
+    dd($grossPay);
+});
+
+Route::get('/reports/pay', 'Reports\PayReportController@action');

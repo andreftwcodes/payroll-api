@@ -6,6 +6,11 @@ use Carbon\Carbon;
 
 trait EmployeeTrait
 {
+    protected function getFullname()
+    {
+        return "{$this->firstname} {$this->middlename} {$this->lastname}";
+    }
+
     protected function getAge()
     {
         if (is_null($this->birthdate)) {

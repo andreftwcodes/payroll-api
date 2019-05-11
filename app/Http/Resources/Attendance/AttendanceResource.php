@@ -2,13 +2,14 @@
 
 namespace App\Http\Resources\Attendance;
 
-use Carbon\Carbon;
+use App\Traits\AttendanceTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Attendance\AttendanceLocaleResource;
 use App\Http\Resources\Attendance\AttendanceEmployeeResource;
 
 class AttendanceResource extends JsonResource
 {
+    use AttendanceTrait;
     /**
      * Transform the resource into an array.
      *
@@ -27,41 +28,4 @@ class AttendanceResource extends JsonResource
         ];
     }
 
-    protected function getRemark()
-    {
-        $remark = 'On time';
-
-        if (is_null($this->start)) {
-           return 'Absent';
-        }
-
-        if ($this->getExceedTime() > $this->getLateAllowance()) {
-            $remark = 'Late';
-        }
-
-        return $remark;
-    }
-
-    protected function getExceedTime()
-    {
-        $parsedStart = Carbon::parse(
-            $start = $this->start
-        );
-
-        $parsedScheduleStart = Carbon::parse(
-            $scheduleStart = $this->employee->schedule->start
-        );
-
-        if ($parsedScheduleStart->greaterThan($parsedStart)) {
-            return 0;
-        }
-
-        return Carbon::parse($start)
-                ->diffInMinutes($scheduleStart);
-    }
-
-    protected function getLateAllowance()
-    {
-        return 15;
-    }
 }

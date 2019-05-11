@@ -25,7 +25,7 @@ class Calculator
 
     public function getFormattedGrossPay()
     {
-        return number_format($this->getGrossPay(), 2);
+        return '₱ ' . number_format($this->getGrossPay(), 2);
     }
 
     protected function computeGrossPay()

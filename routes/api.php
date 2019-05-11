@@ -26,4 +26,5 @@ Route::post('/testing', function (\Illuminate\Http\Request $request) { //test ro
     dd($grossPay);
 });
 
-Route::get('/reports/pay', 'Reports\PayReportController@action');
+Route::get('/reports/pay/employees', 'Reports\PayReportController@employees');
+Route::get('/reports/pay/{employee}', 'Reports\PayReportController@pay');

@@ -16,13 +16,9 @@ class ScheduleResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'start' => $this->getFormattedTime($this->start),
-            'end' => $this->getFormattedTime($this->end),
+            'start' => $this->start,
+            'end' => $this->end,
         ];
     }
-
-    protected function getFormattedTime($time)
-    {
-        return Carbon::parse($time)->format('h:i');
-    }
+    
 }

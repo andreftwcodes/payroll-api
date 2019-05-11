@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Attendance;
+namespace App\Http\Resources\Reports;
 
 use App\Traits\EmployeeTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class AttendanceEmployeeResource extends JsonResource
+class EmployeeReportResource extends JsonResource
 {
     use EmployeeTrait;
     /**

@@ -14,6 +14,7 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
+        // return Employee::with(['locale', 'rate', 'schedule', 'other'])->active()->get();
         $this->listAttendance();
         return AttendanceResource::collection(
             Attendance::with(['employee', 'locale', 'employee.schedule'])
@@ -36,10 +37,16 @@ class AttendanceController extends Controller
     protected function listAttendance()
     {
         if ($this->hasNoListsToday()) {
-            Employee::with(['locale'])->active()->get()->map(function ($item, $key) {
+            Employee::with(['locale', 'rate', 'schedule', 'other'])->active()->get()->each(function ($item, $key) {
                 Attendance::create([
                     'employee_id' => $item->id,
-                    'locale_id' => $item->locale['id'],
+                    'locale_id'   => $item->locale['id'],
+                    'amount'      => $item->rate['amount'],
+                    'sched_start' => $item->schedule['start'],
+                    'sched_end'   => $item->schedule['end'],
+                    'special_person' => $item->other['special_person'],
+                    'night_shift'    => $item->other['night_shift'],
+                    'overtime'       => $item->other['overtime'],
                 ]);
             });
         }

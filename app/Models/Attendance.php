@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Builder;
 class Attendance extends Model
 {
     protected $fillable = [
-        'employee_id', 'locale_id', 'start', 'end'
+        'employee_id', 'locale_id', 'amount', 'sched_start', 'sched_end', 'special_person', 'night_shift', 'overtime', 'start', 'end'
     ];
 
     public function scopeApplyDateFilter(Builder $builder, $request)

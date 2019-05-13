@@ -40,10 +40,9 @@ class GrossPayReportBaseResource extends JsonResource
 
     protected function getData()
     {
-        return Attendance::with(['employee.rate', 'employee.schedule'])
-                ->where('employee_id', $this->id)
-                    ->orderBy('created_at', 'desc')
-                        ->get();
+        return Attendance::where('employee_id', $this->id)
+            ->orderBy('created_at', 'desc')
+                ->get();
     }
     
 }

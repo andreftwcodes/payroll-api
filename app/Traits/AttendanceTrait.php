@@ -43,4 +43,13 @@ trait AttendanceTrait
     {
         return 15;
     }
+
+    protected function getFormattedTime($time)
+    {
+        if (is_null($time)) {
+            return;
+        }
+
+        return Carbon::parse($time)->format('h:i A');
+    }
 }

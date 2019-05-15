@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Attendance;
 
+use Carbon\Carbon;
 use App\Traits\AttendanceTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Attendance\AttendanceLocaleResource;
@@ -22,6 +23,8 @@ class AttendanceResource extends JsonResource
             'id' => $this->id,
             'employee' => new AttendanceEmployeeResource($this->whenLoaded('employee')),
             'locale' => new AttendanceLocaleResource($this->whenLoaded('locale')),
+            'start_dsp' => $this->getFormattedTime($this->start),
+            'end_dsp' => $this->getFormattedTime($this->end),
             'start' => $this->start,
             'end' => $this->end,
             'remark' => $this->getRemark()

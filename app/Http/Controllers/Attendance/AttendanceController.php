@@ -14,7 +14,6 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        // return Employee::with(['locale', 'rate', 'schedule', 'other'])->active()->get();
         $this->listAttendance();
         return AttendanceResource::collection(
             Attendance::with(['employee', 'locale', 'employee.schedule'])

@@ -14,7 +14,6 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        $this->listAttendance();
         return AttendanceResource::collection(
             Attendance::with(['employee', 'locale', 'employee.schedule'])
                 ->applyDateFilter($request)
@@ -22,18 +21,7 @@ class AttendanceController extends Controller
         );
     }
 
-    public function update(AttendanceRequest $request, Attendance $attendance)
-    {
-        $attendance->update(
-            $request->only('locale_id', 'start', 'end')
-        );
-        
-        return new AttendanceResource($attendance->load([
-            'employee', 'locale', 'employee.schedule'
-        ]));
-    }
-
-    protected function listAttendance()
+    public function store(Request $request)
     {
         if ($this->hasNoListsToday()) {
             Employee::with(['locale', 'rate', 'schedule', 'other'])->active()->get()->each(function ($item, $key) {
@@ -49,6 +37,17 @@ class AttendanceController extends Controller
                 ]);
             });
         }
+    }
+
+    public function update(AttendanceRequest $request, Attendance $attendance)
+    {
+        $attendance->update(
+            $request->only('locale_id', 'start', 'end')
+        );
+        
+        return new AttendanceResource($attendance->load([
+            'employee', 'locale', 'employee.schedule'
+        ]));
     }
 
     protected function hasNoListsToday()

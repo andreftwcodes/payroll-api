@@ -40,9 +40,40 @@ class Calculator
     protected function minutesWorked()
     {
         return $this->toMinutes(
-            Carbon::parse($this->timeIn())
-                ->floatDiffInHours($this->timeOut())
+            $this->firstQuarter() + $this->secondQuarter()
         );
+    }
+
+    protected function firstQuarter()
+    {
+        $sched_end_1 = $this->request->sched_end_1;
+
+        if (strtotime($this->timeIn()) > strtotime($sched_end_1)) {
+            return 0;
+        }
+
+        if (strtotime($time_out = $this->timeOut()) < strtotime($sched_end_1)) {
+            $sched_end_1 = $time_out;
+        }
+
+        return Carbon::parse($this->timeIn())
+            ->floatDiffInHours($sched_end_1);
+    }
+
+    protected function secondQuarter()
+    {
+        $sched_start_2 = $this->request->sched_start_2;
+
+        if (strtotime($this->timeOut()) < strtotime($sched_start_2)) {
+            return 0;
+        }
+
+        if (strtotime($time_in = $this->timeIn()) > strtotime($sched_start_2)) {
+            $sched_start_2 = $time_in;
+        }
+
+        return Carbon::parse($sched_start_2)
+            ->floatDiffInHours($this->timeOut());
     }
 
     protected function ratePerMinute()
@@ -57,17 +88,17 @@ class Calculator
 
     protected function timeIn()
     {
-        return $this->isLate() ? $this->request->timeIn : $this->request->start;
+        return $this->isLate() ? $this->request->timeIn : $this->request->sched_start_1;
     }
 
     protected function timeOut()
     {
-        return $this->timeOutExceeded() ? $this->request->end : $this->request->timeOut;
+        return $this->timeOutExceeded() ? $this->request->sched_end_2 : $this->request->timeOut;
     }
 
     protected function isLate()
     {
-        $timeStart = Carbon::createFromTimeString($this->request->start)
+        $timeStart = Carbon::createFromTimeString($this->request->sched_start_1)
                         ->addMinutes(self::LATE_ALLOWANCE);
 
         return strtotime($this->request->timeIn) > strtotime($timeStart);
@@ -75,7 +106,7 @@ class Calculator
 
     protected function timeOutExceeded()
     {
-        return strtotime($this->request->timeOut) > strtotime($this->request->end);
+        return strtotime($this->request->timeOut) > strtotime($this->request->sched_end_2);
     }
 
     protected function canOverTime()
@@ -88,14 +119,14 @@ class Calculator
         return (bool) $this->request->night_shift;
     }
 
-    public function overTime()
+    protected function overTime()
     {
         $grossPay = 0;
 
         if ($this->canOverTime() && $this->timeOutExceeded()) {
 
             $minutesWorked = $this->toMinutes(
-                Carbon::parse($this->request->end)->floatDiffInHours($this->request->timeOut)
+                Carbon::parse($this->request->sched_end_2)->floatDiffInHours($this->request->timeOut)
             );
     
             $grossPay = $minutesWorked * $this->ratePerMinute();
@@ -110,7 +141,7 @@ class Calculator
         return $grossPay;
     }
 
-    public function nightShift($minutesWorked = null)
+    protected function nightShift($minutesWorked = null)
     {
         $amount = 0;
 

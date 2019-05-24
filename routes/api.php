@@ -9,7 +9,6 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::post('employee/rate/{employee}', 'Employee\EmployeeRateController@store');
 Route::post('employee/deductions/{employee}', 'Employee\EmployeeDeductionController@store');
-Route::post('employee/schedule/{employee}', 'Employee\EmployeeScheduleController@store');
 Route::post('employee/other/{employee}', 'Employee\EmployeeOtherController@store');
 Route::post('employee/personal/validate', 'Employee\EmployeeValidatorController@personal');
 Route::post('employee/employment/validate', 'Employee\EmployeeValidatorController@employment');
@@ -18,6 +17,7 @@ Route::resource('employees', 'EmployeeController');
 Route::resource('users', 'UserController');
 Route::resource('roles', 'RoleController');
 Route::resource('deductions', 'DeductionController');
+Route::resource('schedules', 'ScheduleController');
 Route::resource('locales', 'LocaleController');
 Route::resource('attendances', 'Attendance\AttendanceController');
 

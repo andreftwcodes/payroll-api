@@ -28,7 +28,7 @@ trait AttendanceTrait
         );
 
         $parsedScheduleStart = Carbon::parse(
-            $scheduleStart = $this->sched_start
+            $scheduleStart = $this->sched_start_1
         );
 
         if ($parsedScheduleStart->greaterThan($parsedStart)) {

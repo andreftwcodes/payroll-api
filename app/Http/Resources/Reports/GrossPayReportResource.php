@@ -43,9 +43,11 @@ class GrossPayReportResource extends JsonResource
     protected function getMappedData()
     {
         return (new \Illuminate\Http\Request())->replace([
-            'rate'      => $this->amount,
-            'start'     => $this->sched_start,
-            'end'       => $this->sched_end,
+            'rate'              => $this->amount,
+            'sched_start_1'     => $this->sched_start_1,
+            'sched_end_1'       => $this->sched_end_1,
+            'sched_start_2'     => $this->sched_start_2,
+            'sched_end_2'       => $this->sched_end_2,
             'special_person' => $this->special_person,
             'night_shift'    => $this->night_shift,
             'overtime'       => $this->overtime,

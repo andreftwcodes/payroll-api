@@ -26,17 +26,8 @@ class EmployeeExtrasRequest extends FormRequest
         return [
             'rate' => 'required|numeric|min:1',
             'deductions' => 'array',
-            'locale' => 'required|numeric',
-            'start' => 'required',
-            'end' => 'required',
+            'locale' => 'required|numeric'
         ];
     }
-
-    public function messages()
-    {
-        return [
-            'start.required' => 'The time in field is required.',
-            'end.required' => 'The time out field is required.'
-        ];
-    }
+    
 }

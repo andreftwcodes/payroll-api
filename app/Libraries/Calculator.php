@@ -3,6 +3,7 @@
 namespace App\Libraries;
 
 use Carbon\Carbon;
+use App\Traits\TimeScheduleTrait;
 use Illuminate\Http\Request;
 
 class Calculator
@@ -17,9 +18,11 @@ class Calculator
 
     protected $request;
 
+    use TimeScheduleTrait;
+
     public function __construct(Request $request = null)
     {
-        $this->request = $request;
+        $this->request = $this->mappedRequest($request);
     }
 
     public function getGrossPay()
@@ -57,7 +60,7 @@ class Calculator
         }
 
         return Carbon::parse($this->timeIn())
-            ->floatDiffInHours($sched_end_1);
+                ->floatDiffInHours($sched_end_1);
     }
 
     protected function secondQuarter()
@@ -121,24 +124,25 @@ class Calculator
 
     protected function overTime()
     {
-        $grossPay = 0;
+        $amount = 0;
 
         if ($this->canOverTime() && $this->timeOutExceeded()) {
 
             $minutesWorked = $this->toMinutes(
-                Carbon::parse($this->request->sched_end_2)->floatDiffInHours($this->request->timeOut)
+                Carbon::parse($this->request->sched_end_2)
+                    ->floatDiffInHours($this->request->timeOut)
             );
     
-            $grossPay = $minutesWorked * $this->ratePerMinute();
+            $amount = $minutesWorked * $this->ratePerMinute();
 
             if ($this->isNightShift()) {
-                $grossPay += $this->nightShift($minutesWorked);
+                $amount += $this->nightShift($minutesWorked);
             }
 
-            $grossPay *= (self::OVERTIME_RATE / 100);
+            $amount *= (self::OVERTIME_RATE / 100);
         }
 
-        return $grossPay;
+        return $amount;
     }
 
     protected function nightShift($minutesWorked = null)

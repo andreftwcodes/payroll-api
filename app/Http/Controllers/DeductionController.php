@@ -14,4 +14,23 @@ class DeductionController extends Controller
             Deduction::all()
         );
     }
+
+    public function store(Request $request, Deduction $deduction)
+    {
+        return new DeductionResource(
+            $deduction->createDeduction($request)
+        );
+    }
+
+    public function update(Request $request, Deduction $deduction)
+    {
+        return new DeductionResource(
+            $deduction->updateDeduction($request)
+        );
+    }
+
+    public function show(Deduction $deduction)
+    {
+        return new DeductionResource($deduction);
+    }
 }

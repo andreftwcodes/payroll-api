@@ -5,6 +5,7 @@ namespace App\Http\Resources\Reports;
 use Carbon\Carbon;
 use App\Libraries\Calculator;
 use App\Traits\AttendanceTrait;
+use App\Libraries\TimeCalculator;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GrossPayReportResource extends JsonResource
@@ -21,6 +22,7 @@ class GrossPayReportResource extends JsonResource
         return [
             'id' => $this->id,
             'remark' => $this->getRemark(),
+            'rate' => $this->amount,
             'grossPay' => $this->getGrossPay(),
             'dateDisplay' => $this->getDateDisplay()
         ];
@@ -37,23 +39,32 @@ class GrossPayReportResource extends JsonResource
             return 'TBD';
         }
 
-        return (new Calculator($this->getMappedData()))->getFormattedGrossPay();
+        return (new Calculator($this->getMappedCalcData()))->getFormattedGrossPay();
     }
 
-    protected function getMappedData()
+    protected function getTimeCalcInstance()
     {
-        return (new \Illuminate\Http\Request())->replace([
-            'rate'              => $this->amount,
+        return (new TimeCalculator([
             'sched_start_1'     => $this->sched_start_1,
             'sched_end_1'       => $this->sched_end_1,
             'sched_start_2'     => $this->sched_start_2,
             'sched_end_2'       => $this->sched_end_2,
-            'special_person' => $this->special_person,
-            'night_shift'    => $this->night_shift,
-            'overtime'       => $this->overtime,
             'timeIn'    => $this->start,
-            'timeOut'   => $this->end
-        ]);
+            'timeOut'   => $this->end,
+            // 'special_person' => $this->special_person,
+            'overtime'       => $this->overtime,
+        ]));
+    }
+
+    protected function getMappedCalcData()
+    {
+        $tc = $this->getTimeCalcInstance();
+        return [
+            'rate' => $this->amount,
+            'hours_worked' => $tc->getHours(),
+            'over_time'    => $tc->getOverTime(),
+            'shift'        => $tc->getShift()
+        ];
     }
 
     protected function getDateDisplay()

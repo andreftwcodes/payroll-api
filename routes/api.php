@@ -22,8 +22,32 @@ Route::resource('locales', 'LocaleController');
 Route::resource('attendances', 'Attendance\AttendanceController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
-    $grossPay = (new \App\Libraries\Calculator($request))->getGrossPay();
-    dd($grossPay);
+
+    $tc = (new \App\Libraries\TimeCalculator(
+        $request->only(
+            'sched_start_1',
+            'sched_end_1',
+            'sched_start_2',
+            'sched_end_2',
+            'timeIn',
+            'timeOut',
+            // 'special_person' => $this->special_person,
+            'overtime'
+        )
+    ));
+    // dd($tc);
+    $request->merge([
+        'hours_worked' => $tc->getHours(),
+        'over_time'    => $tc->getOverTime(),
+        'shift'        => $tc->getShift()
+    ]);
+    // dd($request->only('rate', 'hours_worked', 'over_time', 'shift'));
+    $calc = (new \App\Libraries\Calculator(
+        $request->only('rate', 'hours_worked', 'over_time', 'shift')
+    ));
+
+    dd($calc->getGrossPay());
+
 });
 
 Route::get('/reports/pay/employees', 'Reports\PayReportController@employees');

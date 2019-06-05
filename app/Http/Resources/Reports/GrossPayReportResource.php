@@ -49,10 +49,9 @@ class GrossPayReportResource extends JsonResource
             'sched_end_1'       => $this->sched_end_1,
             'sched_start_2'     => $this->sched_start_2,
             'sched_end_2'       => $this->sched_end_2,
-            'timeIn'    => $this->start,
-            'timeOut'   => $this->end,
-            // 'special_person' => $this->special_person,
-            'overtime'       => $this->overtime,
+            'timeIn'            => $this->start,
+            'timeOut'           => $this->end,
+            // 'special_person' => $this->special_person
         ]));
     }
 
@@ -62,7 +61,7 @@ class GrossPayReportResource extends JsonResource
         return [
             'rate' => $this->amount,
             'hours_worked' => $tc->getHours(),
-            'over_time'    => $tc->getOverTime(),
+            'overtime'     => $this->overtime,
             'shift'        => $tc->getShift()
         ];
     }

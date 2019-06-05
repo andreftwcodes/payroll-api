@@ -23,11 +23,6 @@ class TimeCalculator
         return $this->computeHoursWorked();
     }
 
-    public function getOverTime()
-    {
-        return $this->computeOverTime();
-    }
-
     public function getShift()
     {
         return $this->data['shift'];
@@ -36,18 +31,6 @@ class TimeCalculator
     protected function computeHoursWorked()
     {
         return $this->firstQuarter() + $this->secondQuarter();
-    }
-
-    protected function computeOverTime()
-    {
-        $hours = 0;
-
-        if ($this->canOverTime() && $this->timeOutExceeded()) {
-            $hours = Carbon::parse($this->data['sched_end_2'])
-                ->floatDiffInHours($this->data['timeOut']);
-        }
-
-        return $hours;
     }
 
     protected function firstQuarter()
@@ -89,7 +72,7 @@ class TimeCalculator
 
     protected function timeOut()
     {
-        return $this->timeOutExceeded() ? $this->data['sched_end_2'] : $this->data['timeOut'];
+        return $this->data['timeOut'];
     }
 
     protected function isLate()
@@ -98,16 +81,6 @@ class TimeCalculator
                         ->addMinutes(self::LATE_ALLOWANCE);
 
         return strtotime($this->data['timeIn']) > strtotime($timeStart);
-    }
-
-    protected function timeOutExceeded()
-    {
-        return strtotime($this->data['timeOut']) > strtotime($this->data['sched_end_2']);
-    }
-
-    protected function canOverTime()
-    {
-        return (bool) $this->data['overtime'];
     }
 
 }

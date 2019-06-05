@@ -19,7 +19,7 @@ class Calculator
 
     public function getGrossPay()
     {
-        return $this->computeGrossPay() + $this->nightShift() + $this->overTime();
+        return $this->computeGrossPay() + $this->nightShiftPay() + $this->overTimePay();
     }
 
     public function getFormattedGrossPay()
@@ -47,29 +47,43 @@ class Calculator
         return $value * 60;
     }
 
+    protected function hasOverTimePremium()
+    {
+        return (bool) $this->data['overtime'];
+    }
+
     protected function isNightShift()
     {
         return $this->data['shift'] === 'night';
     }
 
-    protected function overTime()
+    protected function overTimePay()
     {
         $minutesWorked = $this->toMinutes(
-            $this->data['over_time']
+            $this->overTimeHours()
         );
 
         $amount = $minutesWorked * $this->ratePerMinute();
 
-        if ($this->isNightShift()) {
-            $amount += $this->nightShift($minutesWorked);
+        if ($this->hasOverTimePremium()) {
+            $amount *= (self::OVERTIME_RATE / 100);
         }
-
-        $amount *= (self::OVERTIME_RATE / 100);
 
         return $amount;
     }
 
-    protected function nightShift($minutesWorked = null)
+    protected function overTimeHours()
+    {
+        $hours = 0;
+
+        if ($this->data['hours_worked'] > self::WORKING_HOURS) {
+            $hours = $this->data['hours_worked'] - self::WORKING_HOURS;
+        }
+
+        return $hours;
+    }
+
+    protected function nightShiftPay($minutesWorked = null)
     {
         $amount = 0;
 

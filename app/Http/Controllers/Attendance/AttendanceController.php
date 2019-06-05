@@ -24,20 +24,11 @@ class AttendanceController extends Controller
     public function store(Request $request)
     {
         if ($this->hasNoListsToday()) {
-            Employee::with(['locale', 'rate', 'schedule', 'other'])->active()->get()->each(function ($item, $key) {
-                Attendance::create([
-                    'employee_id' => $item->id,
-                    'locale_id'   => $item->locale['id'],
-                    'amount'      => $item->rate['amount'],
-                    'sched_start_1'  => $item->schedule['start_1'],
-                    'sched_end_1'    => $item->schedule['end_1'],
-                    'sched_start_2'  => $item->schedule['start_2'],
-                    'sched_end_2'    => $item->schedule['end_2'],
-                    'special_person' => $item->other['special_person'],
-                    'night_shift'    => $item->other['night_shift'],
-                    'overtime'       => $item->other['overtime'],
-                ]);
-            });
+
+            if (!is_null($employees = $this->getEmployeesBatchData())) {
+                Attendance::insert($employees);
+            }
+
         }
     }
 
@@ -55,5 +46,31 @@ class AttendanceController extends Controller
     protected function hasNoListsToday()
     {
         return !(bool) Attendance::whereDate('created_at', Carbon::today()->toDateString())->count();
+    }
+
+    protected function getEmployeesBatchData()
+    {
+        $employees = Employee::with(['locale', 'rate', 'schedule', 'other'])->active()->get()->map(function ($item, $key) {
+            return [
+                'employee_id' => $item->id,
+                'locale_id'   => $item->locale['id'],
+                'amount'      => $item->rate['amount'],
+                'sched_start_1'  => $item->schedule['start_1'],
+                'sched_end_1'    => $item->schedule['end_1'],
+                'sched_start_2'  => $item->schedule['start_2'],
+                'sched_end_2'    => $item->schedule['end_2'],
+                'special_person' => $item->other['special_person'],
+                'night_shift'    => $item->other['night_shift'],
+                'overtime'       => $item->other['overtime'],
+                "created_at"     => $timestamps = Carbon::now(), 
+                "updated_at"     => $timestamps
+            ];
+        });
+
+        if ($employees->isEmpty()) {
+            return null;
+        }
+
+        return $employees->toArray();
     }
 }

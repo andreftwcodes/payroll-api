@@ -27,6 +27,11 @@ class Calculator
         return '₱ ' . number_format($this->getGrossPay(), 2);
     }
 
+    public function getOverTimeHours()
+    {
+        return $this->overTimeHours();
+    }
+
     protected function computeGrossPay()
     {
         return $this->minutesWorked() * $this->ratePerMinute();
@@ -34,7 +39,9 @@ class Calculator
 
     protected function minutesWorked()
     {
-        return $this->toMinutes($this->data['hours_worked']);
+        return $this->toMinutes(
+            $this->isOverTime() ? self::WORKING_HOURS : $this->data['hours_worked']
+        );
     }
 
     protected function ratePerMinute()
@@ -57,7 +64,12 @@ class Calculator
         return $this->data['shift'] === 'night';
     }
 
-    protected function overTimePay()
+    protected function isOverTime()
+    {
+        return $this->data['hours_worked'] > self::WORKING_HOURS;
+    }
+
+    public function overTimePay()
     {
         $minutesWorked = $this->toMinutes(
             $this->overTimeHours()
@@ -76,7 +88,7 @@ class Calculator
     {
         $hours = 0;
 
-        if ($this->data['hours_worked'] > self::WORKING_HOURS) {
+        if ($this->isOverTime()) {
             $hours = $this->data['hours_worked'] - self::WORKING_HOURS;
         }
 

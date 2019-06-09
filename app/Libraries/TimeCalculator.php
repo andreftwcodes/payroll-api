@@ -30,6 +30,10 @@ class TimeCalculator
 
     protected function computeHoursWorked()
     {
+        if (is_null($this->data['timeIn']) || is_null($this->data['timeOut'])) {
+            return 0;
+        }
+
         return $this->firstQuarter() + $this->secondQuarter();
     }
 

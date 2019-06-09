@@ -23,6 +23,15 @@ Route::resource('attendances', 'Attendance\AttendanceController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
 
+    $date = \Carbon\Carbon::parse('2019-06-08')->endOfMonth();
+
+    if (!$date->isSaturday()) {
+        $date->previous(\Carbon\Carbon::SATURDAY);
+        // $date->next(\Carbon\Carbon::SATURDAY);
+    }
+
+    dd(\Carbon\Carbon::now()->toDateString());
+
     $deducCalc = new \App\Libraries\DeductionsCalculator(10800, [1]);
 
     dd($deducCalc->getEmployeeShareAmount());
@@ -34,7 +43,7 @@ Route::post('/testing', function (\Illuminate\Http\Request $request) { //test ro
             'sched_start_2',
             'sched_end_2',
             'timeIn',
-            'timeOut',
+            'timeOut'
             // 'special_person' => $this->special_person
         )
     ));
@@ -52,42 +61,10 @@ Route::post('/testing', function (\Illuminate\Http\Request $request) { //test ro
 
 });
 
-Route::get('/getpayslip', function (\Illuminate\Http\Request $request) {
 
-    $attendance = \App\Models\Attendance::where('employee_id', 2)->whereBetween('created_at', [
-        Carbon\Carbon::parse($request->from)->startOfDay()->toDateTimeString(),
-        Carbon\Carbon::parse($request->to)->endOfDay()->toDateTimeString()
-    ])->whereNotNull('start')->whereNotNull('end')->get()->toArray();
-
-    $grossPay = 0;
-
-    foreach ($attendance as $key => $value) {
-
-        $tc = new \App\Libraries\TimeCalculator([
-            'sched_start_1' => $value['sched_start_1'],
-            'sched_end_1'   => $value['sched_end_1'],
-            'sched_start_2' => $value['sched_start_2'],
-            'sched_end_2'   => $value['sched_end_2'],
-            'timeIn'        => $value['start'],
-            'timeOut'       => $value['end'],
-        ]);
-    
-        $calc = new \App\Libraries\Calculator([
-            'rate'         => $value['amount'],
-            'hours_worked' => $tc->getHours(),
-            'overtime'     => $value['overtime'],
-            'shift'        => $tc->getShift()
-        ]);
-
-        $grossPay += $calc->getGrossPay();
-    }
-
-    $deducCalc = new \App\Libraries\DeductionsCalculator($grossPay, [1]);
-
-    $netPay = $grossPay - $deducCalc->getEmployeeShareAmount();
-    
-    dd(round($netPay, 2));
-});
 
 Route::get('/reports/pay/employees', 'Reports\PayReportController@employees');
 Route::get('/reports/pay/{employee}', 'Reports\PayReportController@pay');
+
+Route::get('/reports/payslip/data', 'Reports\PaySlipController@getEmployees');
+Route::get('/payslip/period/{employee}', 'Reports\PaySlipController@getPeriod');

@@ -23,6 +23,14 @@ class Attendance extends Model
         return $builder->whereDate('created_at', $created_at);
     }
 
+    public function scopeApplyDateFilterPeriod(Builder $builder, $request)
+    {
+        return $builder->whereBetween('created_at', [
+            Carbon::parse($request->from)->startOfDay()->toDateTimeString(),
+            Carbon::parse($request->to)->endOfDay()->toDateTimeString()
+        ]);
+    }
+
     public function employee()
     {
         return $this->belongsTo(Employee::class);

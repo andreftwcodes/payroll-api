@@ -26,8 +26,6 @@ class PaySlip
 
     protected $dataList = array();
 
-    protected $daysCount = 0;
-
     public function __construct($request = null, $employee = null)
     {
         $this->request = $request;
@@ -71,8 +69,6 @@ class PaySlip
             $this->overTimeHours += $calc->getOverTimeHours(); //@brb
             $this->overTimePay += $calc->overTimePay();
 
-            $this->daysCount++;
-
         endforeach;
 
         $this->setMandatoryDeductions();
@@ -94,7 +90,8 @@ class PaySlip
                 'net_pay' => $this->getFormatted($this->netPay())
             ],
             'extra' => [
-                'days' => $this->daysCount
+                'days' => $this->daysCount(),
+                'print_url' => url('api/payslip/pdf', [$this->printParamsSecretKey()])
             ]
         ];
     }
@@ -121,7 +118,7 @@ class PaySlip
 
     protected function basicRateByPeriod()
     {
-        return $this->employee->rate->amount * $this->daysCount;
+        return $this->employee->rate->amount * $this->daysCount();
     }
 
     protected function overTime()
@@ -137,6 +134,22 @@ class PaySlip
         return $this->deducAmount;
     }
 
+    protected function daysCount()
+    {
+        return $this->attendanceDataSet()->count();
+    }
+
+    protected function printParamsSecretKey()
+    {
+        return base64_encode(
+            collect([
+                'employee_id' => $this->employee->id,
+                'from' => $this->request->from,
+                'to' => $this->request->to
+            ])->toJson()
+        );
+    }
+
     protected function setMandatoryDeductions()
     {
         /**
@@ -144,7 +157,7 @@ class PaySlip
         */
         
         $md = new MandatoryDeductions(
-            $this->basicRate(),
+            $this->grossPay,
             $this->employee->deductions->contains(1)
         );
 

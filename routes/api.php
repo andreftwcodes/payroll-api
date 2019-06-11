@@ -68,3 +68,5 @@ Route::get('/reports/pay/{employee}', 'Reports\PayReportController@pay');
 
 Route::get('/reports/payslip/data', 'Reports\PaySlipController@getEmployees');
 Route::get('/payslip/period/{employee}', 'Reports\PaySlipController@getPeriod');
+
+Route::get('/payslip/pdf/{secret_key}', 'Reports\PaySlipController@viewToPDF');

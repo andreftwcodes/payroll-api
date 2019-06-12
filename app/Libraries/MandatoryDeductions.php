@@ -24,6 +24,10 @@ class MandatoryDeductions
 
     protected $philhealth = null;
 
+    protected $widthHoldingTax = null;
+
+    protected $others = null;
+
     public function __construct($basicRate = 0, $checker = false)
     {
         $this->basicRate = $basicRate;
@@ -96,10 +100,20 @@ class MandatoryDeductions
         $amount = 0;
 
         if ($this->basicRate > 0) {
-            $amount = $this->getSSSEE() + $this->getPhilHealthEE() + $this->getPagIbigEE();
+            $amount = $this->getSSSEE() + $this->getPhilHealthEE() + $this->getPagIbigEE() + $this->getWithHoldingTax() + $this->getOthers();
         }
         
         return $amount;
+    }
+
+    protected function getWithHoldingTax()
+    {
+        return $this->widthHoldingTax;
+    }
+
+    protected function getOthers()
+    {
+        return $this->others;
     }
 
     public function getDataList()
@@ -116,7 +130,15 @@ class MandatoryDeductions
             array(
                 'name'   => 'PagIbig',
                 'amount' => number_format($this->getPagIbigEE(), 2)
-            )
+            ),
+            array(
+                'name'   => 'Withholding Tax',
+                'amount' => number_format($this->getWithHoldingTax(), 2)
+            ),
+            array(
+                'name'   => 'Others',
+                'amount' => number_format($this->getOthers(), 2)
+            ),
         );
     }
 
@@ -136,6 +158,10 @@ class MandatoryDeductions
             $this->philhealth = PhilHealth::where($filter)->first();
             
         }
+
+        $this->widthHoldingTax = 0; //@brb
+
+        $this->others = 0; //@brb
     }
 
     protected function isDateOfDeduction()

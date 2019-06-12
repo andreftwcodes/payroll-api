@@ -26,6 +26,8 @@ class PaySlip
 
     protected $dataList = array();
 
+    const CURRENCY = 'PHP ';
+
     public function __construct($request = null, $employee = null)
     {
         $this->request = $request;
@@ -82,12 +84,12 @@ class PaySlip
                 'fullname' => $this->fullname(),
                 'period' => $this->datePeriod(),
                 'date_issued' => $this->dateIssued(),
-                'basic_rate' => $this->getFormatted($this->basicRateByPeriod()),
+                'basic_rate' => $this->getFormatted($this->basicRate()),
                 'overtime' => $this->overTime(),
                 'gross_pay' => $this->getFormatted($this->grossPay),
                 'less' => $this->dataList,
                 'total_deductions' => $this->getFormatted($this->totalDeductionAmount()),
-                'net_pay' => $this->getFormatted($this->netPay())
+                'net_pay' => self::CURRENCY . $this->getFormatted($this->netPay())
             ],
             'extra' => [
                 'days' => $this->daysCount(),
@@ -113,18 +115,14 @@ class PaySlip
 
     protected function basicRate()
     {
-        return ($this->employee->rate->amount * 313) / 12;
-    }
-
-    protected function basicRateByPeriod()
-    {
-        return $this->employee->rate->amount * $this->daysCount();
+        return $this->attendanceDataSet()->sum('amount'); //sum by period
+        // return ($this->employee->rate->amount * 313) / 12;
     }
 
     protected function overTime()
     {
         return [
-            'hours' => $this->overTimeHours,
+            'hours' => number_format($this->overTimeHours, 2, '.', '.'),
             'amount' => $this->getFormatted($this->overTimePay)
         ];
     }

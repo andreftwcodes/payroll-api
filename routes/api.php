@@ -24,6 +24,9 @@ Route::resource('attendances', 'Attendance\AttendanceController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
 
+    dd(\Carbon\Carbon::today()->toDateTimeString());
+    dd(\Carbon\Carbon::parse('2019-06-15 20:42:13')->startOfDay()->toDateTimeString() === \Carbon\Carbon::today());
+
     $date = \Carbon\Carbon::parse('2019-06-08')->endOfMonth();
 
     if (!$date->isSaturday()) {
@@ -62,7 +65,7 @@ Route::post('/testing', function (\Illuminate\Http\Request $request) { //test ro
 
 });
 
-
+Route::get('/rate/history/{employee}', 'Rate\RateHistoryController@show');
 
 Route::get('/reports/pay/employees', 'Reports\PayReportController@employees');
 Route::get('/reports/pay/{employee}', 'Reports\PayReportController@pay');

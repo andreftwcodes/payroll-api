@@ -46,6 +46,11 @@ class Employee extends Model
         return $this->hasOne(Rate::class);
     }
 
+    public function rate_history()
+    {
+        return $this->hasMany(HistoryRate::class);
+    }
+
     public function deductions()
     {
         return $this->belongsToMany(Deduction::class, 'employee_deductions');

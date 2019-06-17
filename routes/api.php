@@ -65,6 +65,8 @@ Route::post('/testing', function (\Illuminate\Http\Request $request) { //test ro
 
 });
 
+Route::get('/sidebar/menu/{user}', 'SystemTheme\SideBarMenuController@getMenu');
+
 Route::get('/rate/history/{employee}', 'Rate\RateHistoryController@show');
 
 Route::get('/reports/pay/employees', 'Reports\PayReportController@employees');

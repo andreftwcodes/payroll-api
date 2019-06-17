@@ -21,24 +21,22 @@ Route::resource('deductions', 'DeductionController');
 Route::resource('schedules', 'ScheduleController');
 Route::resource('locales', 'LocaleController');
 Route::resource('attendances', 'Attendance\AttendanceController');
+Route::resource('sss', 'Contributions\SSSController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
 
-    dd(\Carbon\Carbon::today()->toDateTimeString());
-    dd(\Carbon\Carbon::parse('2019-06-15 20:42:13')->startOfDay()->toDateTimeString() === \Carbon\Carbon::today());
+    $sss_contributions = \App\Models\sss_contributions::find(2);
 
-    $date = \Carbon\Carbon::parse('2019-06-08')->endOfMonth();
+    $sss_contributions->table_ranges()->create([
+        'from' => 1,
+        'to' => 2,
+        'er' => 3,
+        'ee' => 4,
+    ]);
 
-    if (!$date->isSaturday()) {
-        $date->previous(\Carbon\Carbon::SATURDAY);
-        // $date->next(\Carbon\Carbon::SATURDAY);
-    }
+    dd($sss_contributions->table_ranges()->get()->toArray());
 
-    dd(\Carbon\Carbon::now()->toDateString());
-
-    $deducCalc = new \App\Libraries\DeductionsCalculator(10800, [1]);
-
-    dd($deducCalc->getEmployeeShareAmount());
+    //===============================================================================
 
     $tc = (new \App\Libraries\TimeCalculator(
         $request->only(

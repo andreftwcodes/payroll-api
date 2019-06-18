@@ -15,14 +15,14 @@ class CreateContributionRangesTable extends Migration
     {
         Schema::create('contribution_ranges', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('parent_key');
+            $table->unsignedBigInteger('hdr_contribution_id');
             $table->unsignedDecimal('from', 8, 2);
             $table->unsignedDecimal('to', 8, 2);
             $table->unsignedDecimal('er', 8, 2);
             $table->unsignedDecimal('ee', 8, 2);
             $table->timestamps();
 
-            $table->foreign('parent_key')->references('key')->on('sss_contributions');
+            $table->foreign('hdr_contribution_id')->references('id')->on('hdr_contributions')->onDelete('cascade');
         });
     }
 

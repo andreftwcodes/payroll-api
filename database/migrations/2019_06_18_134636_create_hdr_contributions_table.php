@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSssContributionsTable extends Migration
+class CreateHdrContributionsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateSssContributionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('sss_contributions', function (Blueprint $table) {
+        Schema::create('hdr_contributions', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->string('key')->unique()->index();
+            $table->string('flag');
             $table->string('title');
             $table->enum('status', ['active', 'inactive']);
             $table->timestamps();
@@ -29,6 +29,6 @@ class CreateSssContributionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sss_contributions');
+        Schema::dropIfExists('hdr_contributions');
     }
 }

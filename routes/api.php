@@ -21,7 +21,8 @@ Route::resource('deductions', 'DeductionController');
 Route::resource('schedules', 'ScheduleController');
 Route::resource('locales', 'LocaleController');
 Route::resource('attendances', 'Attendance\AttendanceController');
-Route::resource('sss', 'Contributions\SSSController');
+Route::resource('hdr-contributions', 'Contributions\HeaderContributionsController');
+Route::resource('contribution-ranges', 'Contributions\ContributionRangesController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
 

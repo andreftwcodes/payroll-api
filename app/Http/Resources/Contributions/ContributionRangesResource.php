@@ -4,7 +4,7 @@ namespace App\Http\Resources\Contributions;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SSSResource extends JsonResource
+class ContributionRangesResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,8 +16,10 @@ class SSSResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'title' => $this->title,
-            'status' => $this->status,
+            'from' => $this->from,
+            'to' => $this->to,
+            'er' => $this->er,
+            'ee' => $this->ee,
         ];
     }
 }

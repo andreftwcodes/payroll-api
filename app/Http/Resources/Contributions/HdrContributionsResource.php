@@ -19,6 +19,12 @@ class HdrContributionsResource extends JsonResource
             'flag' => $this->flag,
             'title' => $this->title,
             'status' => $this->status,
+            'status_display' => $this->getStatus(),
         ];
+    }
+
+    protected function getStatus()
+    {
+        return $this->status ? 'Active' : 'Inactive';
     }
 }

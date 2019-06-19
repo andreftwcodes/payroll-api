@@ -12,7 +12,7 @@ class HeaderContributionsController extends Controller
     public function index(Request $request)
     {
         return HdrContributionsResource::collection(
-            HdrContribution::where('flag', $request->flag)->get()
+            HdrContribution::where('flag', $request->flag)->latest()->get()
         );
     }
 
@@ -41,8 +41,11 @@ class HeaderContributionsController extends Controller
     protected function setOldRecordsToInActive($data = null)
     {
         if (!is_null($data)) {
-            if ($data->status === 'active') {
-                HdrContribution::where('flag', $data->flag)->where('id', '!=', $data->id)->update(['status' => 'inactive']);
+            if ($data->status === true) {
+                HdrContribution::where([
+                    ['flag', '=', $data->flag],
+                    ['id', '!=', $data->id]
+                ])->update(['status' => 0]);
             }
         }
     }

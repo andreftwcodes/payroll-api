@@ -17,7 +17,7 @@ class CreateHdrContributionsTable extends Migration
             $table->bigIncrements('id');
             $table->string('flag');
             $table->string('title');
-            $table->enum('status', ['active', 'inactive']);
+            $table->boolean('status');
             $table->timestamps();
         });
     }

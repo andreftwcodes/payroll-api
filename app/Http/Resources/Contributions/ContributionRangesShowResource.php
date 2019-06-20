@@ -23,4 +23,5 @@ class ContributionRangesShowResource extends JsonResource
             )
         ];
     }
+    
 }

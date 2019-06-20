@@ -24,7 +24,7 @@ class ContributionRangesController extends Controller
         $hdr = HdrContribution::find($request->id);
 
         if (!is_null($hdr)) {
-            $data = $hdr->ranges()->createMany($request->data_set);
+            $data = $hdr->ranges()->createMany($request->table);
         }
 
         return ContributionRangesResource::collection($data);

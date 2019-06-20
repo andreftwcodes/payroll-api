@@ -20,6 +20,7 @@ class ContributionRangesResource extends JsonResource
             'to' => $this->to,
             'er' => $this->er,
             'ee' => $this->ee,
+            'status' => true
         ];
     }
 }

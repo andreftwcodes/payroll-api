@@ -64,6 +64,8 @@ Route::post('/testing', function (\Illuminate\Http\Request $request) { //test ro
 
 });
 
+Route::post('/validate-data-ranges', 'Contributions\ValidateDataRanges@action');
+
 Route::get('/sidebar/menu/{user}', 'SystemTheme\SideBarMenuController@getMenu');
 
 Route::get('/rate/history/{employee}', 'Rate\RateHistoryController@show');

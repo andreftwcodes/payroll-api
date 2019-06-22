@@ -8,9 +8,7 @@
 namespace App\Libraries;
 
 use Carbon\Carbon;
-use App\Models\sss_table_contribution as SSS;
-use App\Models\pagibig_table_contribution as PagIbig;
-use App\Models\philhealth_table_contribution as PhilHealth;
+use App\Models\hdr_contribution as Contribution;
 
 class MandatoryDeductions
 {
@@ -145,18 +143,29 @@ class MandatoryDeductions
     protected function setDeductions()
     {
         if ($this->isDateOfDeduction() && $this->canDeduct()) {
-            
-            $filter = array(
-                array('from', '<=', $this->basicRate),
-                array('to', '>=', $this->basicRate),
-            );
-    
-            $this->sss = SSS::where($filter)->first();
-    
-            $this->pagibig = PagIbig::where($filter)->first();
-    
-            $this->philhealth = PhilHealth::where($filter)->first();
-            
+
+            $sss        = Contribution::sss()->first();
+            $pagibig    = Contribution::pagibig()->first();
+            $philhealth = Contribution::philhealth()->first();
+
+            if (!is_null($sss)) {
+                $this->sss = $sss->ranges()
+                    ->applyFilter($this->basicRate)
+                    ->first();
+            }
+
+            if (!is_null($pagibig)) {
+                $this->pagibig = $pagibig->ranges()
+                    ->applyFilter($this->basicRate)
+                    ->first();
+            }
+
+            if (!is_null($philhealth)) {
+                $this->philhealth = $philhealth->ranges()
+                    ->applyFilter($this->basicRate)
+                    ->first();
+            }
+
         }
 
         $this->widthHoldingTax = 0; //@brb

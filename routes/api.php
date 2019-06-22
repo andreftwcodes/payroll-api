@@ -26,6 +26,13 @@ Route::resource('contribution-ranges', 'Contributions\ContributionRangesControll
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
 
+    $sss = \App\Models\hdr_contribution::sss();
+
+    if (!is_null($sss)) {
+        $check = $sss->ranges()->applyFilter(10000)->first();
+        dd($check->from);
+    }
+
     $sss_contributions = \App\Models\sss_contributions::find(2);
 
     $sss_contributions->table_ranges()->create([

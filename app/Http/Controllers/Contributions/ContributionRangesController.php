@@ -24,6 +24,7 @@ class ContributionRangesController extends Controller
         $hdr = HdrContribution::find($request->id);
 
         if (!is_null($hdr)) {
+            $hdr->ranges()->delete();
             $data = $hdr->ranges()->createMany($request->table);
         }
 

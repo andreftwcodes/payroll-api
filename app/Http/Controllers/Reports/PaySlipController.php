@@ -31,10 +31,9 @@ class PaySlipController extends Controller
                 collect(json_decode(base64_decode($secret_key)))->toArray()
             );
 
-            $payslipData = (new PaySlip(
-                $request,
-                Employee::find($request->employee_id)
-            ))->getResult();
+            $employee = Employee::find($request->employee_id);
+
+            $payslipData = (new PaySlip($request, $employee))->getResult();
 
             $payslip = $payslipData['data'];
 
@@ -42,7 +41,7 @@ class PaySlipController extends Controller
    
             return response($pdf->output(), 200)->withHeaders([
                 'Content-Type' => 'application/pdf',
-                'Content-Disposition' => "inline; filename=payslip.pdf",
+                'Content-Disposition' => "inline; filename={$employee->lastname} - {$payslip['period']}.pdf",
             ]);
 
         }
@@ -51,7 +50,7 @@ class PaySlipController extends Controller
     public function getEmployees()
     {
         return PaySlipEmployeeDataResource::collection(
-            Employee::all()
+            Employee::with(['deductions'])->get()
         );
     }
 }

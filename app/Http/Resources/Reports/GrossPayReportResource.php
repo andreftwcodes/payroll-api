@@ -50,8 +50,7 @@ class GrossPayReportResource extends JsonResource
             'sched_start_2'     => $this->sched_start_2,
             'sched_end_2'       => $this->sched_end_2,
             'timeIn'            => $this->start,
-            'timeOut'           => $this->end,
-            // 'special_person' => $this->special_person
+            'timeOut'           => $this->end
         ]));
     }
 

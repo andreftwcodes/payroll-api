@@ -2,7 +2,7 @@
 /**
  * Constructor Parameters
  * Parameter 1 [basicRate] (floatval)
- * Parameter 2 [checker] (Boolean)
+ * Parameter 2 [deduct] (Boolean)
  */
 
 namespace App\Libraries;
@@ -10,11 +10,11 @@ namespace App\Libraries;
 use Carbon\Carbon;
 use App\Models\hdr_contribution as Contribution;
 
-class MandatoryDeductions
+class Contributions
 {
     protected $basicRate;
 
-    protected $checker;
+    protected $deduct;
 
     protected $sss = null;
 
@@ -26,10 +26,10 @@ class MandatoryDeductions
 
     protected $others = null;
 
-    public function __construct($basicRate = 0, $checker = false)
+    public function __construct($basicRate = 0, $deduct = false)
     {
         $this->basicRate = $basicRate;
-        $this->checker = $checker;
+        $this->deduct = $deduct;
         $this->setDeductions();
     }
 
@@ -142,7 +142,7 @@ class MandatoryDeductions
 
     protected function setDeductions()
     {
-        if ($this->isDateOfDeduction() && $this->canDeduct()) {
+        if ($this->canDeduct()) {
 
             $sss        = Contribution::sss()->first();
             $pagibig    = Contribution::pagibig()->first();
@@ -173,21 +173,9 @@ class MandatoryDeductions
         $this->others = 0; //@brb
     }
 
-    protected function isDateOfDeduction()
-    {
-        $date = Carbon::now()->endOfMonth();
-
-        if (!$date->isSaturday()) {
-            $date->previous(Carbon::SATURDAY);
-            // $date->next(Carbon::SATURDAY);
-        }
-
-        return $date->toDateString() === Carbon::now()->toDateString();
-    }
-
     protected function canDeduct()
     {
-        return $this->checker === true;
+        return $this->deduct === 'true';
     }
 
 }

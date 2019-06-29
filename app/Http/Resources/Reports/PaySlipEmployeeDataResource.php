@@ -18,7 +18,10 @@ class PaySlipEmployeeDataResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'fullname' => $this->getFullname()
+            'fullname' => $this->getFullname(),
+            'flags' => [
+                'contributions' => $this->whenLoaded('deductions')->contains('id', 1)
+            ]
         ];
     }
 }

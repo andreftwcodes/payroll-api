@@ -6,7 +6,7 @@ use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Libraries\Calculator;
 use App\Libraries\TimeCalculator;
-use App\Libraries\MandatoryDeductions;
+use App\Libraries\Contributions;
 
 class PaySlip
 {
@@ -143,27 +143,22 @@ class PaySlip
             collect([
                 'employee_id' => $this->employee->id,
                 'from' => $this->request->from,
-                'to' => $this->request->to
+                'to' => $this->request->to,
+                'contributions' => $this->request->contributions,
             ])->toJson()
         );
     }
 
     protected function setMandatoryDeductions()
     {
-        /**
-         * id 1 for [sss,philh,pagibig]
-        */
-        
-        $md = new MandatoryDeductions(
-            $this->grossPay,
-            $this->employee->deductions->contains(1)
-        );
 
-        collect($md->getDataList())->each(function ($item, $key) {
+        $contributions = new Contributions($this->grossPay, $this->request->contributions);
+
+        collect($contributions->getDataList())->each(function ($item, $key) {
             array_push($this->dataList, $item);
         });
 
-        $this->deducAmount += $md->getEmployeeShareAmount();
+        $this->deducAmount += $contributions->getEmployeeShareAmount();
     }
 
     protected function netPay()

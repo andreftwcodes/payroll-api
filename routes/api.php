@@ -54,7 +54,6 @@ Route::post('/testing', function (\Illuminate\Http\Request $request) { //test ro
             'sched_end_2',
             'timeIn',
             'timeOut'
-            // 'special_person' => $this->special_person
         )
     ));
     // dd($tc);

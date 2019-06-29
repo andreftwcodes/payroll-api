@@ -59,7 +59,6 @@ class AttendanceController extends Controller
                 'sched_end_1'    => $item->schedule['end_1'],
                 'sched_start_2'  => $item->schedule['start_2'],
                 'sched_end_2'    => $item->schedule['end_2'],
-                'special_person' => $item->other['special_person'],
                 'night_shift'    => $item->other['night_shift'],
                 'overtime'       => $item->other['overtime'],
                 "created_at"     => $timestamps = Carbon::now(), 

@@ -28,7 +28,7 @@ class UpdateAttendanceAttributesController extends Controller
 
     protected function getDataSet($request)
     {
-        $data = $request->only('amount', 'schedule_id', 'special_person', 'night_shift', 'overtime');
+        $data = $request->only('amount', 'schedule_id', 'night_shift', 'overtime');
         return Arr::except(
             array_merge($data, $this->getSchedule($data['schedule_id'])),
             array('schedule_id')

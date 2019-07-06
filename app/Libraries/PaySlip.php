@@ -61,10 +61,11 @@ class PaySlip
             ]);
 
             $calc = new Calculator([
-                'rate'         => $attendance['amount'],
-                'hours_worked' => $timeCalc->getHours(),
-                'overtime'     => $attendance['overtime'], //OT premium flag
-                'shift'        => $timeCalc->getShift()
+                'rate'          => $attendance['amount'],
+                'working_hours' => $timeCalc->getWorkingHours(),
+                'hours_worked'  => $timeCalc->getHours(),
+                'overtime'      => $attendance['overtime'], //OT premium flag
+                'shift'         => $timeCalc->getShift()
             ]);
     
             $this->grossPay += $calc->getGrossPay();

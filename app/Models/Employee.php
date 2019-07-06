@@ -61,6 +61,11 @@ class Employee extends Model
         return $this->hasOne(Schedule::class, 'id', 'schedule_id');
     }
 
+    public function schedules()
+    {
+        return $this->hasMany(employee_schedules::class);
+    }
+
     public function locale()
     {
         return $this->hasOne(Locale::class, 'id', 'locale_id');

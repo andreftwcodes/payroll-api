@@ -28,6 +28,17 @@ class TimeCalculator
         return $this->data['shift'];
     }
 
+    public function getWorkingHours()
+    {
+        $firstQuarter = Carbon::parse($this->data['sched_start_1'])
+            ->floatDiffInHours($this->data['sched_end_1']);
+
+        $secondQuarter = Carbon::parse($this->data['sched_start_2'])
+            ->floatDiffInHours($this->data['sched_end_2']);
+
+        return $firstQuarter + $secondQuarter;
+    }
+
     protected function computeHoursWorked()
     {
         if (is_null($this->data['timeIn']) || is_null($this->data['timeOut'])) {

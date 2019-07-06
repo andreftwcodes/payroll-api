@@ -15,7 +15,7 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         return AttendanceResource::collection(
-            Attendance::with(['employee', 'locale', 'employee.schedule'])
+            Attendance::with(['employee', 'locale'])
                 ->applyDateFilter($request)
                     ->get()
         );
@@ -38,9 +38,11 @@ class AttendanceController extends Controller
             $request->only('locale_id', 'start', 'end')
         );
         
-        return new AttendanceResource($attendance->load([
-            'employee', 'locale', 'employee.schedule'
-        ]));
+        return new AttendanceResource(
+            $attendance->load([
+                'employee', 'locale'
+            ])
+        );
     }
 
     protected function hasNoListsToday()
@@ -50,20 +52,23 @@ class AttendanceController extends Controller
 
     protected function getEmployeesBatchData()
     {
-        $employees = Employee::with(['locale', 'rate', 'schedule', 'other'])->active()->get()->map(function ($item, $key) {
-            return [
+        $employees = Employee::with(['locale', 'rate', 'schedules', 'other'])->active()->get()->map(function ($item, $key) {
+            
+            $employee = [
                 'employee_id' => $item->id,
                 'locale_id'   => $item->locale['id'],
                 'amount'      => $item->rate['amount'],
-                'sched_start_1'  => $item->schedule['start_1'],
-                'sched_end_1'    => $item->schedule['end_1'],
-                'sched_start_2'  => $item->schedule['start_2'],
-                'sched_end_2'    => $item->schedule['end_2'],
                 'night_shift'    => $item->other['night_shift'],
                 'overtime'       => $item->other['overtime'],
                 "created_at"     => $timestamps = Carbon::now(), 
                 "updated_at"     => $timestamps
             ];
+
+            return array_merge(
+                $employee,
+                $this->schedule($item->schedules)
+            );
+            
         });
 
         if ($employees->isEmpty()) {
@@ -71,5 +76,19 @@ class AttendanceController extends Controller
         }
 
         return $employees->toArray();
+    }
+
+    protected function schedule($schedules)
+    {
+        $schedule = collect($schedules)->first(function ($schedule, $key) {
+            return $schedule['day'] === (int) Carbon::today()->format('N');
+        });
+
+        return [
+            'sched_start_1'  => $schedule['start_1'],
+            'sched_end_1'    => $schedule['end_1'],
+            'sched_start_2'  => $schedule['start_2'],
+            'sched_end_2'    => $schedule['end_2']
+        ];
     }
 }

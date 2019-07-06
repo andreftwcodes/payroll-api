@@ -4,8 +4,6 @@ namespace App\Libraries;
 
 class Calculator
 {
-    const WORKING_HOURS = 8;
-
     const OVERTIME_RATE = 130;
 
     const NIGHT_DIFFERENTIAL = 10;
@@ -37,16 +35,21 @@ class Calculator
         return $this->minutesWorked() * $this->ratePerMinute();
     }
 
+    protected function workingHours()
+    {
+        return $this->data['working_hours'];
+    }
+
     protected function minutesWorked()
     {
         return $this->toMinutes(
-            $this->isOverTime() ? self::WORKING_HOURS : $this->data['hours_worked']
+            $this->isOverTime() ? $this->workingHours() : $this->data['hours_worked']
         );
     }
 
     protected function ratePerMinute()
     {
-        return $this->data['rate'] / $this->toMinutes(self::WORKING_HOURS);
+        return $this->data['rate'] / $this->toMinutes($this->workingHours());
     }
 
     protected function toMinutes($value)
@@ -66,7 +69,7 @@ class Calculator
 
     protected function isOverTime()
     {
-        return $this->data['hours_worked'] > self::WORKING_HOURS;
+        return $this->data['hours_worked'] > $this->workingHours();
     }
 
     public function overTimePay()
@@ -89,7 +92,7 @@ class Calculator
         $hours = 0;
 
         if ($this->isOverTime()) {
-            $hours = $this->data['hours_worked'] - self::WORKING_HOURS;
+            $hours = $this->data['hours_worked'] - $this->workingHours();
         }
 
         return $hours;

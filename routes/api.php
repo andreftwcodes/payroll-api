@@ -9,6 +9,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::post('employee/rate/{employee}', 'Employee\EmployeeRateController@store');
 Route::post('employee/deductions/{employee}', 'Employee\EmployeeDeductionController@store');
+Route::post('employee/schedules/{employee}', 'Employee\EmployeeScheduleController@store');
 Route::post('employee/other/{employee}', 'Employee\EmployeeOtherController@store');
 Route::post('employee/personal/validate', 'Employee\EmployeeValidatorController@personal');
 Route::post('employee/employment/validate', 'Employee\EmployeeValidatorController@employment');
@@ -18,33 +19,12 @@ Route::resource('employees', 'EmployeeController');
 Route::resource('users', 'UserController');
 Route::resource('roles', 'RoleController');
 Route::resource('deductions', 'DeductionController');
-Route::resource('schedules', 'ScheduleController');
 Route::resource('locales', 'LocaleController');
 Route::resource('attendances', 'Attendance\AttendanceController');
 Route::resource('hdr-contributions', 'Contributions\HeaderContributionsController');
 Route::resource('contribution-ranges', 'Contributions\ContributionRangesController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
-
-    $sss = \App\Models\hdr_contribution::sss();
-
-    if (!is_null($sss)) {
-        $check = $sss->ranges()->applyFilter(10000)->first();
-        dd($check->from);
-    }
-
-    $sss_contributions = \App\Models\sss_contributions::find(2);
-
-    $sss_contributions->table_ranges()->create([
-        'from' => 1,
-        'to' => 2,
-        'er' => 3,
-        'ee' => 4,
-    ]);
-
-    dd($sss_contributions->table_ranges()->get()->toArray());
-
-    //===============================================================================
 
     $tc = (new \App\Libraries\TimeCalculator(
         $request->only(
@@ -56,17 +36,18 @@ Route::post('/testing', function (\Illuminate\Http\Request $request) { //test ro
             'timeOut'
         )
     ));
-    // dd($tc);
+    // dd($tc->getWorkingHours());
     $request->merge([
-        'hours_worked' => $tc->getHours(),
-        'shift'        => $tc->getShift()
+        'working_hours' => $tc->getWorkingHours(),
+        'hours_worked'  => $tc->getHours(),
+        'shift'         => $tc->getShift()
     ]);
     // dd($request->only('rate', 'hours_worked', 'overtime', 'shift'));
     $calc = (new \App\Libraries\Calculator(
-        $request->only('rate', 'hours_worked', 'overtime', 'shift')
+        $request->only('rate', 'working_hours', 'hours_worked', 'overtime', 'shift')
     ));
 
-    dd($calc->getGrossPay());
+    dd($calc->getFormattedGrossPay());
 
 });
 

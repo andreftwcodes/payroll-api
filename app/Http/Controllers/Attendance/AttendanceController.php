@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Attendance;
 
 use Carbon\Carbon;
 use App\Models\Employee;
+use App\Models\TimeLogs;
 use App\Models\Attendance;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Attendance\AttendanceRequest;
@@ -15,7 +17,7 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         return AttendanceResource::collection(
-            Attendance::with(['employee', 'locale'])
+            Attendance::with(['employee', 'locale', 'time_logs'])
                 ->applyDateFilter($request)
                     ->get()
         );
@@ -35,12 +37,42 @@ class AttendanceController extends Controller
     public function update(AttendanceRequest $request, Attendance $attendance)
     {
         $attendance->update(
-            $request->only('locale_id', 'start', 'end')
+            $request->only('locale_id')
         );
-        
+
+        $time_logs = collect($request->time_logs);
+
+        $toCreateData = $time_logs->filter(function ($item, $key) {
+            return !collect($item)->has('id');
+        });
+
+        $toUpdateData = $time_logs->filter(function ($item, $key) {
+            return collect($item)->has('id');
+        });
+
+        $toDeleteData = $attendance->time_logs()->get()->filter(function ($item, $key) use ($toUpdateData) {
+            return !$toUpdateData->contains('id', $item['id']);
+        });
+
+        if ($toCreateData->isNotEmpty()) {
+            $attendance->time_logs()->createMany(
+                $this->mappedTimeLogs($toCreateData)
+            );
+        }
+
+        if ($toUpdateData->isNotEmpty()) {
+            $this->updateTimeLogs($toUpdateData, $attendance);
+        }
+
+        if ($toDeleteData->isNotEmpty()) {
+            TimeLogs::destroy(
+                $toDeleteData->pluck('id')->toArray()
+            );
+        }
+
         return new AttendanceResource(
             $attendance->load([
-                'employee', 'locale'
+                'employee', 'locale', 'time_logs'
             ])
         );
     }
@@ -48,6 +80,24 @@ class AttendanceController extends Controller
     protected function hasNoListsToday()
     {
         return !(bool) Attendance::whereDate('created_at', Carbon::today()->toDateString())->count();
+    }
+
+    protected function mappedTimeLogs($timeLogs)
+    {
+        return $timeLogs->map(function ($timeLog, $key) {
+
+            $timeSet = [
+                'time_in'  => Carbon::parse($timeLog['time_in'])->toDateTimeString(),
+                'time_out' => Carbon::parse($timeLog['time_out'])->toDateTimeString()
+            ];
+
+            if (collect($timeLog)->has('id')) {
+                return Arr::add($timeSet, 'id', $timeLog['id']);
+            }
+
+            return $timeSet;
+            
+        })->toArray();
     }
 
     protected function getEmployeesBatchData()
@@ -90,5 +140,19 @@ class AttendanceController extends Controller
             'sched_start_2'  => $schedule['start_2'],
             'sched_end_2'    => $schedule['end_2']
         ];
+    }
+
+    protected function updateTimeLogs($toUpdateData, $attendance)
+    {
+        $mapped = $this->mappedTimeLogs($toUpdateData);
+        $id = $toUpdateData->pluck('id')->toArray();
+        $timeLogs = $attendance->time_logs()->whereIn('id', $id)->get();
+        $timeLogs->each(function($item, $key) use ($mapped) {
+            if ($mapped[$key]['id'] === $item['id']) {
+                $item['time_in']  = $mapped[$key]['time_in'];
+                $item['time_out'] = $mapped[$key]['time_out'];
+                return $item->save();
+            }
+        });
     }
 }

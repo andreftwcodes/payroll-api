@@ -40,4 +40,9 @@ class Attendance extends Model
     {
         return $this->belongsTo(Locale::class);
     }
+
+    public function time_logs()
+    {
+        return $this->hasMany(TimeLogs::class);
+    }
 }

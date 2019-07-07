@@ -7,6 +7,7 @@ use App\Traits\AttendanceTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Attendance\AttendanceLocaleResource;
 use App\Http\Resources\Attendance\AttendanceEmployeeResource;
+use App\Http\Resources\Attendance\AttendanceTimeLogsResource;
 
 class AttendanceResource extends JsonResource
 {
@@ -27,8 +28,10 @@ class AttendanceResource extends JsonResource
             'end_dsp' => $this->getFormattedTime($this->end),
             'start' => $this->start,
             'end' => $this->end,
+            'time_logs' => AttendanceTimeLogsResource::collection(
+                $this->whenLoaded('time_logs')
+            ),
             'remark' => $this->getRemark()
         ];
     }
-
 }

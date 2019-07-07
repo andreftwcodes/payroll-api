@@ -26,6 +26,8 @@ Route::resource('contribution-ranges', 'Contributions\ContributionRangesControll
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
 
+    dd(\Carbon\Carbon::parse('08:00:00')->toDateTimeString());
+
     $tc = (new \App\Libraries\TimeCalculator(
         $request->only(
             'sched_start_1',

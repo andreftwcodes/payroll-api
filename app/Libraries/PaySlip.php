@@ -16,11 +16,11 @@ class PaySlip
 
     protected $attendances;
 
-    protected $grossPay;
+    protected $grossPay = 0;
 
-    protected $overTimeHours;
+    protected $overTimeHours = 0;
 
-    protected $overTimePay;
+    protected $overTimePay = 0;
 
     protected $deducAmount = 0;
 
@@ -56,8 +56,7 @@ class PaySlip
                 'sched_end_1'   => $attendance['sched_end_1'],
                 'sched_start_2' => $attendance['sched_start_2'],
                 'sched_end_2'   => $attendance['sched_end_2'],
-                'timeIn'        => $attendance['start'],
-                'timeOut'       => $attendance['end'],
+                'time_logs'     => $attendance->time_logs()->get()
             ]);
 
             $calc = new Calculator([
@@ -65,12 +64,12 @@ class PaySlip
                 'working_hours' => $timeCalc->getWorkingHours(),
                 'hours_worked'  => $timeCalc->getHours(),
                 'overtime'      => $attendance['overtime'], //OT premium flag
-                'shift'         => $timeCalc->getShift()
+                'shift'         => 'morning' //@brb
             ]);
     
-            $this->grossPay += $calc->getGrossPay();
+            $this->grossPay      += $calc->getGrossPay();
             $this->overTimeHours += $calc->getOverTimeHours(); //@brb
-            $this->overTimePay += $calc->overTimePay();
+            $this->overTimePay   += $calc->overTimePay();
 
         endforeach;
 
@@ -142,9 +141,9 @@ class PaySlip
     {
         return base64_encode(
             collect([
-                'employee_id' => $this->employee->id,
-                'from' => $this->request->from,
-                'to' => $this->request->to,
+                'employee_id'   => $this->employee->id,
+                'from'          => $this->request->from,
+                'to'            => $this->request->to,
                 'contributions' => $this->request->contributions,
             ])->toJson()
         );

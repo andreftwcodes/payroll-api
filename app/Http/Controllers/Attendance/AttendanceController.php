@@ -86,9 +86,15 @@ class AttendanceController extends Controller
     {
         return $timeLogs->map(function ($timeLog, $key) {
 
+            $time_out = null;
+
+            if (!is_null($timeLog['time_out'])) {
+                $time_out = Carbon::parse($timeLog['time_out'])->toDateTimeString();
+            }
+
             $timeSet = [
                 'time_in'  => Carbon::parse($timeLog['time_in'])->toDateTimeString(),
-                'time_out' => Carbon::parse($timeLog['time_out'])->toDateTimeString()
+                'time_out' => $time_out
             ];
 
             if (collect($timeLog)->has('id')) {
@@ -135,10 +141,10 @@ class AttendanceController extends Controller
         });
 
         return [
-            'sched_start_1'  => $schedule['start_1'],
-            'sched_end_1'    => $schedule['end_1'],
-            'sched_start_2'  => $schedule['start_2'],
-            'sched_end_2'    => $schedule['end_2']
+            'sched_start_1'  => Carbon::parse($schedule['start_1'])->toDateTimeString(),
+            'sched_end_1'    => Carbon::parse($schedule['end_1'])->toDateTimeString(),
+            'sched_start_2'  => Carbon::parse($schedule['start_2'])->toDateTimeString(),
+            'sched_end_2'    => Carbon::parse($schedule['end_2'])->toDateTimeString()
         ];
     }
 

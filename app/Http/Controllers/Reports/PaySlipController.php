@@ -40,7 +40,7 @@ class PaySlipController extends Controller
             $pdf = PDF::loadView('payslip.toPDF', compact('payslip'));
    
             return response($pdf->output(), 200)->withHeaders([
-                'Content-Type' => 'application/pdf',
+                'Content-Type'        => 'application/pdf',
                 'Content-Disposition' => "inline; filename={$employee->lastname} - {$payslip['period']}.pdf",
             ]);
 

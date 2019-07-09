@@ -17,8 +17,26 @@ class AttendanceTimeLogsResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'time_in' => Carbon::parse($this->time_in)->toTimeString(),
-            'time_out' => Carbon::parse($this->time_out)->toTimeString()
+            'time_in' => $this->timeIn(),
+            'time_out' => $this->timeOut()
         ];
+    }
+
+    private function timeIn()
+    {
+        if (is_null($timeIn = $this->time_in)) {
+            return null;
+        }
+
+        return Carbon::parse($timeIn)->toTimeString();
+    }
+
+    private function timeOut()
+    {
+        if (is_null($timeout = $this->time_out)) {
+            return null;
+        }
+
+        return Carbon::parse($timeout)->toTimeString();
     }
 }

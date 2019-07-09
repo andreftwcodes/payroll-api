@@ -21,17 +21,24 @@ class AttendanceResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'employee' => new AttendanceEmployeeResource($this->whenLoaded('employee')),
-            'locale' => new AttendanceLocaleResource($this->whenLoaded('locale')),
-            'start_dsp' => $this->getFormattedTime($this->start),
-            'end_dsp' => $this->getFormattedTime($this->end),
-            'start' => $this->start,
-            'end' => $this->end,
-            'time_logs' => AttendanceTimeLogsResource::collection(
-                $this->whenLoaded('time_logs')
-            ),
-            'remark' => $this->getRemark()
+            'id'        => $this->id,
+            'employee'  => new AttendanceEmployeeResource($this->whenLoaded('employee')),
+            'locale'    => new AttendanceLocaleResource($this->whenLoaded('locale')),
+            'time_in'   => $this->getFormattedTime($this->timeIn()),
+            'time_out'  => $this->getFormattedTime($this->timeOut()),
+            'time_logs' => AttendanceTimeLogsResource::collection($this->whenLoaded('time_logs')),
+            'remark'    => $this->getRemark()
         ];
     }
+
+    protected function timeIn()
+    {
+        return $this->time_logs()->get()->pluck('time_in')->first();
+    }
+
+    protected function timeOut()
+    {
+        return $this->time_logs()->get()->pluck('time_out')->last();
+    }
+
 }

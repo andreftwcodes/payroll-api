@@ -10,7 +10,7 @@ trait AttendanceTrait
     {
         $remark = 'On Time';
 
-        if (is_null($this->start)) {
+        if (is_null($this->timeIn())) {
            return 'Absent';
         }
 
@@ -24,7 +24,7 @@ trait AttendanceTrait
     protected function getExceedTime()
     {
         $parsedStart = Carbon::parse(
-            $start = $this->start
+            $start = $this->timeIn()
         );
 
         $parsedScheduleStart = Carbon::parse(

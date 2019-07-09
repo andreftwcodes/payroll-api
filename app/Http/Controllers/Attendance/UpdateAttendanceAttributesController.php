@@ -43,10 +43,10 @@ class UpdateAttendanceAttributesController extends Controller
         });
         
         return [
-            'sched_start_1' => $schedule['start_1'],
-            'sched_end_1' => $schedule['end_1'],
-            'sched_start_2' => $schedule['start_2'],
-            'sched_end_2' => $schedule['end_2'],
+            'sched_start_1' => Carbon::parse($schedule['start_1'])->toDateTimeString(),
+            'sched_end_1'   => Carbon::parse($schedule['end_1'])->toDateTimeString(),
+            'sched_start_2' => Carbon::parse($schedule['start_2'])->toDateTimeString(),
+            'sched_end_2'   => Carbon::parse($schedule['end_2'])->toDateTimeString()
         ];
     }
 

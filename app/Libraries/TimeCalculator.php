@@ -3,29 +3,21 @@
 namespace App\Libraries;
 
 use Carbon\Carbon;
-use App\Traits\TimeScheduleTrait;
 
 class TimeCalculator
 {
-    use TimeScheduleTrait;
-    
     const LATE_ALLOWANCE = 15;
 
     protected $data;
     
     public function __construct(array $data)
     {
-        $this->data = $this->mappedData($data);
+        $this->data = $data;
     }
 
     public function getHours()
     {
         return $this->computeHoursWorked();
-    }
-
-    public function getShift()
-    {
-        return $this->data['shift'];
     }
 
     public function getWorkingHours()
@@ -41,53 +33,87 @@ class TimeCalculator
 
     protected function computeHoursWorked()
     {
-        if (is_null($this->data['timeIn']) || is_null($this->data['timeOut'])) {
+        if (empty($this->data['time_logs'])) {
             return 0;
         }
 
         return $this->firstQuarter() + $this->secondQuarter();
     }
 
-    protected function firstQuarter()
+    public function firstQuarter()
     {
+        $hours = 0;
+
         $sched_end_1 = $this->data['sched_end_1'];
 
-        if (strtotime($this->timeIn()) > strtotime($sched_end_1)) {
-            return 0;
-        }
+        foreach ($this->mappedTimeLogs() as $key => $item) {
 
-        if (strtotime($time_out = $this->timeOut()) < strtotime($sched_end_1)) {
-            $sched_end_1 = $time_out;
-        }
+            if (is_null($item['time_in']) || is_null($item['time_out'])) {
+                continue;
+            }
 
-        return Carbon::parse($this->timeIn())
+            if (strtotime($item['time_in']) > strtotime($sched_end_1)) {
+                continue;
+            }
+
+            if (strtotime($time_out = $item['time_out']) < strtotime($sched_end_1)) {
+                $sched_end_1 = $time_out;
+            }
+    
+            $hours += Carbon::parse($item['time_in'])
                 ->floatDiffInHours($sched_end_1);
+        }
+
+        return $hours;
+
     }
 
     protected function secondQuarter()
     {
+        $hours = 0;
+
         $sched_start_2 = $this->data['sched_start_2'];
 
-        if (strtotime($this->timeOut()) < strtotime($sched_start_2)) {
-            return 0;
+        foreach ($this->mappedTimeLogs() as $key => $item) {
+
+            if (is_null($item['time_in']) || is_null($item['time_out'])) {
+                continue;
+            }
+
+            if (strtotime($item['time_out']) < strtotime($sched_start_2)) {
+                continue;
+            }
+    
+            if (strtotime($time_in = $item['time_in']) > strtotime($sched_start_2)) {
+                $sched_start_2 = $time_in;
+            }
+    
+            $hours += Carbon::parse($sched_start_2)
+                ->floatDiffInHours($item['time_out']);
         }
 
-        if (strtotime($time_in = $this->timeIn()) > strtotime($sched_start_2)) {
-            $sched_start_2 = $time_in;
+        return $hours;
+
+    }
+
+    protected function mappedTimeLogs()
+    {
+        $timeLogs = collect($this->data['time_logs']);
+
+        if ($timeLogs->isEmpty()) {
+            return array();
         }
 
-        return Carbon::parse($sched_start_2)
-            ->floatDiffInHours($this->timeOut());
-    }
+        return $timeLogs->map(function ($item, $key) use ($timeLogs) {
 
-    protected function timeIn()
-    {
-        return $this->isLate() ? $this->data['timeIn'] : $this->data['sched_start_1'];
-    }
+            if (key($timeLogs->toArray()) === $key) { //get lower-bound (Time In)
+                $item['time_in'] = $this->isLate() ? $timeLogs->pluck('time_in')->first() : $this->data['sched_start_1'];
+            }
 
-    protected function timeOut()
-    {
-        return $this->data['timeOut'];
+            return $item;
+
+        })->toArray();
+
     }
 
     protected function isLate()
@@ -95,7 +121,7 @@ class TimeCalculator
         $timeStart = Carbon::createFromTimeString($this->data['sched_start_1'])
                         ->addMinutes(self::LATE_ALLOWANCE);
 
-        return strtotime($this->data['timeIn']) > strtotime($timeStart);
+        return strtotime(collect($this->data['time_logs'])->pluck('time_in')->first()) > strtotime($timeStart);
     }
 
 }

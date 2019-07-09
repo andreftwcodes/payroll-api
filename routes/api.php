@@ -26,7 +26,22 @@ Route::resource('contribution-ranges', 'Contributions\ContributionRangesControll
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
 
-    dd(\Carbon\Carbon::parse('08:00:00')->toDateTimeString());
+    $attendance = \App\Models\Attendance::find(2);
+    $time_logs = $attendance->time_logs()->get();
+
+    $tc = (new \App\Libraries\TimeCalculator([
+        'sched_start_1' => '08:00:00',
+        'sched_end_1' => '12:00:00',
+        'sched_start_2' => '13:00:00',
+        'sched_end_2' => '17:00:00',
+        'time_logs'=> $time_logs
+    ]));
+
+    dd($tc->firstQuarter());
+    dd($tc->mappedTimeLogs());
+    dd($tc->getHours());
+
+    //==========================================================
 
     $tc = (new \App\Libraries\TimeCalculator(
         $request->only(

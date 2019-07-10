@@ -3,6 +3,7 @@
 namespace App\Traits;
 
 use Carbon\Carbon;
+use App\Libraries\TimeCalculator;
 
 trait AttendanceTrait
 {
@@ -16,6 +17,18 @@ trait AttendanceTrait
 
         if ($this->getExceedTime() > $this->getLateAllowance()) {
             $remark = "Late : {$this->getExceedTime()} mins";
+        }
+
+        if ($hours = $this->timeCalc()->getHours()) {
+
+            if ($hours < $this->timeCalc()->getWorkingHours()) {
+                $remark .= ' / UT';
+            }
+
+            if ($hours > $this->timeCalc()->getWorkingHours()) {
+                $remark .= ' / OT';
+            }
+
         }
 
         return $remark;
@@ -37,6 +50,17 @@ trait AttendanceTrait
 
         return Carbon::parse($start)
                 ->diffInMinutes($scheduleStart);
+    }
+
+    protected function timeCalc()
+    {
+        return new TimeCalculator([
+            'sched_start_1' => $this->sched_start_1,
+            'sched_end_1'   => $this->sched_end_1,
+            'sched_start_2' => $this->sched_start_2,
+            'sched_end_2'   => $this->sched_end_2,
+            'time_logs'     => $this->time_logs()->get()
+        ]);
     }
 
     protected function getLateAllowance()

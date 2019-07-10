@@ -14,10 +14,10 @@ class ChangeSchedTimeDataType extends Migration
     public function up()
     {
         Schema::table('attendances', function (Blueprint $table) {
-            $table->datetime('sched_start_1')->change();
-            $table->datetime('sched_end_1')->change();
-            $table->datetime('sched_start_2')->change();
-            $table->datetime('sched_end_2')->change();
+            $table->datetime('sched_start_1')->nullabe(false)->change();
+            $table->datetime('sched_end_1')->nullabe(false)->change();
+            $table->datetime('sched_start_2')->nullabe(false)->change();
+            $table->datetime('sched_end_2')->nullabe(false)->change();
         });
     }
 

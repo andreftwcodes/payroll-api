@@ -27,8 +27,14 @@ class AttendanceResource extends JsonResource
             'time_in'   => $this->getFormattedTime($this->timeIn()),
             'time_out'  => $this->getFormattedTime($this->timeOut()),
             'time_logs' => AttendanceTimeLogsResource::collection($this->whenLoaded('time_logs')),
-            'remark'    => $this->getRemark()
+            'remark'    => $this->getRemark(),
+            'schedule_display' => $this->scheduleDisplay()
         ];
+    }
+
+    protected function scheduleDisplay()
+    {
+        return "{$this->getFormattedTime($this->sched_start_1)} - {$this->getFormattedTime($this->sched_end_2)}";
     }
 
     protected function timeIn()

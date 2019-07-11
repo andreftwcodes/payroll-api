@@ -9,7 +9,6 @@ use App\Models\Attendance;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Attendance\AttendanceRequest;
 use App\Http\Resources\Attendance\AttendanceResource;
 
 class AttendanceController extends Controller
@@ -32,7 +31,7 @@ class AttendanceController extends Controller
         }
     }
 
-    public function update(AttendanceRequest $request, Attendance $attendance)
+    public function update(Request $request, Attendance $attendance)
     {
         $attendance->update(
             $request->only('locale_id')

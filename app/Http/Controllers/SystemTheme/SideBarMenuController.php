@@ -52,7 +52,25 @@ class SideBarMenuController extends Controller
                 'to' => '/attendance',
                 'list_group' => false
             ),
-
+            array(
+                'icon' => 'money',
+                'title' => 'Cash Advance',
+                'to' => '',
+                'list_group' => false
+            ),
+            array(
+                'icon' => 'money',
+                'title' => 'Loans',
+                'to' => '',
+                'list_group' => true,
+                'childrens' => array(
+                    array(
+                        'icon' => 'people_outline',
+                        'title' => 'SSS',
+                        'to' => '',
+                    )
+                )
+            ),
             array(
                 'icon' => 'assignment',
                 'title' => 'Reports',

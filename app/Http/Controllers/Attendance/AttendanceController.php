@@ -25,12 +25,10 @@ class AttendanceController extends Controller
 
     public function store(Request $request)
     {
-        if ($this->hasNoListsToday($request)) {
-
+        if ($this->hasNotPersisted($request)) {
             if (!is_null($employees = $this->getEmployeesBatchData($request))) {
                 Attendance::insert($employees);
             }
-
         }
     }
 
@@ -40,7 +38,12 @@ class AttendanceController extends Controller
             $request->only('locale_id')
         );
 
-        $time_logs = collect($request->time_logs);
+        $time_logs = collect($request->time_logs)->map(function ($item, $key) use ($attendance) {
+            $date = Carbon::parse($attendance->created_at)->toDateString();
+            $item['time_in']  = "{$date} {$item['time_in']}";
+            $item['time_out'] = !is_null($item['time_out']) ? "{$date} {$item['time_out']}" : null;
+            return collect($item)->has('id') ? Arr::add($item, 'id', $item['id']) : $item;
+        });
 
         $toCreateData = $time_logs->filter(function ($item, $key) {
             return !collect($item)->has('id');
@@ -56,7 +59,7 @@ class AttendanceController extends Controller
 
         if ($toCreateData->isNotEmpty()) {
             $attendance->time_logs()->createMany(
-                $this->mappedTimeLogs($toCreateData)
+                $toCreateData->toArray()
             );
         }
 
@@ -77,33 +80,10 @@ class AttendanceController extends Controller
         );
     }
 
-    protected function hasNoListsToday($request)
+    protected function hasNotPersisted($request)
     {
-        return !(bool) Attendance::whereDate('created_at', Carbon::parse($request->created_at)->toDateString())->count();
-    }
-
-    protected function mappedTimeLogs($timeLogs)
-    {
-        return $timeLogs->map(function ($timeLog, $key) {
-
-            $time_out = null;
-
-            if (!is_null($timeLog['time_out'])) {
-                $time_out = Carbon::parse($timeLog['time_out'])->toDateTimeString();
-            }
-
-            $timeSet = [
-                'time_in'  => Carbon::parse($timeLog['time_in'])->toDateTimeString(),
-                'time_out' => $time_out
-            ];
-
-            if (collect($timeLog)->has('id')) {
-                return Arr::add($timeSet, 'id', $timeLog['id']);
-            }
-
-            return $timeSet;
-            
-        })->toArray();
+        $created_at = Carbon::parse($request->created_at)->toDateString();
+        return !(bool) Attendance::whereDate('created_at', $created_at)->count();
     }
 
     protected function getEmployeesBatchData($request)
@@ -155,13 +135,12 @@ class AttendanceController extends Controller
 
     protected function updateTimeLogs($toUpdateData, $attendance)
     {
-        $mapped = $this->mappedTimeLogs($toUpdateData);
+        $dataSet = $toUpdateData->toArray();
         $id = $toUpdateData->pluck('id')->toArray();
-        $timeLogs = $attendance->time_logs()->whereIn('id', $id)->get();
-        $timeLogs->each(function($item, $key) use ($mapped) {
-            if ($mapped[$key]['id'] === $item['id']) {
-                $item['time_in']  = $mapped[$key]['time_in'];
-                $item['time_out'] = $mapped[$key]['time_out'];
+        $attendance->time_logs()->whereIn('id', $id)->get()->each(function($item, $key) use ($dataSet) {
+            if ($dataSet[$key]['id'] === $item['id']) {
+                $item['time_in']  = $dataSet[$key]['time_in'];
+                $item['time_out'] = $dataSet[$key]['time_out'];
                 return $item->save();
             }
         });

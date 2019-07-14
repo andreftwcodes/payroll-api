@@ -68,6 +68,12 @@ Route::post('/testing', function (\Illuminate\Http\Request $request) { //test ro
 
 });
 
+Route::group(['prefix' => 'cash-advance'], function () {
+    Route::get('index', 'CashAdvance\CashAdvanceController@index');
+    Route::get('show/{employee}', 'CashAdvance\CashAdvanceController@show');
+    Route::post('store', 'CashAdvance\CashAdvanceController@store');
+});
+
 Route::post('/validate-data-ranges', 'Contributions\ValidateDataRanges@action');
 
 Route::get('/sidebar/menu/{user}', 'SystemTheme\SideBarMenuController@getMenu');

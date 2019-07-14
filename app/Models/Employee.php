@@ -86,4 +86,9 @@ class Employee extends Model
         return $this->hasMany(Attendance::class);
     }
 
+    public function ca_parent()
+    {
+        return $this->hasOne(CA_PARENT::class);
+    }
+
 }

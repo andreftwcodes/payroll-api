@@ -37,12 +37,10 @@ class AttendanceController extends Controller
             $request->only('locale_id')
         );
 
-        $time_logs = collect($request->time_logs)->map(function ($item, $key) use ($attendance) {
-            $date = Carbon::parse($attendance->created_at)->toDateString();
-            $item['time_in']  = "{$date} {$item['time_in']}";
-            $item['time_out'] = !is_null($item['time_out']) ? "{$date} {$item['time_out']}" : null;
-            return collect($item)->has('id') ? Arr::add($item, 'id', $item['id']) : $item;
-        });
+        $time_logs = $this->timeLogsMapped(
+            $request,
+            $attendance
+        );
 
         $toCreateData = $time_logs->filter(function ($item, $key) {
             return !collect($item)->has('id');
@@ -82,28 +80,33 @@ class AttendanceController extends Controller
     protected function hasNotPersisted($request)
     {
         $created_at = Carbon::parse($request->created_at)->toDateString();
-        return !(bool) Attendance::whereDate('created_at', $created_at)->count();
+        return Attendance::whereDate('created_at', $created_at)->doesntExist();
     }
 
     protected function getEmployeesBatchData($request)
     {
         $employees = Employee::with(['locale', 'rate', 'schedules', 'other'])->active()->get()->map(function ($item, $key) use ($request) {
             
+            if (is_null($schedule = $this->schedule($item->schedules, $request))) {
+                return null;
+            }
+
             $employee = [
                 'employee_id' => $item->id,
                 'locale_id'   => $item->locale['id'],
                 'amount'      => $item->rate['amount'],
-                'night_shift'    => $item->other['night_shift'],
-                'overtime'       => $item->other['overtime'],
-                "created_at"     => $timestamps = Carbon::parse($request->created_at)->toDateTimeString(), 
-                "updated_at"     => $timestamps
+                'night_shift' => $item->other['night_shift'],
+                'overtime'    => $item->other['overtime'],
+                "created_at"  => $timestamps = Carbon::parse($request->created_at)->toDateTimeString(), 
+                "updated_at"  => $timestamps
             ];
 
-            return array_merge(
-                $employee,
-                $this->schedule($item->schedules, $request)
-            );
+            return array_merge($employee, $schedule);
             
+        });
+
+        $employees = $employees->filter(function ($item) {
+            return !is_null($item);
         });
 
         if ($employees->isEmpty()) {
@@ -113,23 +116,14 @@ class AttendanceController extends Controller
         return $employees->toArray();
     }
 
-    protected function schedule($schedules, $request)
+    protected function timeLogsMapped($request, $attendance)
     {
-        $schedule = collect($schedules)->first(function ($schedule, $key) use ($request) {
-            return $schedule['day'] === (int) Carbon::parse($request->created_at)->format('N');
+        return collect($request->time_logs)->map(function ($item, $key) use ($attendance) {
+            $date = Carbon::parse($attendance->created_at)->toDateString();
+            $item['time_in']  = !is_null($item['time_in']) ? "{$date} {$item['time_in']}" : null;
+            $item['time_out'] = !is_null($item['time_out']) ? "{$date} {$item['time_out']}" : null;
+            return collect($item)->has('id') ? Arr::add($item, 'id', $item['id']) : $item;
         });
-
-        $start_1 = "{$request->created_at} {$schedule['start_1']}";
-        $end_1   = "{$request->created_at} {$schedule['end_1']}";
-        $start_2 = "{$request->created_at} {$schedule['start_2']}";
-        $end_2   = "{$request->created_at} {$schedule['end_2']}";
-
-        return [
-            'sched_start_1'  => $start_1,
-            'sched_end_1'    => $end_1,
-            'sched_start_2'  => $start_2,
-            'sched_end_2'    => $end_2
-        ];
     }
 
     protected function updateTimeLogs($toUpdateData, $attendance)
@@ -143,5 +137,23 @@ class AttendanceController extends Controller
                 return $item->save();
             }
         });
+    }
+
+    protected function schedule($schedules, $request)
+    {
+        $schedule = collect($schedules)->first(function ($schedule) use ($request) {
+            return ((bool) $schedule['status']) && $schedule['day'] === (int) Carbon::parse($request->created_at)->format('N');
+        });
+
+        if (is_null($schedule)) {
+            return null;
+        }
+
+        return [
+            'sched_start_1'  => "{$request->created_at} {$schedule['start_1']}",
+            'sched_end_1'    => "{$request->created_at} {$schedule['end_1']}",
+            'sched_start_2'  => "{$request->created_at} {$schedule['start_2']}",
+            'sched_end_2'    => "{$request->created_at} {$schedule['end_2']}"
+        ];
     }
 }

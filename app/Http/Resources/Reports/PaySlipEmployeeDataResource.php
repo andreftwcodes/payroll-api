@@ -4,6 +4,7 @@ namespace App\Http\Resources\Reports;
 
 use App\Traits\EmployeeTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Reports\CashAdvanceResource;
 
 class PaySlipEmployeeDataResource extends JsonResource
 {
@@ -20,8 +21,10 @@ class PaySlipEmployeeDataResource extends JsonResource
             'id' => $this->id,
             'fullname' => $this->getFullname(),
             'flags' => [
-                'contributions' => $this->whenLoaded('deductions')->contains('id', 1)
+                'contributions' => $this->whenLoaded('deductions')->contains('id', 1),
+                'cash_advance' => new CashAdvanceResource($this->whenLoaded('ca_parent'))
             ]
         ];
     }
+
 }

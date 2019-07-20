@@ -22,10 +22,48 @@ class CashAdvanceShowResource extends JsonResource
                 $this->whenLoaded('employee')
             ),
             'amount_deductible' => $this->amount_deductible,
-            'children' => CashAdvanceChildrenResource::collection(
-                $this->whenLoaded('ca_children')
-            )
+            'children' => $this->children()
         ];
-        return parent::toArray($request);
+    }
+
+    protected function children()
+    {
+        $children = CashAdvanceChildrenResource::collection(
+            $this->whenLoaded('ca_children')
+        );
+
+        $balance = 0;
+        $items  = [];
+
+        foreach ($children as $key => $item) {
+
+            $credit = !is_null($item['credit']) ? $item['credit'] : 0;
+            $debit  = !is_null($item['debit']) ? $item['debit'] : 0;
+
+            if ($key === 0) {
+
+                $balance = $credit;
+
+            } else {
+
+                if ($credit) {
+
+                    $balance = $balance + $credit;
+
+                } elseif ($debit) {
+
+                    $balance = $balance - $debit;
+                    
+                }
+ 
+            }
+
+            array_push($items, collect($item)->merge([
+                'balance' => number_format($balance, 2)
+            ]));
+
+        }
+
+        return $items;
     }
 }

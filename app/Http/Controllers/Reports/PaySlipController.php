@@ -50,7 +50,7 @@ class PaySlipController extends Controller
     public function getEmployees()
     {
         return PaySlipEmployeeDataResource::collection(
-            Employee::with(['deductions'])->get()
+            Employee::with(['deductions', 'ca_parent'])->get()
         );
     }
 }

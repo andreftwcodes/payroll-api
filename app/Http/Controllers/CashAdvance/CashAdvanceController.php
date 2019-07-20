@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CashAdvance\EmployeeResource;
 use App\Http\Resources\CashAdvance\CashAdvanceShowResource;
+use App\Http\Resources\CashAdvance\CashAdvanceChildrenResource;
 
 class CashAdvanceController extends Controller
 {
@@ -33,12 +34,19 @@ class CashAdvanceController extends Controller
 
     public function store(Request $request)
     {
-        $parent = CA_PARENT::find($request->ca_parents_id)->first();
-        
+        $parent = CA_PARENT::find($request->ca_parents_id);
+
         $children = $parent->ca_children()->create(
             $request->only('date', 'credit', 'debit')
         );
 
-        dd($children);
+        return new CashAdvanceChildrenResource($children);
+    }
+
+    public function amount_deductible(Request $request, CA_PARENT $ca_parent)
+    {
+        $ca_parent->update(
+            $request->only('amount_deductible')
+        );
     }
 }

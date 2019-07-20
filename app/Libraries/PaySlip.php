@@ -5,8 +5,9 @@ namespace App\Libraries;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Libraries\Calculator;
-use App\Libraries\TimeCalculator;
+use App\Libraries\CashAdvance;
 use App\Libraries\Contributions;
+use App\Libraries\TimeCalculator;
 
 class PaySlip
 {
@@ -73,7 +74,7 @@ class PaySlip
 
         endforeach;
 
-        $this->setMandatoryDeductions();
+        $this->setDeductions();
 
     }
 
@@ -145,20 +146,32 @@ class PaySlip
                 'from'          => $this->request->from,
                 'to'            => $this->request->to,
                 'contributions' => $this->request->contributions,
+                'ca_amount_deductible' => $this->request->ca_amount_deductible,
             ])->toJson()
         );
     }
 
-    protected function setMandatoryDeductions()
+    protected function setDeductions()
     {
+        $contributions = new Contributions(
+            $this->grossPay,
+            $this->request->contributions
+        );
 
-        $contributions = new Contributions($this->grossPay, $this->request->contributions);
+        $cash_advance = new CashAdvance(
+            $this->request->ca_amount_deductible
+        );
 
-        collect($contributions->getDataList())->each(function ($item, $key) {
+        $dataList = collect([
+            $contributions->getDataList(),
+            $cash_advance->getDataList()
+        ]);
+
+        collect($dataList->flatten(1)->toArray())->each(function ($item, $key) {
             array_push($this->dataList, $item);
         });
 
-        $this->deducAmount += $contributions->getEmployeeShareAmount();
+        $this->deducAmount += $contributions->getEmployeeShareAmount() + $cash_advance->getAmountDeductible();
     }
 
     protected function netPay()

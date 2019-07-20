@@ -55,7 +55,7 @@ class SideBarMenuController extends Controller
             array(
                 'icon' => 'money',
                 'title' => 'Cash Advance',
-                'to' => '',
+                'to' => 'cash-advance',
                 'list_group' => false
             ),
             array(

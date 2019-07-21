@@ -75,6 +75,10 @@ Route::group(['prefix' => 'cash-advance'], function () {
     Route::patch('amount_deductible/{ca_parent}', 'CashAdvance\CashAdvanceController@amount_deductible');
 });
 
+Route::group(['prefix' => 'reports-validator'], function () {
+    Route::post('deduction-filters', 'Reports\Validator@deductionFilters');
+});
+
 Route::post('/validate-data-ranges', 'Contributions\ValidateDataRanges@action');
 
 Route::get('/sidebar/menu/{user}', 'SystemTheme\SideBarMenuController@getMenu');
@@ -88,3 +92,4 @@ Route::get('/reports/payslip/data', 'Reports\PaySlipController@getEmployees');
 Route::get('/payslip/period/{employee}', 'Reports\PaySlipController@getPeriod');
 
 Route::get('/payslip/pdf/{secret_key}', 'Reports\PaySlipController@viewToPDF');
+

@@ -26,7 +26,8 @@ class EmployeeExtrasRequest extends FormRequest
         return [
             'rate' => 'required|numeric|min:1',
             'deductions' => 'array',
-            'locale' => 'required|numeric'
+            'locale' => 'required|numeric',
+            'payment_period' => 'required'
         ];
     }
     

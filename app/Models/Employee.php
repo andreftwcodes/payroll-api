@@ -13,14 +13,14 @@ class Employee extends Model
     use HasRateTrait, HasScheduleTrait, HasDeductionTrait, HasOtherTrait;
 
     protected $fillable = [
-        'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'schedule_id', 'locale_id', 'status'
+        'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'payment_period', 'status'
     ];
 
     public function addEmployee($request)
     {
         return $this->create(
             $request->only(
-                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'schedule_id', 'locale_id'
+                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'payment_period'
             )
         );
     }
@@ -29,7 +29,7 @@ class Employee extends Model
     {
         $this->update(
             $request->only(
-                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'schedule_id', 'locale_id', 'status'
+                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'payment_period', 'status'
             )
         );
 
@@ -54,11 +54,6 @@ class Employee extends Model
     public function deductions()
     {
         return $this->belongsToMany(Deduction::class, 'employee_deductions');
-    }
-
-    public function schedule()
-    {
-        return $this->hasOne(Schedule::class, 'id', 'schedule_id');
     }
 
     public function schedules()

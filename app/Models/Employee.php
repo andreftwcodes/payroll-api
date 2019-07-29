@@ -5,12 +5,11 @@ namespace App\Models;
 use App\Traits\HasRateTrait;
 use App\Traits\HasOtherTrait;
 use App\Traits\HasScheduleTrait;
-use App\Traits\HasDeductionTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
-    use HasRateTrait, HasScheduleTrait, HasDeductionTrait, HasOtherTrait;
+    use HasRateTrait, HasScheduleTrait, HasOtherTrait;
 
     protected $fillable = [
         'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'payment_period', 'status'
@@ -49,11 +48,6 @@ class Employee extends Model
     public function rate_history()
     {
         return $this->hasMany(HistoryRate::class);
-    }
-
-    public function deductions()
-    {
-        return $this->belongsToMany(Deduction::class, 'employee_deductions');
     }
 
     public function schedules()

@@ -11,14 +11,14 @@ trait HasOtherTrait
         if ($this->hasOther()) {
 
             $this->other()->update(
-                $request->only('night_shift', 'overtime')
+                $request->only('contributions', 'night_shift', 'overtime')
             );
             
             return false;
         }
 
         $this->other()->create(
-            $request->only('night_shift', 'overtime')
+            $request->only('contributions', 'night_shift', 'overtime')
         );
     }
 

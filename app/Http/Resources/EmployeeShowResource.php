@@ -7,7 +7,6 @@ use App\Http\Resources\Other\OtherResource;
 use App\Http\Resources\Locale\LocaleResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Schedule\ScheduleResource;
-use App\Http\Resources\Deduction\DeductionResource;
 use App\Http\Resources\Schedules\SchedulesResource;
 
 class EmployeeShowResource extends JsonResource
@@ -36,7 +35,6 @@ class EmployeeShowResource extends JsonResource
             'extras' => [
                 'rate' => $this->getRate(),
                 'payment_period' => $this->payment_period,
-                'deductions' => DeductionResource::collection($this->whenLoaded('deductions')),
                 'schedules' => SchedulesResource::collection($this->whenLoaded('schedules')),
                 'locale' => new LocaleResource($this->whenLoaded('locale')),
                 'other' => new OtherResource($this->whenLoaded('other'))

@@ -97,8 +97,8 @@ class SideBarMenuController extends Controller
                 'childrens' => array(
                     array(
                         'icon' => 'people_outline',
-                        'title' => 'Deductions',
-                        'to' => '/settings/deductions',
+                        'title' => 'Contributions',
+                        'to' => '/settings/contributions',
                     ),
                     array(
                         'icon' => 'people_outline',

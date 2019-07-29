@@ -8,7 +8,6 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::post('employee/rate/{employee}', 'Employee\EmployeeRateController@store');
-Route::post('employee/deductions/{employee}', 'Employee\EmployeeDeductionController@store');
 Route::post('employee/schedules/{employee}', 'Employee\EmployeeScheduleController@store');
 Route::post('employee/other/{employee}', 'Employee\EmployeeOtherController@store');
 Route::post('employee/personal/validate', 'Employee\EmployeeValidatorController@personal');
@@ -18,7 +17,6 @@ Route::patch('employee/attendance/attributes/{employee}', 'Attendance\UpdateAtte
 Route::resource('employees', 'EmployeeController');
 Route::resource('users', 'UserController');
 Route::resource('roles', 'RoleController');
-Route::resource('deductions', 'DeductionController');
 Route::resource('locales', 'LocaleController');
 Route::resource('attendances', 'Attendance\AttendanceController');
 Route::resource('hdr-contributions', 'Contributions\HeaderContributionsController');

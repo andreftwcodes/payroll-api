@@ -15,6 +15,7 @@ class OtherResource extends JsonResource
     public function toArray($request)
     {
         return [
+            'contributions' => $this->contributions,
             'night_shift' => $this->night_shift,
             'overtime' => $this->overtime
         ];

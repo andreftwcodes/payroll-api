@@ -21,10 +21,15 @@ class PaySlipEmployeeDataResource extends JsonResource
             'id' => $this->id,
             'fullname' => $this->getFullname(),
             'flags' => [
-                'contributions' => $this->whenLoaded('deductions')->contains('id', 1),
+                'contributions' => $this->contributions(),
                 'cash_advance' => new CashAdvanceResource($this->whenLoaded('ca_parent'))
             ]
         ];
+    }
+
+    protected function contributions()
+    {
+        return (bool) $this->other->contributions;
     }
 
 }

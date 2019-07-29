@@ -11,11 +11,6 @@ use App\Http\Resources\Reports\PaySlipEmployeeDataResource;
 
 class PaySlipController extends Controller
 {
-    public function index()
-    {
-
-    }
-
     public function getPeriod(Request $request, Employee $employee)
     {
         $payslip = new PaySlip($request, $employee);
@@ -50,7 +45,7 @@ class PaySlipController extends Controller
     public function getEmployees()
     {
         return PaySlipEmployeeDataResource::collection(
-            Employee::with(['deductions', 'ca_parent'])->get()
+            Employee::with(['other', 'ca_parent'])->get()
         );
     }
 }

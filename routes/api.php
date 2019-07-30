@@ -12,6 +12,7 @@ Route::post('employee/schedules/{employee}', 'Employee\EmployeeScheduleControlle
 Route::post('employee/other/{employee}', 'Employee\EmployeeOtherController@store');
 Route::post('employee/personal/validate', 'Employee\EmployeeValidatorController@personal');
 Route::post('employee/employment/validate', 'Employee\EmployeeValidatorController@employment');
+Route::patch('employee/status/{employee}', 'Employee\EmployeeStatusController@update');
 Route::patch('employee/attendance/attributes/{employee}', 'Attendance\UpdateAttendanceAttributesController@update');
 
 Route::resource('employees', 'EmployeeController');

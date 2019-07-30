@@ -19,7 +19,7 @@ class Employee extends Model
     {
         return $this->create(
             $request->only(
-                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'payment_period'
+                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'payment_period', 'status'
             )
         );
     }
@@ -48,7 +48,7 @@ class Employee extends Model
 
     public function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->where('status', 1);
     }
 
     public function rate()

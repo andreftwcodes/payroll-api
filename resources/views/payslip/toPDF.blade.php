@@ -62,7 +62,7 @@
 <body>
     <div class="print-area">
         <div class="heading">
-            <p>Great Eastern Commercial</p>
+            <p>{{ $payslip['locale'] }}</p>
             <p><strong>PAY SLIP</strong></p>
         </div>
         <div class="row">

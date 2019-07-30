@@ -35,6 +35,17 @@ class Employee extends Model
         return $this;
     }
 
+    public function scopeApplyFilter($query, $filter)
+    {
+        if ($filter->filled('payment_period')) {
+            if (($payment_period = $filter->payment_period) !== 'all') {
+                $query->where('payment_period', $payment_period);
+            }
+        }
+
+        return $query;
+    }
+
     public function scopeActive($query)
     {
         return $query->where('status', 'active');

@@ -4,6 +4,7 @@ namespace App\Libraries;
 
 use Carbon\Carbon;
 use App\Models\Attendance;
+use App\Libraries\SSS_Loan;
 use App\Libraries\Calculator;
 use App\Libraries\CashAdvance;
 use App\Libraries\Contributions;
@@ -43,9 +44,10 @@ class PaySlip
 
     protected function attendanceDataSet()
     {
-        return Attendance::where('employee_id', $this->employee->id)
-            ->applyDateFilterPeriod($this->request)
-                ->get();
+        return Attendance::with('time_logs')
+            ->where('employee_id', $this->employee->id)
+                ->applyDateFilterPeriod($this->request)
+                    ->get();
     }
 
     protected function setAttributes()
@@ -162,16 +164,19 @@ class PaySlip
             $this->request->ca_amount_deductible
         );
 
+        $sss_loan = new SSS_Loan(0);
+
         $dataList = collect([
             $contributions->getDataList(),
-            $cash_advance->getDataList()
+            $cash_advance->getDataList(),
+            $sss_loan->getDataList()
         ]);
 
         collect($dataList->flatten(1)->toArray())->each(function ($item, $key) {
             array_push($this->dataList, $item);
         });
 
-        $this->deducAmount += $contributions->getEmployeeShareAmount() + $cash_advance->getAmountDeductible();
+        $this->deducAmount += $contributions->getEmployeeShareAmount() + $cash_advance->getAmountDeductible() + $sss_loan->getAmountDeductible();
     }
 
     protected function netPay()

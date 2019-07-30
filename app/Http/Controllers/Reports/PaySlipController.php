@@ -26,11 +26,13 @@ class PaySlipController extends Controller
                 collect(json_decode(base64_decode($secret_key)))->toArray()
             );
 
-            $employee = Employee::find($request->employee_id);
+            $employee = Employee::with('locale')->find($request->employee_id);
 
             $payslipData = (new PaySlip($request, $employee))->getResult();
 
-            $payslip = $payslipData['data'];
+            $payslip = collect($payslipData['data'])->merge([
+                'locale' => $employee->locale->name
+            ]);
 
             $pdf = PDF::loadView('payslip.toPDF', compact('payslip'));
    
@@ -42,10 +44,10 @@ class PaySlipController extends Controller
         }
     }
 
-    public function getEmployees()
+    public function getEmployees(Request $request)
     {
         return PaySlipEmployeeDataResource::collection(
-            Employee::with(['other', 'ca_parent'])->get()
+            Employee::with(['other', 'ca_parent'])->applyFilter($request)->get()
         );
     }
 }

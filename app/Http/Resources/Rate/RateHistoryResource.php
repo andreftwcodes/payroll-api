@@ -39,6 +39,6 @@ class RateHistoryResource extends JsonResource
 
     protected function formattedRate()
     {
-        return number_format($this->amount, 2);
+        return number_format($this->rate, 2);
     }
 }

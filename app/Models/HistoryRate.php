@@ -9,6 +9,6 @@ class HistoryRate extends Model
     protected $table = 'history_rates';
 
     protected $fillable = [
-        'employee_id', 'amount'
+        'employee_id', 'rate'
     ];
 }

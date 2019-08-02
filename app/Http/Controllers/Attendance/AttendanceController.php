@@ -85,7 +85,7 @@ class AttendanceController extends Controller
 
     protected function getEmployeesBatchData($request)
     {
-        $employees = Employee::with(['locale', 'rate', 'schedules', 'other'])->active()->get()->map(function ($item, $key) use ($request) {
+        $employees = Employee::with(['locale', 'schedules', 'other'])->active()->get()->map(function ($item, $key) use ($request) {
             
             if (is_null($schedule = $this->schedule($item->schedules, $request))) {
                 return null;
@@ -94,7 +94,7 @@ class AttendanceController extends Controller
             $employee = [
                 'employee_id' => $item->id,
                 'locale_id'   => $item->locale['id'],
-                'amount'      => $item->rate['amount'],
+                'amount'      => $item->rate,
                 'night_shift' => $item->other['night_shift'],
                 'overtime'    => $item->other['overtime'],
                 "created_at"  => $timestamps = Carbon::parse($request->created_at)->toDateTimeString(), 

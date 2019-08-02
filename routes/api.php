@@ -7,9 +7,11 @@ Route::group(['prefix' => 'auth'], function () {
     Route::get('me', 'Auth\MeController@action');
 });
 
-Route::post('employee/rate/{employee}', 'Employee\EmployeeRateController@store');
+Route::get('employee/rate-histories/{employee}', 'Employee\EmployeeRateHistoryController@show');
+
 Route::post('employee/schedules/{employee}', 'Employee\EmployeeScheduleController@store');
 Route::post('employee/other/{employee}', 'Employee\EmployeeOtherController@store');
+Route::post('employee/rate-history/{employee}', 'Employee\EmployeeRateHistoryController@store');
 Route::post('employee/personal/validate', 'Employee\EmployeeValidatorController@personal');
 Route::post('employee/employment/validate', 'Employee\EmployeeValidatorController@employment');
 Route::patch('employee/status/{employee}', 'Employee\EmployeeStatusController@update');
@@ -24,47 +26,7 @@ Route::resource('hdr-contributions', 'Contributions\HeaderContributionsControlle
 Route::resource('contribution-ranges', 'Contributions\ContributionRangesController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
-
-    $attendance = \App\Models\Attendance::find(2);
-    $time_logs = $attendance->time_logs()->get();
-
-    $tc = (new \App\Libraries\TimeCalculator([
-        'sched_start_1' => '08:00:00',
-        'sched_end_1' => '12:00:00',
-        'sched_start_2' => '13:00:00',
-        'sched_end_2' => '17:00:00',
-        'time_logs'=> $time_logs
-    ]));
-
-    dd($tc->firstQuarter());
-    dd($tc->mappedTimeLogs());
-    dd($tc->getHours());
-
-    //==========================================================
-
-    $tc = (new \App\Libraries\TimeCalculator(
-        $request->only(
-            'sched_start_1',
-            'sched_end_1',
-            'sched_start_2',
-            'sched_end_2',
-            'timeIn',
-            'timeOut'
-        )
-    ));
-    // dd($tc->getWorkingHours());
-    $request->merge([
-        'working_hours' => $tc->getWorkingHours(),
-        'hours_worked'  => $tc->getHours(),
-        'shift'         => $tc->getShift()
-    ]);
-    // dd($request->only('rate', 'hours_worked', 'overtime', 'shift'));
-    $calc = (new \App\Libraries\Calculator(
-        $request->only('rate', 'working_hours', 'hours_worked', 'overtime', 'shift')
-    ));
-
-    dd($calc->getFormattedGrossPay());
-
+    //
 });
 
 Route::group(['prefix' => 'cash-advance'], function () {
@@ -81,8 +43,6 @@ Route::group(['prefix' => 'reports-validator'], function () {
 Route::post('/validate-data-ranges', 'Contributions\ValidateDataRanges@action');
 
 Route::get('/sidebar/menu/{user}', 'SystemTheme\SideBarMenuController@getMenu');
-
-Route::get('/rate/history/{employee}', 'Rate\RateHistoryController@show');
 
 Route::get('/reports/pay/employees', 'Reports\PayReportController@employees');
 Route::get('/reports/pay/{employee}', 'Reports\PayReportController@pay');

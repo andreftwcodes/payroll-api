@@ -2,24 +2,23 @@
 
 namespace App\Models;
 
-use App\Traits\HasRateTrait;
 use App\Traits\HasOtherTrait;
-use App\Traits\HasScheduleTrait;
+use App\Traits\HasHistoryRateTrait;
 use Illuminate\Database\Eloquent\Model;
 
 class Employee extends Model
 {
-    use HasRateTrait, HasScheduleTrait, HasOtherTrait;
+    use HasHistoryRateTrait, HasOtherTrait;
 
     protected $fillable = [
-        'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'payment_period', 'status'
+        'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'rate', 'payment_period', 'status'
     ];
 
     public function addEmployee($request)
     {
         return $this->create(
             $request->only(
-                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'payment_period', 'status'
+                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'rate', 'payment_period', 'status'
             )
         );
     }
@@ -28,7 +27,7 @@ class Employee extends Model
     {
         $this->update(
             $request->only(
-                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'payment_period', 'status'
+                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'rate', 'payment_period', 'status'
             )
         );
 
@@ -49,11 +48,6 @@ class Employee extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 1);
-    }
-
-    public function rate()
-    {
-        return $this->hasOne(Rate::class);
     }
 
     public function rate_history()

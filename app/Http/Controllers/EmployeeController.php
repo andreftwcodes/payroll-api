@@ -35,7 +35,7 @@ class EmployeeController extends Controller
     {
         return new EmployeeShowResource(
             $employee->load([
-                'rate', 'schedules', 'locale', 'other'
+                'schedules', 'locale', 'other'
             ])
         );
     }

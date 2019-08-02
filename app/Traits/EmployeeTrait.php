@@ -31,8 +31,6 @@ trait EmployeeTrait
 
     protected function getRate()
     {
-        if ($rate = $this->whenLoaded('rate')) {
-            return $rate->amount;
-        }
+        return $this->rate;
     }
 }

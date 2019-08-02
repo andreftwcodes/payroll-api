@@ -119,7 +119,7 @@ class PaySlip
     protected function basicRate()
     {
         return $this->attendanceDataSet()->sum('amount'); //sum by period
-        // return ($this->employee->rate->amount * 313) / 12;
+        // return ($this->employee->rate * 313) / 12;
     }
 
     protected function overTime()

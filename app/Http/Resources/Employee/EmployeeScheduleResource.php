@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Schedules;
+namespace App\Http\Resources\Employee;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SchedulesResource extends JsonResource
+class EmployeeScheduleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.

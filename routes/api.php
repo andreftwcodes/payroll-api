@@ -22,6 +22,7 @@ Route::resource('users', 'UserController');
 Route::resource('roles', 'RoleController');
 Route::resource('locales', 'LocaleController');
 Route::resource('attendances', 'Attendance\AttendanceController');
+Route::resource('schedules', 'Schedule\ScheduleController');
 Route::resource('hdr-contributions', 'Contributions\HeaderContributionsController');
 Route::resource('contribution-ranges', 'Contributions\ContributionRangesController');
 

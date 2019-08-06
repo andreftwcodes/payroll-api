@@ -40,7 +40,12 @@ class CashAdvanceController extends Controller
             $request->only('date', 'credit', 'debit')
         );
 
-        return new CashAdvanceChildrenResource($children);
+        return (new CashAdvanceChildrenResource($children))
+            ->additional([
+                'meta' => [
+                    'balance' => $this->getBalance($parent)
+                ]
+            ]);
     }
 
     public function amount_deductible(Request $request, CA_PARENT $ca_parent)
@@ -48,5 +53,11 @@ class CashAdvanceController extends Controller
         $ca_parent->update(
             $request->only('amount_deductible')
         );
+    }
+
+    private function getBalance($parent)
+    {
+        $childrens = collect($parent->ca_children()->get());
+        return number_format($childrens->sum('credit') - $childrens->sum('debit'), 2);
     }
 }

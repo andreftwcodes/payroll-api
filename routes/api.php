@@ -7,6 +7,7 @@ Route::group(['prefix' => 'auth'], function () {
     Route::get('me', 'Auth\MeController@action');
 });
 
+Route::get('attendances/get-employees', 'Attendance\AttendanceController@getDropDownEmployees');
 Route::get('employee/rate-histories/{employee}', 'Employee\EmployeeRateHistoryController@show');
 
 Route::post('employee/schedules/{employee}', 'Employee\EmployeeScheduleController@store');

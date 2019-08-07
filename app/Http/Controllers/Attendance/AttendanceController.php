@@ -10,6 +10,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Attendance\AttendanceResource;
+use App\Http\Resources\Attendance\AttendanceEmployeeDropDownResource;
 
 class AttendanceController extends Controller
 {
@@ -74,6 +75,13 @@ class AttendanceController extends Controller
             $attendance->load([
                 'employee', 'locale', 'time_logs'
             ])
+        );
+    }
+
+    public function getDropDownEmployees(Request $request)
+    {
+        return AttendanceEmployeeDropDownResource::collection(
+            Employee::with(['locale'])->get()
         );
     }
 

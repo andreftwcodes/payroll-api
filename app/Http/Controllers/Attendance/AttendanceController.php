@@ -135,7 +135,7 @@ class AttendanceController extends Controller
     protected function schedule($schedules, $request)
     {
         $schedule = collect($schedules)->first(function ($schedule) use ($request) {
-            return ((bool) $schedule['status']) && $schedule['day'] === (int) Carbon::parse($attended_at = $request->attended_at)->format('N');
+            return ((bool) $schedule['status']) && $schedule['day'] === (int) Carbon::parse($request->attended_at)->format('N');
         });
 
         if (is_null($schedule)) {
@@ -143,10 +143,10 @@ class AttendanceController extends Controller
         }
 
         return [
-            'sched_start_1'  => "{$attended_at} {$schedule['start_1']}",
-            'sched_end_1'    => "{$attended_at} {$schedule['end_1']}",
-            'sched_start_2'  => "{$attended_at} {$schedule['start_2']}",
-            'sched_end_2'    => "{$attended_at} {$schedule['end_2']}"
+            'sched_start_1'  => "{$request->attended_at} {$schedule['start_1']}",
+            'sched_end_1'    => "{$request->attended_at} {$schedule['end_1']}",
+            'sched_start_2'  => "{$request->attended_at} {$schedule['start_2']}",
+            'sched_end_2'    => "{$request->attended_at} {$schedule['end_2']}"
         ];
     }
 }

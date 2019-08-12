@@ -85,4 +85,9 @@ class Employee extends Model
         return $this->hasOne(CA_PARENT::class);
     }
 
+    public function payslips()
+    {
+        return $this->hasMany(PaySlip::class);
+    }
+
 }

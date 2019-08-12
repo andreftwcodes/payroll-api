@@ -9,6 +9,6 @@ class CA_CHILDREN extends Model
     protected $table = 'ca_childrens';
 
     protected $fillable = [
-        'date', 'credit', 'debit'
+        'payslip_id', 'date', 'credit', 'debit'
     ];
 }

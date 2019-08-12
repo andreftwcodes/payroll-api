@@ -50,4 +50,48 @@ class PaySlipController extends Controller
             Employee::with(['other', 'ca_parent'])->applyFilter($request)->get()
         );
     }
+
+    public function checkPeriod(Request $request, Employee $employee)
+    {
+        $filter = [
+            $request->from,
+            $request->to,
+        ];
+
+        $employee = $employee->payslips()
+            ->whereBetween('from', $filter)
+                ->orWhereBetween('to', $filter)
+                    ->first();
+
+        $response = [
+            'exists' => false,
+        ];
+        
+        if (!is_null($employee)) {
+            $response = [
+                'exists' => true,
+                'message' => "Overlapping a existing period between {$employee->from} and {$employee->to}"
+            ];
+        }
+
+        return response()->json($response);
+
+    }
+
+    public function closePeriod(Request $request, Employee $employee)
+    {
+        $payslip = $employee->payslips()->create(
+            $request->only('from', 'to', 'contributions')
+        );
+
+        if ($request->filled('ca_debit_amt')) {
+
+            $employee->ca_parent->ca_children()->create([
+                'payslip_id' => $payslip->id,
+                'date'       => now()->format('Y-m-d'),
+                'debit'      => $request->ca_debit_amt
+            ]);
+
+        }
+    }
 }

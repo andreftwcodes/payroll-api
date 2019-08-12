@@ -5,6 +5,7 @@ namespace App\Libraries;
 use Carbon\Carbon;
 use App\Models\Attendance;
 use App\Libraries\SSS_Loan;
+use Illuminate\Http\Request;
 use App\Libraries\Calculator;
 use App\Libraries\CashAdvance;
 use App\Libraries\Contributions;
@@ -46,11 +47,11 @@ class PaySlip
         return $this->plottedData();
     }
 
-    protected function attendanceDataSet()
+    protected function attendanceDataSet($date_period = null)
     {
         return Attendance::with('time_logs')
             ->where('employee_id', $this->employee->id)
-                ->applyDateFilterPeriod($this->request)
+                ->applyDateFilterPeriod(!is_null($date_period) ? $date_period : $this->request)
                     ->get();
     }
 
@@ -58,21 +59,9 @@ class PaySlip
     {
         foreach ($this->attendanceDataSet() as $key => $attendance):
 
-            $timeCalc = new TimeCalculator([
-                'sched_start_1' => $attendance['sched_start_1'],
-                'sched_end_1'   => $attendance['sched_end_1'],
-                'sched_start_2' => $attendance['sched_start_2'],
-                'sched_end_2'   => $attendance['sched_end_2'],
-                'time_logs'     => $attendance->time_logs()->get()
-            ]);
+            $timeCalc = $this->__TimeCalculator($attendance);
 
-            $calc = new Calculator([
-                'rate'          => $attendance['amount'],
-                'working_hours' => $timeCalc->getWorkingHours(),
-                'hours_worked'  => $timeCalc->getHours(),
-                'overtime'      => $attendance['overtime'], //OT premium flag
-                'shift'         => 'morning' //@brb
-            ]);
+            $calc = $this->__Calculator($attendance, $timeCalc);
     
             $this->grossPay      += $calc->getGrossPay();
             $this->overTimeHours += $calc->getOverTimeHours(); //@brb
@@ -172,7 +161,7 @@ class PaySlip
     protected function setDeductions()
     {
         $contributions = new Contributions(
-            $this->grossPay,
+            $this->getMonthlyGrossPay(),
             $this->request->contributions
         );
 
@@ -203,5 +192,53 @@ class PaySlip
     protected function getFormatted($value)
     {
         return number_format($value, 2);
+    }
+
+    protected function getMonthlyGrossPay()
+    {
+        $dt = Carbon::parse($this->request->from);
+
+        $attendances = $this->attendanceDataSet(
+            new Request([
+                'from' => $dt->startOfMonth()->toDateString(),
+                'to'   => $dt->endOfMonth()->toDateString(),
+            ])
+        );
+
+        $grossPay = 0;
+
+        foreach ($attendances as $key => $attendance) {
+            
+            $timeCalc = $this->__TimeCalculator($attendance);
+
+            $calc = $this->__Calculator($attendance, $timeCalc);
+
+            $grossPay += $calc->getGrossPay();
+
+        }
+
+        return $grossPay;
+    }
+
+    private function __TimeCalculator($attendance)
+    {
+        return new TimeCalculator([
+            'sched_start_1' => $attendance['sched_start_1'],
+            'sched_end_1'   => $attendance['sched_end_1'],
+            'sched_start_2' => $attendance['sched_start_2'],
+            'sched_end_2'   => $attendance['sched_end_2'],
+            'time_logs'     => $attendance->time_logs()->get()
+        ]);
+    }
+
+    private function __Calculator($attendance, $timeCalc)
+    {
+        return new Calculator([
+            'rate'          => $attendance['amount'],
+            'working_hours' => $timeCalc->getWorkingHours(),
+            'hours_worked'  => $timeCalc->getHours(),
+            'overtime'      => $attendance['overtime'], //OT premium flag
+            'shift'         => 'morning' //@brb
+        ]);
     }
 }

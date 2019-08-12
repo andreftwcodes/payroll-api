@@ -113,8 +113,8 @@ class AttendanceController extends Controller
     {
         return collect($request->time_logs)->map(function ($item, $key) use ($attendance) {
             $date = $attendance->attended_at;
-            $item['time_in']  = !is_null($item['time_in']) ? "{$date} {$item['time_in']}" : null;
-            $item['time_out'] = !is_null($item['time_out']) ? "{$date} {$item['time_out']}" : null;
+            $item['time_in']  = !is_null($item['time_in']) ? Carbon::parse($date. ' ' .$item['time_in'])->toDateTimeString() : null;
+            $item['time_out'] = !is_null($item['time_out']) ? Carbon::parse($date. ' ' .$item['time_out'])->toDateTimeString() : null;
             return collect($item)->has('id') ? Arr::add($item, 'id', $item['id']) : $item;
         });
     }

@@ -22,7 +22,11 @@ class PaySlip
 
     protected $overTimeHours = 0;
 
+    protected $underTimeHours = 0;
+
     protected $overTimePay = 0;
+
+    protected $underTimePay = 0;
 
     protected $deducAmount = 0;
 
@@ -74,6 +78,9 @@ class PaySlip
             $this->overTimeHours += $calc->getOverTimeHours(); //@brb
             $this->overTimePay   += $calc->overTimePay();
 
+            $this->underTimeHours += $calc->getUnderTimeHours(); //@brb
+            $this->underTimePay   += $calc->underTimePay();
+
         endforeach;
 
         $this->setDeductions();
@@ -89,6 +96,7 @@ class PaySlip
                 'date_issued' => $this->dateIssued(),
                 'basic_rate' => $this->getFormatted($this->basicRate()),
                 'overtime' => $this->overTime(),
+                'undertime' => $this->underTime(),
                 'gross_pay' => $this->getFormatted($this->grossPay),
                 'less' => $this->dataList,
                 'total_deductions' => $this->getFormatted($this->totalDeductionAmount()),
@@ -127,6 +135,14 @@ class PaySlip
         return [
             'hours' => number_format($this->overTimeHours, 2, '.', '.'),
             'amount' => $this->getFormatted($this->overTimePay)
+        ];
+    }
+
+    protected function underTime()
+    {
+        return [
+            'hours' => number_format($this->underTimeHours, 2, '.', '.'),
+            'amount' => $this->getFormatted($this->underTimePay)
         ];
     }
 

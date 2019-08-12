@@ -88,6 +88,12 @@
                 <td></td>
             </tr>
             <tr>
+                <td>Undertime | Hours</td>
+                <td>- {{ $payslip['undertime']['hours'] }}</td>
+                <td>- {{ $payslip['undertime']['amount'] }}</td>
+                <td></td>
+            </tr>
+            <tr>
                 <td><strong>GROSS SALARY</strong></td>
                 <td></td>
                 <td></td>

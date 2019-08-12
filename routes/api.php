@@ -35,6 +35,7 @@ Route::group(['prefix' => 'cash-advance'], function () {
     Route::get('index', 'CashAdvance\CashAdvanceController@index');
     Route::get('show/{employee}', 'CashAdvance\CashAdvanceController@show');
     Route::post('store', 'CashAdvance\CashAdvanceController@store');
+    Route::post('attach_ledger/{employee}', 'CashAdvance\CashAdvanceController@attachLedger');
     Route::patch('amount_deductible/{ca_parent}', 'CashAdvance\CashAdvanceController@amount_deductible');
 });
 

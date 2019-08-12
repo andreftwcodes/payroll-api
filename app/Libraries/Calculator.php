@@ -30,6 +30,11 @@ class Calculator
         return $this->overTimeHours();
     }
 
+    public function getUnderTimeHours()
+    {
+        return $this->underTimeHours();
+    }
+
     protected function computeGrossPay()
     {
         return $this->minutesWorked() * $this->ratePerMinute();
@@ -72,6 +77,11 @@ class Calculator
         return $this->data['hours_worked'] > $this->workingHours();
     }
 
+    protected function isUnderTime()
+    {
+        return $this->data['hours_worked'] < $this->workingHours();
+    }
+
     public function overTimePay()
     {
         $minutesWorked = $this->toMinutes(
@@ -87,12 +97,34 @@ class Calculator
         return $amount;
     }
 
+    public function underTimePay()
+    {
+        $minutesUnWorked = $this->toMinutes(
+            $this->underTimeHours()
+        );
+
+        $amount = $minutesUnWorked * $this->ratePerMinute();
+
+        return $amount;
+    }
+
     protected function overTimeHours()
     {
         $hours = 0;
 
         if ($this->isOverTime()) {
             $hours = $this->data['hours_worked'] - $this->workingHours();
+        }
+
+        return $hours;
+    }
+
+    protected function underTimeHours()
+    {
+        $hours = 0;
+
+        if ($this->isUnderTime()) {
+            $hours = $this->workingHours() - $this->data['hours_worked'];
         }
 
         return $hours;

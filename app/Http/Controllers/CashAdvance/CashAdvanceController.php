@@ -5,13 +5,15 @@ namespace App\Http\Controllers\CashAdvance;
 use App\Models\Employee;
 use App\Models\CA_PARENT;
 use Illuminate\Http\Request;
+use App\Traits\CashAdvanceTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CashAdvance\EmployeeResource;
 use App\Http\Resources\CashAdvance\CashAdvanceShowResource;
-use App\Http\Resources\CashAdvance\CashAdvanceChildrenResource;
 
 class CashAdvanceController extends Controller
 {
+    use CashAdvanceTrait;
+    
     public function index()
     {
         return EmployeeResource::collection(
@@ -21,31 +23,40 @@ class CashAdvanceController extends Controller
 
     public function show(Employee $employee)
     {
-        $parent = $employee->ca_parent();
-
-        if ($parent->doesntExist()) {
-            $parent->create();
-        }
+        $load = [
+            'employee',
+            'ca_children' => function ($query) {
+                $query->orderBy('date', 'asc');
+            }
+        ];
 
         return new CashAdvanceShowResource(
-            $employee->ca_parent->load(['employee', 'ca_children'])
+            $employee->ca_parent->load($load)
         );
     }
 
     public function store(Request $request)
     {
-        $parent = CA_PARENT::find($request->ca_parents_id);
+        $parent = CA_PARENT::with('ca_children')->find($request->ca_parents_id);
 
-        $children = $parent->ca_children()->create(
+        $parent->ca_children()->create(
             $request->only('date', 'credit', 'debit')
         );
 
-        return (new CashAdvanceChildrenResource($children))
-            ->additional([
-                'meta' => [
-                    'balance' => $this->getBalance($parent)
-                ]
-            ]);
+        return response()->json([
+            'data' => $this->childrenMapper(
+                $parent->ca_children()->orderBy('date', 'asc')->get()
+            )
+        ]);
+    }
+
+    public function attachLedger(Employee $employee)
+    {
+        $parent = $employee->ca_parent();
+
+        if ($parent->doesntExist()) {
+            $parent->create();
+        }
     }
 
     public function amount_deductible(Request $request, CA_PARENT $ca_parent)
@@ -53,11 +64,5 @@ class CashAdvanceController extends Controller
         $ca_parent->update(
             $request->only('amount_deductible')
         );
-    }
-
-    private function getBalance($parent)
-    {
-        $childrens = collect($parent->ca_children()->get());
-        return number_format($childrens->sum('credit') - $childrens->sum('debit'), 2);
     }
 }

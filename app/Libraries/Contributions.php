@@ -22,10 +22,6 @@ class Contributions
 
     protected $philhealth = null;
 
-    protected $widthHoldingTax = null;
-
-    protected $others = null;
-
     public function __construct($basicRate = 0, $deduct = false)
     {
         $this->basicRate = $basicRate;
@@ -98,20 +94,10 @@ class Contributions
         $amount = 0;
 
         if ($this->basicRate > 0) {
-            $amount = $this->getSSSEE() + $this->getPhilHealthEE() + $this->getPagIbigEE() + $this->getWithHoldingTax() + $this->getOthers();
+            $amount = $this->getSSSEE() + $this->getPhilHealthEE() + $this->getPagIbigEE();
         }
         
         return $amount;
-    }
-
-    protected function getWithHoldingTax()
-    {
-        return $this->widthHoldingTax;
-    }
-
-    protected function getOthers()
-    {
-        return $this->others;
     }
 
     public function getDataList()
@@ -128,15 +114,7 @@ class Contributions
             array(
                 'name'   => 'PagIbig',
                 'amount' => number_format($this->getPagIbigEE(), 2)
-            ),
-            array(
-                'name'   => 'Withholding Tax',
-                'amount' => number_format($this->getWithHoldingTax(), 2)
-            ),
-            array(
-                'name'   => 'Others',
-                'amount' => number_format($this->getOthers(), 2)
-            ),
+            )
         );
     }
 
@@ -167,10 +145,6 @@ class Contributions
             }
 
         }
-
-        $this->widthHoldingTax = 0; //@brb
-
-        $this->others = 0; //@brb
     }
 
     protected function canDeduct()

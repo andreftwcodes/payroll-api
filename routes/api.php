@@ -1,7 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\DB;
-
 Route::group(['prefix' => 'auth'], function () {
     Route::post('register', 'Auth\RegisterController@action');
     Route::post('login', 'Auth\LoginController@action');
@@ -42,7 +40,7 @@ Route::group(['prefix' => 'cash-advance'], function () {
 });
 
 Route::group(['prefix' => 'sss-loan'], function () {
-    //
+    Route::get('/', 'SSSLoan\SSSLoanController@index');
 });
 
 Route::group(['prefix' => 'reports-validator'], function () {

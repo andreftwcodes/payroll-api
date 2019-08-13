@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePaySlipsTable extends Migration
+class CreatePayslipPeriodsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,13 @@ class CreatePaySlipsTable extends Migration
      */
     public function up()
     {
-        Schema::create('payslips', function (Blueprint $table) {
+        Schema::create('payslip_periods', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('employee_id')->index();
-            $table->boolean('contributions')->default(0);
+            $table->unsignedBigInteger('payslip_id')->index();
+            $table->date('date');
             $table->timestamps();
 
-            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
+            $table->foreign('payslip_id')->references('id')->on('payslips')->onDelete('cascade');
         });
     }
 
@@ -30,6 +30,6 @@ class CreatePaySlipsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('payslips');
+        Schema::dropIfExists('payslip_periods');
     }
 }

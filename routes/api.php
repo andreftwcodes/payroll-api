@@ -30,31 +30,7 @@ Route::resource('hdr-contributions', 'Contributions\HeaderContributionsControlle
 Route::resource('contribution-ranges', 'Contributions\ContributionRangesController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
-
-    function dateRanges($start, $end) {
-
-        $dates = array();
-        $current = strtotime($start);
-        $end = strtotime($end);
-    
-        while($current <= $end) {
-    
-            $dates[] = date('Y-m-d', $current);
-            $current = strtotime('+1 day', $current);
-        }
-    
-        return $dates;
-    }
-
-   dd(dateRanges('2019-07-03', '2019-08-08'));
-
-    $payslips = DB::table('payslips')
-        ->where('employee_id', '=', 1)
-        ->whereBetween('from', ['2019-08-03', '2019-08-18'])
-        ->orWhereBetween('to', ['2019-08-03', '2019-08-18'])
-        ->first();
-
-    dd($payslips);
+    //
 });
 
 Route::group(['prefix' => 'cash-advance'], function () {
@@ -63,6 +39,10 @@ Route::group(['prefix' => 'cash-advance'], function () {
     Route::post('store', 'CashAdvance\CashAdvanceController@store');
     Route::post('attach_ledger/{employee}', 'CashAdvance\CashAdvanceController@attachLedger');
     Route::patch('amount_deductible/{ca_parent}', 'CashAdvance\CashAdvanceController@amount_deductible');
+});
+
+Route::group(['prefix' => 'sss-loan'], function () {
+    //
 });
 
 Route::group(['prefix' => 'reports-validator'], function () {

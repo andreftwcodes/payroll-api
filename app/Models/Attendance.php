@@ -14,18 +14,18 @@ class Attendance extends Model
 
     public function scopeApplyDateFilter(Builder $builder, $request)
     {
-        $created_at = Carbon::today()->toDateString();
+        $attended_at = Carbon::today()->toDateString();
 
-        if ($request->filled('created_at')) {
-            $created_at = $request->created_at;
+        if ($request->filled('attended_at')) {
+            $attended_at = $request->attended_at;
         }
 
-        return $builder->whereDate('created_at', $created_at);
+        return $builder->whereDate('attended_at', $attended_at);
     }
 
     public function scopeApplyDateFilterPeriod(Builder $builder, $request)
     {
-        return $builder->whereBetween('created_at', [
+        return $builder->whereBetween('attended_at', [
             Carbon::parse($request->from)->startOfDay()->toDateTimeString(),
             Carbon::parse($request->to)->endOfDay()->toDateTimeString()
         ]);

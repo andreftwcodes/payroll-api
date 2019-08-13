@@ -53,35 +53,38 @@ class PaySlipController extends Controller
 
     public function checkPeriod(Request $request, Employee $employee)
     {
-        $filter = [
-            $request->from,
-            $request->to,
-        ];
-
-        $employee = $employee->payslips()
-            ->whereBetween('from', $filter)
-                ->orWhereBetween('to', $filter)
-                    ->first();
+        $payslip = $employee->payslips()->get()->first(function ($payslip, $key) use ($request) {
+            return $payslip->payslip_periods()
+                ->whereBetween('date', $request->only('from', 'to'))
+                    ->exists();
+        });
 
         $response = [
-            'exists' => false,
+            'exists' => false
         ];
         
-        if (!is_null($employee)) {
+        if (!is_null($payslip)) {
+
+            $period = collect($payslip->payslip_periods()->get());
+
             $response = [
                 'exists' => true,
-                'message' => "Overlapping a existing period between {$employee->from} and {$employee->to}"
+                'message' => "Overlapping a existing period between {$period->first()->date} and {$period->last()->date}."
             ];
+
         }
 
         return response()->json($response);
-
     }
 
     public function closePeriod(Request $request, Employee $employee)
     {
         $payslip = $employee->payslips()->create(
-            $request->only('from', 'to', 'contributions')
+            $request->only('contributions')
+        );
+
+        $payslip->payslip_periods()->createMany(
+            $this->dateRanges($request->from, $request->to)
         );
 
         if ($request->filled('ca_debit_amt')) {
@@ -93,5 +96,19 @@ class PaySlipController extends Controller
             ]);
 
         }
+    }
+
+    private function dateRanges($start, $end) {
+
+        $dates   = array();
+        $current = strtotime($start);
+        $end     = strtotime($end);
+    
+        while($current <= $end) {
+            $dates[] = ['date' => date('Y-m-d', $current)];
+            $current = strtotime('+1 day', $current);
+        }
+    
+        return $dates;
     }
 }

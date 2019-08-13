@@ -15,7 +15,7 @@ class UpdateAttendanceAttributesController extends Controller
     {
         if ($this->canUpdate($employee)) {
             return $employee->attendance()
-                ->whereDate('created_at', today())
+                ->whereDate('attended_at', today())
                     ->update(
                         $this->getDataSet($request)
                     );
@@ -24,7 +24,7 @@ class UpdateAttendanceAttributesController extends Controller
 
     protected function canUpdate($employee)
     {
-        return $employee->attendance()->whereDate('created_at', today())->count();
+        return $employee->attendance()->whereDate('attended_at', today())->count();
     }
 
     protected function getDataSet($request)

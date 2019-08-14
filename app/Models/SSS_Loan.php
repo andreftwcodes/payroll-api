@@ -12,8 +12,13 @@ class SSS_Loan extends Model
         'loan_no', 'amount', 'loaned_at'
     ];
 
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
+
     public function sss_loan_payments()
     {
-        return $this->hasMany(SSSLoanPayment::class, 'loan_no', 'loan_no');
+        return $this->hasMany(SSSLoanPayment::class, 'sss_loan_id');
     }
 }

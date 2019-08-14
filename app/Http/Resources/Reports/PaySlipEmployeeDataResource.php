@@ -3,6 +3,7 @@
 namespace App\Http\Resources\Reports;
 
 use App\Traits\EmployeeTrait;
+use App\Http\Resources\Reports\SSSLoanResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Reports\CashAdvanceResource;
 
@@ -22,7 +23,10 @@ class PaySlipEmployeeDataResource extends JsonResource
             'fullname' => $this->getFullname(),
             'flags' => [
                 'contributions' => $this->contributions(),
-                'cash_advance' => new CashAdvanceResource($this->whenLoaded('ca_parent'))
+                'cash_advance' => new CashAdvanceResource($this->whenLoaded('ca_parent')),
+                'sss_loan' => SSSLoanResource::collection(
+                    $this->whenLoaded('sss_loans')
+                )
             ]
         ];
     }

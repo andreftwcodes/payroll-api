@@ -46,8 +46,15 @@ class PaySlipController extends Controller
 
     public function getEmployees(Request $request)
     {
+        $eagerLoads = [
+            'other',
+            'ca_parent',
+            'ca_parent.ca_children',
+            'sss_loans'
+        ];
+
         return PaySlipEmployeeDataResource::collection(
-            Employee::with(['other', 'ca_parent'])->applyFilter($request)->get()
+            Employee::with($eagerLoads)->applyFilter($request)->get()
         );
     }
 

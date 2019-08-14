@@ -15,12 +15,12 @@ class CreateSssLoanPaymentsTbl extends Migration
     {
         Schema::create('sss_loan_payments', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->unsignedBigInteger('loan_no')->index();
-            $table->unsignedBigInteger('payslip_id')->index();
+            $table->unsignedBigInteger('sss_loan_id')->index();
+            $table->unsignedBigInteger('payslip_id')->index()->unique()->nullable();
             $table->date('paid_at');
             $table->timestamps();
 
-            $table->foreign('loan_no')->references('loan_no')->on('sss_loans')->onDelete('cascade');
+            $table->foreign('sss_loan_id')->references('id')->on('sss_loans')->onDelete('cascade');
             $table->foreign('payslip_id')->references('id')->on('payslips')->onDelete('cascade');
         });
     }

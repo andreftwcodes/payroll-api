@@ -26,6 +26,7 @@ Route::resource('attendances', 'Attendance\AttendanceController');
 Route::resource('schedules', 'Schedule\ScheduleController');
 Route::resource('hdr-contributions', 'Contributions\HeaderContributionsController');
 Route::resource('contribution-ranges', 'Contributions\ContributionRangesController');
+Route::resource('payroll-periods', 'Reports\PayrollPeriodController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
     //

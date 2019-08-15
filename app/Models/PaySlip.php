@@ -21,4 +21,14 @@ class PaySlip extends Model
     {
         return $this->hasOne(CA_CHILDREN::class, 'payslip_id');
     }
+
+    public function sss_loan_payment()
+    {
+        return $this->hasOne(SSSLoanPayment::class, 'payslip_id');
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
 }

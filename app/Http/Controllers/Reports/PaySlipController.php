@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Reports;
 
 use App\Models\Employee;
-use Barryvdh\DomPDF\Facade as PDF;
+use App\Models\SSS_Loan;
 use App\Libraries\PaySlip;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Reports\PaySlipEmployeeDataResource;
 
@@ -94,15 +95,43 @@ class PaySlipController extends Controller
             $this->dateRanges($request->from, $request->to)
         );
 
-        if ($request->filled('ca_debit_amt')) {
+        if ($request->filled('ca_amount_deductible')) {
 
-            $employee->ca_parent->ca_children()->create([
-                'payslip_id' => $payslip->id,
-                'date'       => now()->format('Y-m-d'),
-                'debit'      => $request->ca_debit_amt
-            ]);
+            if (($debit = $request->ca_amount_deductible) !== 0) {
+
+                $employee->ca_parent->ca_children()->create([
+                    'payslip_id' => $payslip->id,
+                    'date'       => now(),
+                    'debit'      => $debit
+                ]);
+
+            }
 
         }
+
+        if ($request->filled('sss_loan_id')) {
+
+            if ($request->contributions) {
+
+                SSS_Loan::find($request->sss_loan_id)->sss_loan_payments()->create([
+                    'payslip_id' => $payslip->id,
+                    'paid_at'    => now()
+                ]);
+
+            }
+
+        }
+
+        $eagerLoads = [
+            'other',
+            'ca_parent',
+            'ca_parent.ca_children',
+            'sss_loans'
+        ];
+
+        return new PaySlipEmployeeDataResource(
+            $employee->load($eagerLoads)
+        );
     }
 
     private function dateRanges($start, $end) {

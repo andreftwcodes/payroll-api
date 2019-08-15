@@ -8,7 +8,7 @@ trait SSSLoanTrait
 {
     protected function balance()
     {
-        $balance = 0;
+        $balance = $this->amount;
 
         if ($payments = $this->payments()) {
             if ($count = $payments->count()) {

@@ -154,6 +154,7 @@ class PaySlip
                 'to'            => $this->request->to,
                 'contributions' => $this->request->contributions,
                 'ca_amount_deductible' => $this->request->ca_amount_deductible,
+                'sss_loan_id' => $this->request->sss_loan_id
             ])->toJson()
         );
     }
@@ -169,7 +170,10 @@ class PaySlip
             $this->request->ca_amount_deductible
         );
 
-        $sss_loan = new SSS_Loan(0);
+        $sss_loan = new SSS_Loan(
+            $this->request->contributions,
+            $this->request->sss_loan_id
+        );
 
         $dataList = collect([
             $contributions->getDataList(),

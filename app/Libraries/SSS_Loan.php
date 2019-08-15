@@ -3,14 +3,21 @@
 namespace App\Libraries;
 
 use App\Libraries\SSS_Loan;
+use App\Models\SSS_Loan as SSS_Loan_Model;
 
 class SSS_Loan
 {
-    protected $amount;
+    protected $contributions;
 
-    public function __construct($amount = 0)
+    protected $id;
+
+    protected $sss_loan = null;
+
+    public function __construct($contributions = false, $id = null)
     {
-        $this->amount = $amount;
+        $this->contributions = $contributions;
+        $this->id = $id;
+        $this->sss_loan = $this->_initSSSLoan();
     }
 
     public function getDataList()
@@ -25,6 +32,22 @@ class SSS_Loan
 
     public function getAmountDeductible()
     {
-        return $this->amount;
+        if (is_null($this->sss_loan)) {
+           return 0;
+        }
+
+        return $this->sss_loan->amount / 24;
+    }
+
+    private function _initSSSLoan()
+    {
+        if ($this->isWithContributions()) {
+            return SSS_Loan_Model::find($this->id);
+        }
+    }
+
+    private function isWithContributions()
+    {
+        return $this->contributions === 'true';
     }
 }

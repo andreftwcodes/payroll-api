@@ -118,6 +118,11 @@ class Contributions
         );
     }
 
+    public function canDeduct()
+    {
+        return $this->deduct === 'true' || $this->deduct == 1;
+    }
+
     protected function setDeductions()
     {
         if ($this->canDeduct()) {
@@ -145,11 +150,6 @@ class Contributions
             }
 
         }
-    }
-
-    protected function canDeduct()
-    {
-        return $this->deduct === 'true';
     }
 
 }

@@ -47,6 +47,11 @@ class PaySlip
         return $this->plottedData();
     }
 
+    public function getPrintUrl()
+    {
+        return url('api/payslip/pdf', [$this->printParamsSecretKey()]);
+    }
+
     protected function attendanceDataSet($date_period = null)
     {
         return Attendance::with('time_logs')
@@ -80,20 +85,20 @@ class PaySlip
     {
         return [
             'data' => [
-                'fullname' => $this->fullname(),
-                'period' => $this->datePeriod(),
-                'date_issued' => $this->dateIssued(),
-                'basic_rate' => $this->getFormatted($this->basicRate()),
-                'overtime' => $this->overTime(),
-                'undertime' => $this->underTime(),
-                'gross_pay' => $this->getFormatted($this->grossPay),
-                'less' => $this->dataList,
+                'fullname'         => $this->fullname(),
+                'period'           => $this->datePeriod(),
+                'date_issued'      => $this->dateIssued(),
+                'basic_rate'       => $this->getFormatted($this->basicRate()),
+                'overtime'         => $this->overTime(),
+                'undertime'        => $this->underTime(),
+                'gross_pay'        => $this->getFormatted($this->grossPay),
+                'less'             => $this->dataList,
                 'total_deductions' => $this->getFormatted($this->totalDeductionAmount()),
-                'net_pay' => self::CURRENCY . $this->getFormatted($this->netPay())
+                'net_pay'          => self::CURRENCY . $this->getFormatted($this->netPay())
             ],
             'extra' => [
-                'days' => $this->daysCount(),
-                'print_url' => url('api/payslip/pdf', [$this->printParamsSecretKey()])
+                'days'      => $this->daysCount(),
+                'print_url' => $this->getPrintUrl()
             ]
         ];
     }
@@ -171,8 +176,7 @@ class PaySlip
         );
 
         $sss_loan = new SSS_Loan(
-            $this->request->contributions,
-            $this->request->sss_loan_id
+            $contributions->canDeduct() ? $this->request->sss_loan_id : null
         );
 
         $dataList = collect([

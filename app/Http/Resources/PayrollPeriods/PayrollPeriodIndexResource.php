@@ -3,10 +3,10 @@
 namespace App\Http\Resources\PayrollPeriods;
 
 use Carbon\Carbon;
+use App\Libraries\PaySlip;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\PayrollPeriods\EmployeeResource;
-use App\Http\Resources\PayrollPeriods\CashAdvanceResource;
-use App\Http\Resources\PayrollPeriods\SSSLoanPaymentResource;
 
 class PayrollPeriodIndexResource extends JsonResource
 {
@@ -20,14 +20,10 @@ class PayrollPeriodIndexResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'from' => $this->fromDate(),
-            'to' => $this->toDate(),
             'employee' => new EmployeeResource($this->whenLoaded('employee')),
-            'contributions' => $this->contributions,
-            'cash_advance' => new CashAdvanceResource($this->whenLoaded('ca_children')),
-            'sss_loan_payment' => new SSSLoanPaymentResource($this->whenLoaded('sss_loan_payment')),
             'period_dsp' => $this->periodDsp(),
-            'created_at' => $this->createdAt()
+            'created_at' => $this->createdAt(),
+            'print_url' => $this->printUrl()
         ];
     }
 
@@ -56,5 +52,19 @@ class PayrollPeriodIndexResource extends JsonResource
     private function createdAt()
     {
         return Carbon::parse($this->created_at)->toDayDateTimeString();
+    }
+
+    private function printUrl()
+    {
+        return (new PaySlip(
+            new Request([
+                'from' => $this->fromDate(),
+                'to'   => $this->toDate(),
+                'contributions' => $this->contributions,
+                'ca_amount_deductible' => !is_null($this->ca_children) ? $this->ca_children->debit : 0,
+                'sss_loan_id' => !is_null($this->sss_loan_payment) ? $this->sss_loan_payment->sss_loan_id : null
+            ]),
+            $this->whenLoaded('employee')
+        ))->getPrintUrl();
     }
 }

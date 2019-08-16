@@ -77,11 +77,11 @@ class SideBarMenuController extends Controller
                 'to' => '',
                 'list_group' => true,
                 'childrens' => array(
-                    array(
-                        'icon' => 'people_outline',
-                        'title' => 'Daily Gross Pay',
-                        'to' => '/reports/daily-gross-pay',
-                    ),
+                    // array(
+                    //     'icon' => 'people_outline',
+                    //     'title' => 'Daily Gross Pay',
+                    //     'to' => '/reports/daily-gross-pay',
+                    // ),
                     array(
                         'icon' => 'people_outline',
                         'title' => 'Payroll Periods',
@@ -105,16 +105,16 @@ class SideBarMenuController extends Controller
                         'title' => 'Contributions',
                         'to' => '/settings/contributions',
                     ),
-                    array(
-                        'icon' => 'people_outline',
-                        'title' => 'Schedules',
-                        'to' => '/settings/schedules',
-                    ),
-                    array(
-                        'icon' => 'people_outline',
-                        'title' => 'Locales',
-                        'to' => '/settings/daily-gross-pay',
-                    ),
+                    // array(
+                    //     'icon' => 'people_outline',
+                    //     'title' => 'Schedules',
+                    //     'to' => '/settings/schedules',
+                    // ),
+                    // array(
+                    //     'icon' => 'people_outline',
+                    //     'title' => 'Locales',
+                    //     'to' => '/settings/daily-gross-pay',
+                    // )
                 )
             ),
             array(
@@ -132,12 +132,7 @@ class SideBarMenuController extends Controller
                         'icon' => 'settings',
                         'title' => 'Roles',
                         'to' => '/roles',
-                    ),
-                    array(
-                        'icon' => 'settings',
-                        'title' => 'Permissions',
-                        'to' => '/permissions',
-                    ),
+                    )
                 )
             ),
         );

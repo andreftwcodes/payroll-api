@@ -7,15 +7,12 @@ use App\Models\SSS_Loan as SSS_Loan_Model;
 
 class SSS_Loan
 {
-    protected $contributions;
-
     protected $id;
 
     protected $sss_loan = null;
 
-    public function __construct($contributions = false, $id = null)
+    public function __construct($id = null)
     {
-        $this->contributions = $contributions;
         $this->id = $id;
         $this->sss_loan = $this->_initSSSLoan();
     }
@@ -41,13 +38,9 @@ class SSS_Loan
 
     private function _initSSSLoan()
     {
-        if ($this->isWithContributions()) {
-            return SSS_Loan_Model::find($this->id);
+        if (!is_null($id = $this->id)) {
+            return SSS_Loan_Model::find($id);
         }
     }
 
-    private function isWithContributions()
-    {
-        return $this->contributions === 'true';
-    }
 }

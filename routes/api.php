@@ -29,13 +29,15 @@ Route::resource('contribution-ranges', 'Contributions\ContributionRangesControll
 Route::resource('payroll-periods', 'Reports\PayrollPeriodController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
-    //
+    dd(now());
 });
 
 Route::group(['prefix' => 'cash-advance'], function () {
     Route::get('index', 'CashAdvance\CashAdvanceController@index');
     Route::get('show/{employee}', 'CashAdvance\CashAdvanceController@show');
     Route::post('store', 'CashAdvance\CashAdvanceController@store');
+    Route::patch('update/{child}', 'CashAdvance\CashAdvanceController@update');
+    Route::delete('delete/{child}', 'CashAdvance\CashAdvanceController@destroy');
     Route::post('attach_ledger/{employee}', 'CashAdvance\CashAdvanceController@attachLedger');
     Route::patch('amount_deductible/{ca_parent}', 'CashAdvance\CashAdvanceController@amount_deductible');
 });

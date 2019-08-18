@@ -28,8 +28,14 @@ class AttendanceResource extends JsonResource
             'time_out'  => $this->getFormattedTime($this->timeOut()),
             'time_logs' => AttendanceTimeLogsResource::collection($this->whenLoaded('time_logs')),
             'remark'    => $this->getRemark(),
-            'schedule_display' => $this->scheduleDisplay()
+            'schedule_display' => $this->scheduleDisplay(),
+            'status'    => $this->status()
         ];
+    }
+
+    protected function status()
+    {
+        return is_null($this->attendance_status);
     }
 
     protected function scheduleDisplay()

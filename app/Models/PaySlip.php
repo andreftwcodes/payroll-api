@@ -27,6 +27,11 @@ class PaySlip extends Model
         return $this->hasOne(SSSLoanPayment::class, 'payslip_id');
     }
 
+    public function attendance_statuses()
+    {
+        return $this->hasMany(AttendanceStatus::class, 'payslip_id');
+    }
+
     public function employee()
     {
         return $this->belongsTo(Employee::class);

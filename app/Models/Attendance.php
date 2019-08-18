@@ -45,4 +45,9 @@ class Attendance extends Model
     {
         return $this->hasMany(TimeLogs::class);
     }
+
+    public function attendance_status()
+    {
+        return $this->hasOne(AttendanceStatus::class);
+    }
 }

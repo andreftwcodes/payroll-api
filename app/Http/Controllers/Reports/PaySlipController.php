@@ -122,6 +122,10 @@ class PaySlipController extends Controller
 
         }
 
+        $payslip->attendance_statuses()->createMany(
+            $this->getAttendanceIds($request, $employee)
+        );
+
         $eagerLoads = [
             'other',
             'ca_parent',
@@ -146,5 +150,15 @@ class PaySlipController extends Controller
         }
     
         return $dates;
+    }
+
+    private function getAttendanceIds($request, $employee)
+    {
+        $items = $employee->attendances()
+            ->select('id as attendance_id')
+                ->whereBetween('attended_at', $request->only('from', 'to'))
+                    ->get();
+
+        return $items->toArray();
     }
 }

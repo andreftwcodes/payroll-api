@@ -17,7 +17,7 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         return AttendanceResource::collection(
-            Attendance::with(['employee', 'locale', 'time_logs'])
+            Attendance::with(['employee', 'locale', 'time_logs', 'attendance_status'])
                 ->applyDateFilter($request)
                     ->get()
         );
@@ -105,8 +105,37 @@ class AttendanceController extends Controller
     public function getDropDownEmployees(Request $request)
     {
         return AttendanceEmployeeDropDownResource::collection(
-            Employee::with(['locale'])->active()->get()
+            Employee::with(['locale'])
+                ->active()
+                ->whereNotIn('id', $this->getAttendedEmployeesByIds($request))
+                ->get()
         );
+    }
+
+    public function verifyEmployee(Request $request, Employee $employee)
+    {
+        if ($this->isClosed($employee, $request)) {
+            return response()->json([
+                'errors' => [
+                    'employee' => ["This attendance is closed for {$employee->firstname} {$employee->middlename} {$employee->lastname}."]
+                ]
+            ], 422);
+        }
+    }
+
+    private function getAttendedEmployeesByIds($request)
+    {
+        return Attendance::select('employee_id')
+            ->whereDate('attended_at', $request->attended_at)
+            ->get()
+            ->toArray();
+    }
+
+    private function isClosed($employee, $request)
+    {
+        return $employee->payslips()->get()->contains(function ($item, $key) use ($request) {
+            return $item->payslip_periods->contains('date', $request->attended_at);
+        });
     }
 
     protected function timeLogs($request, $attendance)

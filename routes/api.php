@@ -8,6 +8,7 @@ Route::group(['prefix' => 'auth'], function () {
 });
 
 Route::get('attendances/get-employees', 'Attendance\AttendanceController@getDropDownEmployees');
+Route::get('attendances/verify-employee/{employee}', 'Attendance\AttendanceController@verifyEmployee');
 Route::get('employee/rate-histories/{employee}', 'Employee\EmployeeRateHistoryController@show');
 
 Route::post('employee/schedules/{employee}', 'Employee\EmployeeScheduleController@store');

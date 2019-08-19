@@ -51,7 +51,9 @@ class PaySlipController extends Controller
             'other',
             'ca_parent',
             'ca_parent.ca_children',
-            'sss_loans'
+            'sss_loans' => function ($query) {
+                $query->has('sss_loan_payments', '<', 24);
+            }
         ];
 
         return PaySlipEmployeeDataResource::collection(

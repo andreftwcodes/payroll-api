@@ -10,6 +10,7 @@ use App\Http\Requests\SSSLoan\SSSLoanStoreRequest;
 use App\Http\Requests\SSSLoan\SSSLoanUpdateRequest;
 use App\Http\Resources\SSSLoan\SSSLoanShowResource;
 use App\Http\Resources\SSSLoan\SSSLoanIndexResource;
+use App\Http\Resources\SSSLoan\SSSLoanEmployeeResource;
 
 class SSSLoanController extends Controller
 {
@@ -49,5 +50,12 @@ class SSSLoanController extends Controller
     public function destroy(SSS_Loan $sss_loan)
     {
         $sss_loan->delete();
+    }
+
+    public function getEmployees()
+    {
+        return SSSLoanEmployeeResource::collection(
+            Employee::active()->get()
+        );
     }
 }

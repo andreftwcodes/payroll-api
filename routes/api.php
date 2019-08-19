@@ -49,6 +49,7 @@ Route::group(['prefix' => 'sss-loan'], function () {
     Route::post('store/{employee}', 'SSSLoan\SSSLoanController@store');
     Route::patch('update/{sss_loan}', 'SSSLoan\SSSLoanController@update');
     Route::delete('delete/{sss_loan}', 'SSSLoan\SSSLoanController@destroy');
+    Route::get('get-employees', 'SSSLoan\SSSLoanController@getEmployees');
 
     Route::post('payments/{sss_loan}', 'SSSLoan\SSSLoanPaymentController@store');
     Route::patch('payments/{sss_loan_payment}', 'SSSLoan\SSSLoanPaymentController@update');

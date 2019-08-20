@@ -17,8 +17,10 @@ class CreateSSSLoansTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('employee_id')->index();
             $table->unsignedBigInteger('loan_no')->index()->unique();
-            $table->unsignedDecimal('amount', 8, 2);
-            $table->date('loaned_at');
+            $table->unsignedDecimal('amount_loaned', 8, 2);
+            $table->unsignedDecimal('amortization_amount', 8, 2);
+            $table->unsignedInteger('payment_terms');
+            $table->date('date_loaned');
             $table->timestamps();
 
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');

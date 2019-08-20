@@ -9,7 +9,7 @@ class SSS_Loan extends Model
     protected $table = 'sss_loans';
 
     protected $fillable = [
-        'loan_no', 'amount', 'loaned_at'
+        'loan_no', 'amount_loaned', 'amortization_amount', 'payment_terms', 'date_loaned'
     ];
 
     public function employee()

@@ -8,11 +8,11 @@ trait SSSLoanTrait
 {
     protected function balance()
     {
-        $balance = $this->amount;
+        $balance = $this->amount_loaned;
 
         if ($payments = $this->payments()) {
             if ($count = $payments->count()) {
-                $balance = $this->amount - ($this->deductibleAmount() * $count);
+                $balance = $this->amount_loaned - ($this->deductibleAmount() * $count);
             }
         }
 
@@ -21,17 +21,17 @@ trait SSSLoanTrait
 
     protected function progress()
     {
-        return ceil(($this->payments()->count() / 24) * 100);
+        return ceil(($this->payments()->count() / $this->payment_terms) * 100);
     }
 
     protected function payments()
     {
-        return $this->whenLoaded('sss_loan_payments');
+        return $this->sss_loan_payments;
     }
 
     protected function deductibleAmount()
     {
-        return $this->amount / 24;
+        return $this->amortization_amount;
     }
 
     protected function formattedAmount($value)

@@ -33,7 +33,7 @@ class SSS_Loan
            return 0;
         }
 
-        return $this->sss_loan->amount / 24;
+        return $this->sss_loan->amortization_amount;
     }
 
     private function _initSSSLoan()

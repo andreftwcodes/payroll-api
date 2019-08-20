@@ -23,13 +23,17 @@ class SSSLoanController extends Controller
 
     public function store(SSSLoanStoreRequest $request, Employee $employee)
     {
-        $sss_loan = $employee->sss_loans()->create($request->only('loan_no', 'amount', 'loaned_at'));
+        $sss_loan = $employee->sss_loans()->create(
+            $request->only('loan_no', 'amount_loaned', 'amortization_amount', 'payment_terms', 'date_loaned')
+        );
         dd($sss_loan);
     }
 
     public function update(SSSLoanUpdateRequest $request, SSS_Loan $sss_loan)
     {
-        $sss_loan->update($request->only('loan_no', 'amount', 'loaned_at'));
+        $sss_loan->update(
+            $request->only('loan_no', 'amount_loaned', 'amortization_amount', 'payment_terms', 'date_loaned')
+        );
         dd($sss_loan);
     }
 

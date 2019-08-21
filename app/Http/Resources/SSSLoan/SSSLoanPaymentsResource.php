@@ -17,9 +17,9 @@ class SSSLoanPaymentsResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'payslip_id' => $this->payslip_id,
             'paid_at' => $this->paidAt(),
-            'processed_by' => $this->processedBy()
+            'transact_by' => $this->transactBy(),
+            'is_payroll' => $this->isPayroll()
         ];
     }
 
@@ -28,8 +28,13 @@ class SSSLoanPaymentsResource extends JsonResource
         return Carbon::parse($this->paid_at)->format('F d, Y');
     }
 
-    private function processedBy()
+    private function transactBy()
     {
-        return is_null($this->payslip_id) ? 'Manual' : 'Payroll';
+        return $this->isPayroll() ? 'Payroll' : 'Manual';
+    }
+
+    private function isPayroll()
+    {
+        return !is_null($this->payslip_id);
     }
 }

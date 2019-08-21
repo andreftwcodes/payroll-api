@@ -24,11 +24,19 @@ class SSSLoanStoreRequest extends FormRequest
     public function rules()
     {
         return [
+            'employee_id' => 'required|numeric|integer',
             'loan_no' => 'required|numeric|integer|unique:sss_loans',
             'amount_loaned' => 'required|numeric|gt:0',
             'amortization_amount' => 'required|numeric|gt:0',
             'payment_terms' => 'required|numeric|gt:0',
             'date_loaned' => 'required|date'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'employee_id.required' => 'The employee field is required.'
         ];
     }
 }

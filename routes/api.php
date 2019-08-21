@@ -7,7 +7,6 @@ Route::group(['prefix' => 'auth'], function () {
     Route::get('me', 'Auth\MeController@action');
 });
 
-Route::get('attendances/get-employees', 'Attendance\AttendanceController@getDropDownEmployees');
 Route::get('attendances/verify-employee/{employee}', 'Attendance\AttendanceController@verifyEmployee');
 Route::get('employee/rate-histories/{employee}', 'Employee\EmployeeRateHistoryController@show');
 
@@ -44,12 +43,7 @@ Route::group(['prefix' => 'cash-advance'], function () {
 });
 
 Route::group(['prefix' => 'sss-loan'], function () {
-    Route::get('/', 'SSSLoan\SSSLoanController@index');
-    Route::get('show/{sss_loan}', 'SSSLoan\SSSLoanController@show');
-    Route::post('store/{employee}', 'SSSLoan\SSSLoanController@store');
-    Route::patch('update/{sss_loan}', 'SSSLoan\SSSLoanController@update');
-    Route::delete('delete/{sss_loan}', 'SSSLoan\SSSLoanController@destroy');
-    Route::get('get-employees', 'SSSLoan\SSSLoanController@getEmployees');
+    Route::resource('resource', 'SSSLoan\SSSLoanController');
 
     Route::post('payments/{sss_loan}', 'SSSLoan\SSSLoanPaymentController@store');
     Route::patch('payments/{sss_loan_payment}', 'SSSLoan\SSSLoanPaymentController@update');

@@ -124,7 +124,9 @@ class Calculator
         $hours = 0;
 
         if ($this->isUnderTime()) {
-            $hours = $this->workingHours() - $this->data['hours_worked'];
+            if (($hours_worked = $this->data['hours_worked']) > 0) {
+                $hours = $this->workingHours() - $hours_worked;
+            }
         }
 
         return $hours;

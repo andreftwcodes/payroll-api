@@ -16,11 +16,15 @@ class AttendanceController extends Controller
 {
     public function index(Request $request)
     {
-        return AttendanceResource::collection(
+        $attendance = AttendanceResource::collection(
             Attendance::with(['employee', 'locale', 'time_logs', 'attendance_status'])
                 ->applyDateFilter($request)
                     ->get()
         );
+
+        return $attendance->additional([
+            'employees' => $this->getDropDownEmployees($request)
+        ]);
     }
 
     public function store(Request $request)
@@ -102,16 +106,6 @@ class AttendanceController extends Controller
         );
     }
 
-    public function getDropDownEmployees(Request $request)
-    {
-        return AttendanceEmployeeDropDownResource::collection(
-            Employee::with(['locale'])
-                ->active()
-                ->whereNotIn('id', $this->getAttendedEmployeesByIds($request))
-                ->get()
-        );
-    }
-
     public function verifyEmployee(Request $request, Employee $employee)
     {
         if ($this->isClosed($employee, $request)) {
@@ -121,6 +115,26 @@ class AttendanceController extends Controller
                 ]
             ], 422);
         }
+    }
+
+    private function getDropDownEmployees($request)
+    {
+        $with = [
+            'schedules' => function ($query) use ($request) {
+                $query->where([
+                    array('day', Carbon::parse($request->attended_at)->format('N')),
+                    array('status', 1)
+                ]);
+            },
+            'locale'
+        ];
+
+        return AttendanceEmployeeDropDownResource::collection(
+            Employee::with($with)
+                ->active()
+                ->whereNotIn('id', $this->getAttendedEmployeesByIds($request))
+                ->get()
+        );
     }
 
     private function getAttendedEmployeesByIds($request)

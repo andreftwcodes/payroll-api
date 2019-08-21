@@ -16,28 +16,40 @@ class SSSLoanController extends Controller
 {
     public function index()
     {
-        return SSSLoanIndexResource::collection(
+        return (SSSLoanIndexResource::collection(
             SSS_Loan::with('employee', 'sss_loan_payments')->get()
-        );
+        ))->additional([
+            'employees' => SSSLoanEmployeeResource::collection(
+                Employee::active()->get()
+            )
+        ]);
     }
 
-    public function store(SSSLoanStoreRequest $request, Employee $employee)
+    public function store(SSSLoanStoreRequest $request)
     {
-        $sss_loan = $employee->sss_loans()->create(
+        $sss_loan = Employee::find($request->employee_id)->sss_loans()->create(
             $request->only('loan_no', 'amount_loaned', 'amortization_amount', 'payment_terms', 'date_loaned')
         );
-        dd($sss_loan);
+
+        return new SSSLoanIndexResource(
+            $sss_loan->load('employee', 'sss_loan_payments')
+        );
     }
 
-    public function update(SSSLoanUpdateRequest $request, SSS_Loan $sss_loan)
+    public function update(SSSLoanUpdateRequest $request, $id)
     {
+        $sss_loan = SSS_Loan::find($id);
+
         $sss_loan->update(
             $request->only('loan_no', 'amount_loaned', 'amortization_amount', 'payment_terms', 'date_loaned')
         );
-        dd($sss_loan);
+
+        return new SSSLoanIndexResource(
+            $sss_loan->load('employee', 'sss_loan_payments')
+        );
     }
 
-    public function show(SSS_Loan $sss_loan)
+    public function show($id)
     {
         $load = [
             'employee',
@@ -47,19 +59,12 @@ class SSSLoanController extends Controller
         ];
 
         return new SSSLoanShowResource(
-            $sss_loan->load($load)
+            SSS_Loan::with($load)->find($id)
         );
     }
 
-    public function destroy(SSS_Loan $sss_loan)
+    public function destroy()
     {
-        $sss_loan->delete();
-    }
-
-    public function getEmployees()
-    {
-        return SSSLoanEmployeeResource::collection(
-            Employee::active()->get()
-        );
+        //
     }
 }

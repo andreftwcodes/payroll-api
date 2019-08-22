@@ -8,27 +8,27 @@ use Illuminate\Database\Eloquent\Builder;
 class hdr_contribution extends Model
 {
     protected $fillable = [
-        'flag', 'title', 'status'
+        'flag', 'title', 'used_at', 'status'
     ];
 
     public function scopeSss(Builder $builder)
     {
-        return $builder->where('flag', 'sss')->active();
+        return $builder->where('flag', 'sss');
     }
 
     public function scopePagibig(Builder $builder)
     {
-        return $builder->where('flag', 'pagibig')->active();
+        return $builder->where('flag', 'pagibig');
     }
 
     public function scopePhilhealth(Builder $builder)
     {
-        return $builder->where('flag', 'philhealth')->active();
+        return $builder->where('flag', 'philhealth');
     }
 
-    public function scopeActive(Builder $builder)
+    public function scopeUsedAt(Builder $builder, $used_at)
     {
-        return $builder->where('status', 1);
+        return $builder->where('used_at', '<=', $used_at)->orderBy('used_at', 'desc');
     }
 
     public function ranges()

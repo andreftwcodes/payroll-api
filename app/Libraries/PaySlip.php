@@ -168,6 +168,7 @@ class PaySlip
     {
         $contributions = new Contributions(
             $this->getMonthlyGrossPay(),
+            $this->request->from,
             $this->request->contributions
         );
 

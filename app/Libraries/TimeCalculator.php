@@ -40,7 +40,7 @@ class TimeCalculator
         return $this->firstQuarter() + $this->secondQuarter();
     }
 
-    public function firstQuarter()
+    protected function firstQuarter()
     {
         $hours = 0;
 

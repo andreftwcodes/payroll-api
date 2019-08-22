@@ -2,7 +2,8 @@
 /**
  * Constructor Parameters
  * Parameter 1 [basicRate] (floatval)
- * Parameter 2 [deduct] (Boolean)
+ * Parameter 2 [date] (Date)
+ * Parameter 3 [deduct] (Boolean)
  */
 
 namespace App\Libraries;
@@ -13,6 +14,8 @@ use App\Models\hdr_contribution as Contribution;
 class Contributions
 {
     protected $basicRate;
+    
+    protected $date;
 
     protected $deduct;
 
@@ -22,9 +25,10 @@ class Contributions
 
     protected $philhealth = null;
 
-    public function __construct($basicRate = 0, $deduct = false)
+    public function __construct($basicRate = 0, $date = null, $deduct = false)
     {
         $this->basicRate = $basicRate;
+        $this->date = $date;
         $this->deduct = $deduct;
         $this->setDeductions();
     }
@@ -127,9 +131,9 @@ class Contributions
     {
         if ($this->canDeduct()) {
 
-            $sss        = Contribution::sss()->first();
-            $pagibig    = Contribution::pagibig()->first();
-            $philhealth = Contribution::philhealth()->first();
+            $sss        = Contribution::sss()->usedAt($this->date)->first();
+            $pagibig    = Contribution::pagibig()->usedAt($this->date)->first();
+            $philhealth = Contribution::philhealth()->usedAt($this->date)->first();
 
             if (!is_null($sss)) {
                 $this->sss = $sss->ranges()

@@ -4,9 +4,9 @@ namespace App\Libraries;
 
 class Calculator
 {
-    const OVERTIME_RATE = 130;
+    const OVERTIME_RATE = 130; //percent
 
-    const NIGHT_DIFFERENTIAL = 10;
+    const NIGHT_DIFFERENTIAL = 10; //percent
 
     protected $data;
 
@@ -132,13 +132,13 @@ class Calculator
         return $hours;
     }
 
-    protected function nightShiftPay($minutesWorked = null)
+    protected function nightShiftPay() //@brb
     {
         $amount = 0;
 
         if ($this->isNightShift()) {
             $amount = $this->ratePerMinute() * (self::NIGHT_DIFFERENTIAL / 100);
-            $amount *= !is_null($minutesWorked) ? $minutesWorked : $this->minutesWorked(); 
+            $amount *= $this->minutesWorked();  
         }
 
         return $amount;

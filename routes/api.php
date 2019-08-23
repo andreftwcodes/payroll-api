@@ -1,5 +1,8 @@
 <?php
 
+use Carbon\Carbon;
+use App\Libraries\TimeCalculator;
+
 Route::group(['prefix' => 'auth'], function () {
     Route::post('register', 'Auth\RegisterController@action');
     Route::post('login', 'Auth\LoginController@action');
@@ -29,7 +32,31 @@ Route::resource('contribution-ranges', 'Contributions\ContributionRangesControll
 Route::resource('payroll-periods', 'Reports\PayrollPeriodController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
-    dd(now());
+
+    $TimeCalculator = new TimeCalculator([
+        'sched_start_1' => '2019-08-23 22:00:00',
+        'sched_end_1'   => '2019-08-24 02:00:00',
+        'sched_start_2' => '2019-08-24 03:00:00',
+        'sched_end_2'   => '2019-08-25 07:00:00',
+        'time_logs'     => collect([
+            ['time_in' => '2019-08-23 22:00:00', 'time_out' => '2019-08-24 00:00:00']
+        ])
+    ]);
+
+    dd($TimeCalculator->sample123456());
+
+    $start = Carbon::parse('22:00')->addHour();
+    $end   = Carbon::parse('18:00')->addHour()->addDay();
+
+    $data  = [];
+
+    for($d = $start; $d < $end; $d->addHour()){
+        if (count($data) >= 8) break;
+        $data[] = $d->format('H:i');
+    }
+
+    return $data;
+
 });
 
 Route::group(['prefix' => 'cash-advance'], function () {

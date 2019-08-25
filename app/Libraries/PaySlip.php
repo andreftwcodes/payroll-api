@@ -246,8 +246,9 @@ class PaySlip
             'rate'          => $attendance['amount'],
             'working_hours' => $timeCalc->getWorkingHours(),
             'hours_worked'  => $timeCalc->getHours(),
-            'overtime'      => $attendance['overtime'], //OT premium flag
-            'shift'         => 'morning' //@brb
+            'night_shift_hours_worked' => $timeCalc->getNightShiftWorkedHours(),
+            'overtime'      => $attendance['overtime'],
+            'night_shift'   => $attendance['night_shift']
         ]);
     }
 }

@@ -31,6 +31,44 @@ class TimeCalculator
         return $firstQuarter + $secondQuarter;
     }
 
+    public function getNightShiftWorkedHours()
+    {
+        $hours = 0;
+        $start_minutes = 0;
+        $end_minutes = 0;
+
+        foreach ($this->mappedTimeLogs() as $key => $item) {
+
+            if (is_null($item['time_in']) || is_null($item['time_out'])) {
+                continue;
+            }
+
+            $start = Carbon::parse($item['time_in'])->addHour();
+            $end   = Carbon::parse($item['time_out']);
+
+            $start->subMinutes(
+                $start_minutes = $start->minute
+            );
+            
+            $end->subMinutes(
+                $end_minutes = $end->minute
+            );
+
+            for ($d = $start; $d <= $end; $d->addHour()) {
+                if (in_array($d->format('H:i'), $this->nightShiftTimeSet())) {
+                    $hours++;
+                }
+            }
+
+        }
+
+        $hours = ($hours - ($start_minutes / 60) + ($end_minutes / 60));
+
+        $hours = $hours > ($count = count($this->nightShiftTimeSet())) ? $count : $hours;
+
+        return $hours >= 0 ? $hours : 0;
+    }
+
     protected function computeHoursWorked()
     {
         if (empty($this->data['time_logs'])) {
@@ -40,46 +78,14 @@ class TimeCalculator
         return $this->firstQuarter() + $this->secondQuarter();
     }
 
-    public function sample123456()
+    protected function nightShiftTimeSet()
     {
-        $hours = 0;
-        $data = [];
-
-        foreach ($this->mappedTimeLogs() as $key => $item) {
-
-            if (is_null($item['time_in']) || is_null($item['time_out'])) {
-                continue;
-            }
-
-            $start = Carbon::parse($item['time_in']);
-            $end   = Carbon::parse($item['time_out']);
-
-            for($d = $start; $d < $end; $d->addHour()){
-                if (in_array($d->format('H:i'), $this->timeSet())) {
-                    $data[] = $d->format('H:i');
-                    $hours += 1;
-                }
-                
-            }
-
-        }
-
-        return [
-            'a' => $data,
-            'b' => $this->timeSet(),
-            'hours' => $hours
-        ];
-
-    }
-
-    public function timeSet()
-    {
-        $start = Carbon::parse('22:00')->addHour();
-        $end   = Carbon::parse('18:00')->addHour()->addDay();
+        $start = Carbon::parse('23:00');
+        $end   = Carbon::parse('06:00')->addDay();
     
         $data  = [];
-    
-        for($d = $start; $d < $end; $d->addHour()){
+
+        for ($d = $start; $d <= $end; $d->addHour()) { 
             if (count($data) >= 8) break;
             $data[] = $d->format('H:i');
         }

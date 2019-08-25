@@ -67,9 +67,9 @@ class Calculator
         return (bool) $this->data['overtime'];
     }
 
-    protected function isNightShift()
+    protected function hasNightShiftPremium()
     {
-        return $this->data['shift'] === 'night';
+        return (bool) $this->data['night_shift'];
     }
 
     protected function isOverTime()
@@ -132,13 +132,13 @@ class Calculator
         return $hours;
     }
 
-    protected function nightShiftPay() //@brb
+    protected function nightShiftPay()
     {
         $amount = 0;
 
-        if ($this->isNightShift()) {
-            $amount = $this->ratePerMinute() * (self::NIGHT_DIFFERENTIAL / 100);
-            $amount *= $this->minutesWorked();  
+        if ($this->hasNightShiftPremium()) {
+            $amount = $this->toMinutes($this->data['night_shift_hours_worked']) * $this->ratePerMinute();
+            $amount *= (self::NIGHT_DIFFERENTIAL / 100);
         }
 
         return $amount;

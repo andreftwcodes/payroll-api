@@ -1,6 +1,7 @@
 <?php
 
 use Carbon\Carbon;
+use App\Libraries\Calculator;
 use App\Libraries\TimeCalculator;
 
 Route::group(['prefix' => 'auth'], function () {
@@ -33,29 +34,30 @@ Route::resource('payroll-periods', 'Reports\PayrollPeriodController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
 
-    $TimeCalculator = new TimeCalculator([
-        'sched_start_1' => '2019-08-23 22:00:00',
-        'sched_end_1'   => '2019-08-24 02:00:00',
-        'sched_start_2' => '2019-08-24 03:00:00',
-        'sched_end_2'   => '2019-08-25 07:00:00',
+    $timeCalculator = new TimeCalculator([
+        'sched_start_1' => '2019-08-25 13:00:00',
+        'sched_end_1'   => '2019-08-25 17:00:00',
+        'sched_start_2' => '2019-08-25 18:00:00',
+        'sched_end_2'   => '2019-08-25 22:00:00',
         'time_logs'     => collect([
-            ['time_in' => '2019-08-23 22:00:00', 'time_out' => '2019-08-24 00:00:00']
+            ['time_in' => '2019-08-25 13:30:00', 'time_out' => '2019-08-25 23:30:00']
         ])
     ]);
+    
+    // dd($timeCalculator->getWorkingHours());
+    dd($timeCalculator->getNightShiftWorkedHours());
 
-    dd($TimeCalculator->sample123456());
+    $calculator = new Calculator([
+        'rate'          => 500,
+        'working_hours' => $timeCalculator->getWorkingHours(),
+        'hours_worked'  => $timeCalculator->getHours(),
+        'night_shift_hours_worked' => $timeCalculator->getNightShiftWorkedHours(),
+        'overtime'      => false,
+        'night_shift'   => true
+    ]);
 
-    $start = Carbon::parse('22:00')->addHour();
-    $end   = Carbon::parse('18:00')->addHour()->addDay();
-
-    $data  = [];
-
-    for($d = $start; $d < $end; $d->addHour()){
-        if (count($data) >= 8) break;
-        $data[] = $d->format('H:i');
-    }
-
-    return $data;
+    // dd($calculator->overTimePay());
+    dd($calculator->getGrossPay());
 
 });
 

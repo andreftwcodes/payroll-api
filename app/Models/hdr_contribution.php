@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 class hdr_contribution extends Model
 {
     protected $fillable = [
-        'flag', 'title', 'used_at', 'status'
+        'flag', 'title', 'used_at'
     ];
 
     public function scopeSss(Builder $builder)

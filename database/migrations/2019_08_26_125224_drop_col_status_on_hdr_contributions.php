@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddColToTblHdrContributions extends Migration
+class DropColStatusOnHdrContributions extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddColToTblHdrContributions extends Migration
     public function up()
     {
         Schema::table('hdr_contributions', function (Blueprint $table) {
-            $table->string('used_at', 7)->after('title');
+            $table->dropColumn('status');
         });
     }
 
@@ -26,7 +26,7 @@ class AddColToTblHdrContributions extends Migration
     public function down()
     {
         Schema::table('hdr_contributions', function (Blueprint $table) {
-            $table->dropColumn('used_at');
+            $table->boolean('status')->default(1)->after('used_at');
         });
     }
 }

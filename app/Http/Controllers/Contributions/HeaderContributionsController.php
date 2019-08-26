@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Contributions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\hdr_contribution as HdrContribution;
+use App\Http\Requests\Contributions\HeaderContributionRequest;
 use App\Http\Resources\Contributions\HdrContributionsResource;
 
 class HeaderContributionsController extends Controller
@@ -16,37 +17,24 @@ class HeaderContributionsController extends Controller
         );
     }
 
-    public function store(Request $request)
+    public function store(HeaderContributionRequest $request)
     {
         $data = HdrContribution::create(
-            $request->only('flag', 'title', 'status')
+            $request->only('flag', 'title', 'used_at')
         );
-        $this->setOldRecordsToInActive($data);
+
         return new HdrContributionsResource($data);
     }
 
-    public function update(Request $request, $id)
+    public function update(HeaderContributionRequest $request, $id)
     {
         $data = HdrContribution::find($id);
 
         $data->update(
-            $request->only('title', 'status')
+            $request->only('title', 'used_at')
         );
-
-        $this->setOldRecordsToInActive($data);
 
         return new HdrContributionsResource($data);
     }
 
-    protected function setOldRecordsToInActive($data = null)
-    {
-        if (!is_null($data)) {
-            if ($data->status === true) {
-                HdrContribution::where([
-                    ['flag', '=', $data->flag],
-                    ['id', '!=', $data->id]
-                ])->update(['status' => 0]);
-            }
-        }
-    }
 }

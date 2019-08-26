@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Contributions;
 
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class HdrContributionsResource extends JsonResource
@@ -18,13 +19,14 @@ class HdrContributionsResource extends JsonResource
             'id' => $this->id,
             'flag' => $this->flag,
             'title' => $this->title,
-            'status' => $this->status,
-            'status_display' => $this->getStatus(),
+            'used_at' => $this->used_at,
+            'used_at_dsp' => $this->usedAtDisplay()
         ];
     }
 
-    protected function getStatus()
+    private function usedAtDisplay()
     {
-        return $this->status ? 'Active' : 'Inactive';
+        return Carbon::parse($this->used_at)->format('F Y');
     }
+    
 }

@@ -165,8 +165,8 @@ class AttendanceController extends Controller
     {
         return collect($request->time_logs)->map(function ($item, $key) use ($attendance) {
             $date = $attendance->attended_at;
-            $item['time_in']  = !is_null($item['time_in']) ? Carbon::parse($date. ' ' .$item['time_in'])->toDateTimeString() : null;
-            $item['time_out'] = !is_null($item['time_out']) ? Carbon::parse($date. ' ' .$item['time_out'])->toDateTimeString() : null;
+            $item['time_in']  = Carbon::parse($date. ' ' .$item['time_in'])->toDateTimeString();
+            $item['time_out'] = Carbon::parse($date. ' ' .$item['time_out'])->toDateTimeString();
             return collect($item)->has('id') ? Arr::add($item, 'id', $item['id']) : $item;
         });
     }
@@ -219,13 +219,13 @@ class AttendanceController extends Controller
             } elseif (is_null($item['time_in'])) {
                 $errors = [
                     'index'    => $key,
-                    'time_in'  => ["Time in field is required."]
+                    'time_in'  => ["The time in field is required."]
                 ];
                 break;
             } elseif (is_null($item['time_out'])) {
                 $errors = [
                     'index'    => $key,
-                    'time_out'  => ["Time out field is required."]
+                    'time_out' => ["The time out field is required."]
                 ];
                 break;
             }

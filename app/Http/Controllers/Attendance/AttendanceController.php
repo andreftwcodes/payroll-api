@@ -219,13 +219,13 @@ class AttendanceController extends Controller
             } elseif (is_null($item['time_in'])) {
                 $errors = [
                     'index'    => $key,
-                    'time_in'  => ["Time in is required."]
+                    'time_in'  => ["Time in field is required."]
                 ];
                 break;
             } elseif (is_null($item['time_out'])) {
                 $errors = [
                     'index'    => $key,
-                    'time_out'  => ["Time out is required."]
+                    'time_out'  => ["Time out field is required."]
                 ];
                 break;
             }

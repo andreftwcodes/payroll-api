@@ -30,6 +30,10 @@ class AttendanceController extends Controller
     public function store(Request $request)
     {
 
+        if (!is_null($errors = $this->validateTimeLogs($request))) {
+            return response()->json($errors, 422);
+        }
+
         $employee = Employee::with('schedules', 'other')->find($request->employee_id);
 
         $attendanceData = [
@@ -62,6 +66,11 @@ class AttendanceController extends Controller
 
     public function update(Request $request, Attendance $attendance)
     {
+
+        if (!is_null($errors = $this->validateTimeLogs($request))) {
+            return response()->json($errors, 422);
+        }
+
         $attendance->update(
             $request->only('locale_id')
         );
@@ -191,5 +200,63 @@ class AttendanceController extends Controller
             'sched_start_2'  => "{$request->attended_at} {$schedule['start_2']}",
             'sched_end_2'    => "{$request->attended_at} {$schedule['end_2']}"
         ];
+    }
+
+    private function validateTimeLogs($request)
+    {
+        $flag = null;
+        $errors = null;
+
+        foreach ($request->time_logs as $key => $item) {
+
+            if (is_null($item['time_in']) && is_null($item['time_in'])) {
+                $errors = [
+                    'index'    => $key,
+                    'time_in'  => ["The time in field is required."],
+                    'time_out' => ["The time out field is required."]
+                ];
+                break;
+            } elseif (is_null($item['time_in'])) {
+                $errors = [
+                    'index'    => $key,
+                    'time_in'  => ["Time in is required."]
+                ];
+                break;
+            } elseif (is_null($item['time_out'])) {
+                $errors = [
+                    'index'    => $key,
+                    'time_out'  => ["Time out is required."]
+                ];
+                break;
+            }
+                
+            if (strtotime($item['time_in']) >= strtotime($time_out = $item['time_out'])) {
+                $errors = [
+                    'index'    => $key,
+                    'time_in'  => ["Time in must be less than time out."],
+                    'time_out' => ["Time out must be greater than time in."]
+                ];
+                break;
+            } elseif (!is_null($flag) && strtotime($item['time_in']) <= strtotime($flag)) {
+                $errors = [
+                    'index'   => $key,
+                    'time_in' => ["Time in must be greater than the previous time out."]
+                ];
+                break;
+            }
+
+            $flag = $time_out;
+
+        }
+
+        if (!is_null($errors)) {
+            
+            $errors = [
+                'errors' => $errors
+            ];
+
+        }
+
+        return $errors;
     }
 }

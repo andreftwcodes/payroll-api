@@ -63,8 +63,8 @@ class SSSLoanController extends Controller
         );
     }
 
-    public function destroy()
+    public function destroy($id)
     {
-        //
+        SSS_Loan::find($id)->delete();
     }
 }

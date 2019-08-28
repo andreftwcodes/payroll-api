@@ -53,7 +53,7 @@ class AttendanceController extends Controller
         
         $attendance->time_logs()
             ->createMany(
-                collect($this->timeLogs($request, $attendance))->toArray()
+                collect($this->timeLogs($request))->toArray()
             );
 
         return new AttendanceResource(
@@ -75,10 +75,7 @@ class AttendanceController extends Controller
             $request->only('locale_id')
         );
 
-        $time_logs = $this->timeLogs(
-            $request,
-            $attendance
-        );
+        $time_logs = $this->timeLogs($request);
 
         $toCreateData = $time_logs->filter(function ($item, $key) {
             return !collect($item)->has('id');
@@ -161,12 +158,9 @@ class AttendanceController extends Controller
         });
     }
 
-    protected function timeLogs($request, $attendance)
+    protected function timeLogs($request)
     {
-        return collect($request->time_logs)->map(function ($item, $key) use ($attendance) {
-            $date = $attendance->attended_at;
-            $item['time_in']  = Carbon::parse($date. ' ' .$item['time_in'])->toDateTimeString();
-            $item['time_out'] = Carbon::parse($date. ' ' .$item['time_out'])->toDateTimeString();
+        return collect($request->time_logs)->map(function ($item, $key) {
             return collect($item)->has('id') ? Arr::add($item, 'id', $item['id']) : $item;
         });
     }

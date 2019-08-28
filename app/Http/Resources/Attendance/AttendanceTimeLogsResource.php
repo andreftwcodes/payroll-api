@@ -28,7 +28,7 @@ class AttendanceTimeLogsResource extends JsonResource
             return null;
         }
 
-        return Carbon::parse($timeIn)->toTimeString();
+        return Carbon::parse($timeIn)->toDateTimeString();
     }
 
     private function timeOut()
@@ -37,6 +37,6 @@ class AttendanceTimeLogsResource extends JsonResource
             return null;
         }
 
-        return Carbon::parse($timeout)->toTimeString();
+        return Carbon::parse($timeout)->toDateTimeString();
     }
 }

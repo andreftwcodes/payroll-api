@@ -34,6 +34,8 @@ Route::resource('payroll-periods', 'Reports\PayrollPeriodController');
 
 Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
 
+    dd(asset('background/background.jpg'));
+
     $timeCalculator = new TimeCalculator([
         'sched_start_1' => '2019-08-25 13:00:00',
         'sched_end_1'   => '2019-08-25 17:00:00',
@@ -83,9 +85,12 @@ Route::group(['prefix' => 'reports-validator'], function () {
     Route::post('deduction-filters', 'Reports\Validator@deductionFilters');
 });
 
-Route::post('/validate-data-ranges', 'Contributions\ValidateDataRanges@action');
+Route::group(['prefix' => 'system-theme'], function () {
+    Route::get('theme-data', 'SystemTheme\ThemeController@getThemeData');
+    Route::get('theme-menu/{user}', 'SystemTheme\SideBarMenuController@getMenu');
+});
 
-Route::get('/sidebar/menu/{user}', 'SystemTheme\SideBarMenuController@getMenu');
+Route::post('/validate-data-ranges', 'Contributions\ValidateDataRanges@action');
 
 Route::get('/reports/pay/employees', 'Reports\PayReportController@employees');
 Route::get('/reports/pay/{employee}', 'Reports\PayReportController@pay');

@@ -48,8 +48,7 @@ class Contributions
         $amount = 0;
 
         if (!is_null($this->pagibig)) {
-            // $amount = $this->basicRate * ($this->pagibig->er / 100);
-            $amount = 100;
+            $amount = $this->basicRate * ($this->pagibig->er / 100);
         }
 
         return $amount;
@@ -70,8 +69,7 @@ class Contributions
         $amount = 0;
 
         if (!is_null($this->pagibig)) {
-            // $amount = $this->basicRate * ($this->pagibig->ee / 100);
-            $amount = 100;
+            $amount = $this->basicRate * ($this->pagibig->ee / 100);
         }
 
         return $amount;

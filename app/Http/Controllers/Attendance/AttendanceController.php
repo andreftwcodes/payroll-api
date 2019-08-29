@@ -8,12 +8,15 @@ use App\Models\TimeLogs;
 use App\Models\Attendance;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
+use App\Traits\ScheduleTrait;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Attendance\AttendanceResource;
 use App\Http\Resources\Attendance\AttendanceEmployeeDropDownResource;
 
 class AttendanceController extends Controller
 {
+    use ScheduleTrait; 
+    
     public function index(Request $request)
     {
         $attendance = AttendanceResource::collection(
@@ -46,7 +49,7 @@ class AttendanceController extends Controller
 
         $mergedData = array_merge(
             $attendanceData,
-            $this->schedule($employee->schedules, $request)
+            $this->mappedScheduleData($employee->schedules, $request->attended_at)
         );
 
         $attendance = $employee->attendance()->create($mergedData);
@@ -176,24 +179,6 @@ class AttendanceController extends Controller
                 return $item->save();
             }
         });
-    }
-
-    protected function schedule($schedules, $request)
-    {
-        $schedule = collect($schedules)->first(function ($schedule) use ($request) {
-            return ((bool) $schedule['status']) && $schedule['day'] === (int) Carbon::parse($request->attended_at)->format('N');
-        });
-
-        if (is_null($schedule)) {
-            return null;
-        }
-
-        return [
-            'sched_start_1'  => "{$request->attended_at} {$schedule['start_1']}",
-            'sched_end_1'    => "{$request->attended_at} {$schedule['end_1']}",
-            'sched_start_2'  => "{$request->attended_at} {$schedule['start_2']}",
-            'sched_end_2'    => "{$request->attended_at} {$schedule['end_2']}"
-        ];
     }
 
     private function validateTimeLogs($request)

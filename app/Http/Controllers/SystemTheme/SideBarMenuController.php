@@ -105,11 +105,11 @@ class SideBarMenuController extends Controller
                         'title' => 'Contributions',
                         'to' => '/settings/contributions',
                     ),
-                    // array(
-                    //     'icon' => 'people_outline',
-                    //     'title' => 'Schedules',
-                    //     'to' => '/settings/schedules',
-                    // ),
+                    array(
+                        'icon' => 'people_outline',
+                        'title' => 'Schedules',
+                        'to' => '/settings/schedules',
+                    ),
                     // array(
                     //     'icon' => 'people_outline',
                     //     'title' => 'Locales',

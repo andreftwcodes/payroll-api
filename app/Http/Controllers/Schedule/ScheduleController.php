@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Schedule;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Schedule\ScheduleResource;
+use App\Http\Resources\Schedule\ScheduleIndexResource;
 
 class ScheduleController extends Controller
 {
     public function index()
     {
-        return ScheduleResource::collection(
+        return ScheduleIndexResource::collection(
             Schedule::all()
         );
     }

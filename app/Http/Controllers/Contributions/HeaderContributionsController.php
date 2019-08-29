@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\hdr_contribution as HdrContribution;
 use App\Http\Requests\Contributions\HeaderContributionRequest;
 use App\Http\Resources\Contributions\HdrContributionsResource;
+use App\Http\Requests\Contributions\HeaderContributionUpdateRequest;
 
 class HeaderContributionsController extends Controller
 {
@@ -26,7 +27,7 @@ class HeaderContributionsController extends Controller
         return new HdrContributionsResource($data);
     }
 
-    public function update(HeaderContributionRequest $request, $id)
+    public function update(HeaderContributionUpdateRequest $request, $id)
     {
         $data = HdrContribution::find($id);
 

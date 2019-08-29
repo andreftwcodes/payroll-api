@@ -43,8 +43,10 @@ class TimeCalculator
                 continue;
             }
 
-            $start = Carbon::parse($item['time_in'])->addHour();
+            $start = Carbon::parse($item['time_in']);
             $end   = Carbon::parse($item['time_out']);
+
+            $start = ($key === 0) ? $start->addHour() : $start;
 
             $start->subMinutes(
                 $start_minutes = $start->minute

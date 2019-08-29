@@ -3,11 +3,20 @@
 namespace App\Http\Controllers\Employee;
 
 use App\Models\Employee;
+use App\Models\Schedule;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Employee\EmployeeScheduleDropdownResource;
 
 class EmployeeScheduleController extends Controller
 {
+    public function getScheduleDropdown()
+    {
+        return EmployeeScheduleDropdownResource::collection(
+            Schedule::all()
+        );
+    }
+
     public function store(Request $request, Employee $employee)
     {
         if ($this->alreadyExist($employee)) {

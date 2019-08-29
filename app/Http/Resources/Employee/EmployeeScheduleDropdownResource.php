@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Schedule;
+namespace App\Http\Resources\Employee;
 
 use App\Traits\AttendanceTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ScheduleResource extends JsonResource
+class EmployeeScheduleDropdownResource extends JsonResource
 {
     use AttendanceTrait;
     /**

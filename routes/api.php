@@ -13,6 +13,7 @@ Route::group(['prefix' => 'auth'], function () {
 
 Route::get('attendances/verify-employee/{employee}', 'Attendance\AttendanceController@verifyEmployee');
 Route::get('employee/rate-histories/{employee}', 'Employee\EmployeeRateHistoryController@show');
+Route::get('employee/dropdown-schedules', 'Employee\EmployeeScheduleController@getScheduleDropdown');
 
 Route::post('employee/schedules/{employee}', 'Employee\EmployeeScheduleController@store');
 Route::post('employee/other/{employee}', 'Employee\EmployeeOtherController@store');

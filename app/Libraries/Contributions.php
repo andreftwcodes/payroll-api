@@ -45,18 +45,12 @@ class Contributions
 
     public function getPagIbigER()
     {
-        $amount = 0;
-
-        if (!is_null($this->pagibig)) {
-            $amount = $this->basicRate * ($this->pagibig->er / 100);
-        }
-
-        return $amount;
+       return !is_null($this->pagibig) ? 100 : 0;
     }
 
     public function getPhilHealthER()
     {
-        return !is_null($this->philhealth) ? $this->philhealth->er : 0;
+        return !is_null($this->philhealth) ? ($this->basicRate * .0275) / 2 : 0;
     }
     
     public function getSSSEE()
@@ -66,18 +60,12 @@ class Contributions
     
     public function getPagIbigEE()
     {
-        $amount = 0;
-
-        if (!is_null($this->pagibig)) {
-            $amount = $this->basicRate * ($this->pagibig->ee / 100);
-        }
-
-        return $amount;
+        return !is_null($this->pagibig) ? 100 : 0;
     }
 
     public function getPhilHealthEE()
     {
-        return !is_null($this->philhealth) ? $this->philhealth->ee : 0;
+        return !is_null($this->philhealth) ? ($this->basicRate * .0275) / 2 : 0;
     }
     
     public function getEmployerShareAmount()

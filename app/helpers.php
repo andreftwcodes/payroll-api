@@ -1,10 +1,7 @@
 <?php 
 
-if (!function_exists('number_format_no_round')) {
-    function number_format_no_round($value, $decimals = 0, $dec_point = '.', $thousands_sep = ',') {
-        $negation = ($value < 0) ? (-1) : 1;
-        $coefficient = pow(10, $decimals);
-        $value = $negation * floor((string)(abs($value) * $coefficient)) / $coefficient;
-        return number_format($value, $decimals, $dec_point, $thousands_sep);
+if (!function_exists('set_precision')) { //sets the number in to two decimal places.
+    function set_precision($number, $precision = 0) {
+        return intval($number * ($p = pow(10, $precision))) / $p;
     }
 }

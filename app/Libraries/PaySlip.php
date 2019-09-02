@@ -127,32 +127,32 @@ class PaySlip
     protected function overTime()
     {
         return [
-            'hours' => number_format($this->overTimeHours, 2, '.', '.'),
-            'amount' => $this->getFormatted($this->overTimePay)
+            'hours'  => number_format(set_precision($this->overTimeHours, 2), 2, '.', ''),
+            'amount' => $this->getFormatted(set_precision($this->overTimePay, 2))
         ];
     }
 
     protected function underTime()
     {
         return [
-            'hours' => number_format($this->underTimeHours, 2, '.', '.'),
-            'amount' => $this->getFormatted($this->underTimePay)
+            'hours'  => number_format(set_precision($this->underTimeHours, 2), 2, '.', ''),
+            'amount' => $this->getFormatted(set_precision($this->underTimePay, 2))
         ];
     }
 
     protected function grossPay()
     {
-        return $this->grossPay;
+        return set_precision($this->grossPay, 2);
     }
 
     protected function totalDeductionAmount()
     {
-        return $this->deducAmount;
+        return set_precision($this->deducAmount, 2);
     }
 
     protected function netPay()
     {
-        return round($this->grossPay() - $this->totalDeductionAmount(), 2);
+        return $this->grossPay() - $this->totalDeductionAmount();
     }
 
     protected function daysCount()
@@ -231,7 +231,7 @@ class PaySlip
 
         }
 
-        return $grossPay;
+        return set_precision($grossPay, 2);
     }
 
     private function __TimeCalculator($attendance)

@@ -26,9 +26,9 @@ class EmployeeRequest extends FormRequest
     public function rules()
     {
         return [
-            'firstname' => 'required|alpha',
-            'middlename' => 'nullable|alpha',
-            'lastname'  => 'required|alpha',
+            'firstname' => 'required|string',
+            'middlename' => 'nullable|string',
+            'lastname'  => 'required|string',
             'gender'    => 'required',
             'contact'   => 'nullable|numeric',
             'birthdate' => 'date|before_or_equal:' . Carbon::now()->toDateString()

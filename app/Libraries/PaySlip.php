@@ -91,7 +91,7 @@ class PaySlip
                 'basic_rate'       => $this->getFormatted($this->basicRate()),
                 'overtime'         => $this->overTime(),
                 'undertime'        => $this->underTime(),
-                'gross_pay'        => $this->getFormatted($this->grossPay),
+                'gross_pay'        => $this->getFormatted($this->grossPay()),
                 'less'             => $this->dataList,
                 'total_deductions' => $this->getFormatted($this->totalDeductionAmount()),
                 'net_pay'          => self::CURRENCY . $this->getFormatted($this->netPay())
@@ -140,9 +140,19 @@ class PaySlip
         ];
     }
 
+    protected function grossPay()
+    {
+        return $this->grossPay;
+    }
+
     protected function totalDeductionAmount()
     {
         return $this->deducAmount;
+    }
+
+    protected function netPay()
+    {
+        return round($this->grossPay() - $this->totalDeductionAmount(), 2);
     }
 
     protected function daysCount()
@@ -191,11 +201,6 @@ class PaySlip
         });
 
         $this->deducAmount += $contributions->getEmployeeShareAmount() + $cash_advance->getAmountDeductible() + $sss_loan->getAmountDeductible();
-    }
-
-    protected function netPay()
-    {
-        return round($this->grossPay - $this->totalDeductionAmount(), 2);
     }
 
     protected function getFormatted($value)

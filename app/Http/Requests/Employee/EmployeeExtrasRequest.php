@@ -24,9 +24,16 @@ class EmployeeExtrasRequest extends FormRequest
     public function rules()
     {
         return [
-            'rate' => 'required|numeric|min:1',
+            'rate' => 'required|numeric|min:1|regex:/^\d*(\.\d{1,2})?$/',
             'locale' => 'required|numeric',
             'payment_period' => 'required'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'rate.regex' => 'The rate must only be two decimal places.'
         ];
     }
     

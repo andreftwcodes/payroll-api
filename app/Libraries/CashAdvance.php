@@ -25,6 +25,6 @@ class CashAdvance
 
     public function getAmountDeductible()
     {
-        return set_precision($this->ad, 2);
+        return $this->ad;
     }
 }

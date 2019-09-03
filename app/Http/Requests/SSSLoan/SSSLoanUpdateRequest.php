@@ -26,8 +26,8 @@ class SSSLoanUpdateRequest extends FormRequest
         return [
             'employee_id' => 'required|numeric|integer',
             'loan_no' => 'required|numeric|integer|unique:sss_loans,loan_no,' . $this->input('id'),
-            'amount_loaned' => 'required|numeric|gt:0',
-            'amortization_amount' => 'required|numeric|gt:0',
+            'amount_loaned' => 'required|numeric|gt:0|regex:/^\d*(\.\d{1,2})?$/',
+            'amortization_amount' => 'required|numeric|gt:0|regex:/^\d*(\.\d{1,2})?$/',
             'payment_terms' => 'required|numeric|gt:0',
             'date_loaned' => 'required|date'
         ];
@@ -36,7 +36,9 @@ class SSSLoanUpdateRequest extends FormRequest
     public function messages()
     {
         return [
-            'employee_id.required' => 'The employee field is required.'
+            'employee_id.required' => 'The employee field is required.',
+            'amount_loaned.regex' => 'The amount loaned must only be two decimal places.',
+            'amortization_amount.regex' => 'The amortization amount must only be two decimal places.'
         ];
     }
 }

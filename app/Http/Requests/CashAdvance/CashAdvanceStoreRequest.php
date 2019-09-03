@@ -25,8 +25,16 @@ class CashAdvanceStoreRequest extends FormRequest
     {
         return [
             'date' => 'required|date',
-            'credit' => 'numeric|gt:0|nullable|required_without:debit',
-            'debit' => 'numeric|gt:0|nullable|required_without:credit'
+            'credit' => 'numeric|gt:0|nullable|required_without:debit|regex:/^\d*(\.\d{1,2})?$/',
+            'debit' => 'numeric|gt:0|nullable|required_without:credit|regex:/^\d*(\.\d{1,2})?$/'
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'credit.regex' => 'The credit must only be two decimal places.',
+            'debit.regex'  => 'The debit must only be two decimal places.'
         ];
     }
 }

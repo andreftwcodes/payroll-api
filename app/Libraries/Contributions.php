@@ -50,7 +50,7 @@ class Contributions
 
     public function getPhilHealthER()
     {
-        return !is_null($this->philhealth) ? set_precision(($this->basicRate * .0275) / 2, 2) : 0;
+        return !is_null($this->philhealth) ? ($this->basicRate * .0275) / 2 : 0;
     }
     
     public function getSSSEE()
@@ -65,7 +65,7 @@ class Contributions
 
     public function getPhilHealthEE()
     {
-        return !is_null($this->philhealth) ? set_precision(($this->basicRate * .0275) / 2, 2) : 0;
+        return !is_null($this->philhealth) ? ($this->basicRate * .0275) / 2 : 0;
     }
     
     public function getEmployerShareAmount()

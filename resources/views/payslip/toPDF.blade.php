@@ -62,7 +62,6 @@
 <body>
     <div class="print-area">
         <div class="heading">
-            <p>{{ $payslip['locale'] }}</p>
             <p><strong>PAY SLIP</strong></p>
         </div>
         <div class="row">

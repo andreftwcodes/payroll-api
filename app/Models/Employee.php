@@ -11,14 +11,14 @@ class Employee extends Model
     use HasHistoryRateTrait, HasOtherTrait;
 
     protected $fillable = [
-        'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'rate', 'payment_period', 'status'
+        'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'rate', 'payment_period', 'hired_at', 'status'
     ];
 
     public function addEmployee($request)
     {
         return $this->create(
             $request->only(
-                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'rate', 'payment_period', 'status'
+                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'rate', 'payment_period', 'hired_at', 'status'
             )
         );
     }
@@ -27,7 +27,7 @@ class Employee extends Model
     {
         $this->update(
             $request->only(
-                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'rate', 'payment_period', 'status'
+                'firstname', 'middlename', 'lastname', 'gender', 'contact', 'birthdate', 'locale_id', 'rate', 'payment_period', 'hired_at', 'status'
             )
         );
 

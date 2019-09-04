@@ -18,13 +18,12 @@ class EmployeeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'firstname' => $this->firstname,
-            'middlename' => $this->middlename,
-            'lastname' => $this->lastname,
+            'fullname' => $this->getFullname(),
             'gender' => $this->gender,
             'age' => $this->getAge(),
             'contact' => $this->contact,
             'birthdate' => $this->getBirthDate(),
+            'hired_at' => $this->hired_at,
             'status' => $this->status,
         ];
     }

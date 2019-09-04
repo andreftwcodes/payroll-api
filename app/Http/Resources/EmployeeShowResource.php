@@ -34,6 +34,7 @@ class EmployeeShowResource extends JsonResource
             'extras' => [
                 'rate' => $this->getRate(),
                 'payment_period' => $this->payment_period,
+                'hired_at' => $this->hired_at,
                 'schedules' => EmployeeScheduleResource::collection($this->whenLoaded('schedules')),
                 'locale' => new LocaleResource($this->whenLoaded('locale')),
                 'other' => new OtherResource($this->whenLoaded('other'))

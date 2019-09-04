@@ -26,14 +26,16 @@ class EmployeeExtrasRequest extends FormRequest
         return [
             'rate' => 'required|numeric|min:1|regex:/^\d*(\.\d{1,2})?$/',
             'locale' => 'required|numeric',
-            'payment_period' => 'required'
+            'payment_period' => 'required',
+            'hired_at' => 'required'
         ];
     }
 
     public function messages()
     {
         return [
-            'rate.regex' => 'The rate must only be two decimal places.'
+            'rate.regex' => 'The rate must only be two decimal places.',
+            'hired_at.required' => 'The Date hired field is required.'
         ];
     }
     

@@ -19,7 +19,8 @@ class EmployeeResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'fullname' => $this->getFullname()
+            'fullname' => $this->getFullname(),
+            'locale' => $this->whenLoaded('locale'),
         ];
     }
 }

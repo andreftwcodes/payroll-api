@@ -9,17 +9,18 @@ use App\Http\Resources\PayrollPeriods\PayrollPeriodIndexResource;
 
 class PayrollPeriodController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $with = [
             'employee',
+            'employee.locale:id,name',
             'ca_children',
             'sss_loan_payment',
             'payslip_periods'
         ];
 
         return PayrollPeriodIndexResource::collection(
-            PaySlip::with($with)->get()
+            PaySlip::with($with)->filterByYearMonth($request)->get()
         );
     }
 

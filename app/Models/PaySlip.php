@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class PaySlip extends Model
 {
@@ -11,6 +12,25 @@ class PaySlip extends Model
     protected $fillable = [
         'to', 'from', 'contributions'
     ];
+
+    public function scopeFilterByYearMonth($query, $request)
+    {
+        $query->whereHas('payslip_periods', function (Builder $query) use ($request) {
+
+            $date = now()->format('Y-m');
+
+            if ($request->filled('year_month')) {
+                $date = $request->year_month;
+            }
+
+            $date = explode('-', $date);
+            
+            $query->whereYear('date', $date[0])->whereMonth('date', $date[1]);
+
+        });
+
+        return $query;
+    }
 
     public function payslip_periods()
     {

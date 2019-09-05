@@ -29,24 +29,24 @@ class PayrollPeriodIndexResource extends JsonResource
 
     private function periods()
     {
-        return $this->whenLoaded('payslip_periods');
+        return count($this->payslip_periods) ? $this->payslip_periods : null;
     }
 
     private function periodDsp()
     {
         $fromDate = Carbon::parse($this->fromDate())->format('F d - ');
         $toDate   = Carbon::parse($this->toDate())->format('d, Y');
-        return $fromDate.$toDate;
+        return "{$fromDate}{$toDate}";
     }
 
     private function fromDate()
     {
-        return $this->periods()->first()->date;
+        return !is_null($period = $this->periods()) ? $period->first()->date : null;
     }
 
     private function toDate()
     {
-        return $this->periods()->last()->date;
+        return !is_null($period = $this->periods()) ? $period->last()->date : null;
     }
 
     private function createdAt()
@@ -64,7 +64,7 @@ class PayrollPeriodIndexResource extends JsonResource
                 'ca_amount_deductible' => !is_null($this->ca_children) ? $this->ca_children->debit : 0,
                 'sss_loan_id' => !is_null($this->sss_loan_payment) ? $this->sss_loan_payment->sss_loan_id : null
             ]),
-            $this->whenLoaded('employee')
+            $this->employee
         ))->getPrintUrl();
     }
 }

@@ -6,7 +6,6 @@ use App\Models\Employee;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Controllers\Controller;
-use Illuminate\Database\Eloquent\Builder;
 use App\Http\Resources\Reports\TimeSheetResource;
 use App\Http\Requests\Reports\GetTimeSheetRequest;
 use App\Http\Resources\Reports\TimeSheetEmployeeResource;
@@ -34,7 +33,10 @@ class TimeSheetController extends Controller
         ];
 
         return new TimeSheetResource(
-            Employee::with($with)->find($request->employee_id)
+            Employee::with($with)->find($request->employee_id)->setAttribute('period', [
+                $request->from,
+                $request->to
+            ])
         );
     }
 
@@ -46,34 +48,20 @@ class TimeSheetController extends Controller
                 collect(json_decode(base64_decode($secret_key)))->toArray()
             );
 
-            $timesheet = new TimeSheetResource(
-                $this->mappedEmployee(
-                    Employee::with(['attendances'])->find($request->employee_id),
-                    $request
-                )
-            );
-
-            $timesheet = collect($timesheet)->toArray();
-
-            dd($timesheet);
+            $timesheet = $this->getTimeSheet($request)
+                ->response()
+                    ->header('X-Value', 'True')
+                        ->getData()
+                            ->data;
 
             $pdf = PDF::loadView('timesheet.toPDF', compact('timesheet'));
    
             return response($pdf->output(), 200)->withHeaders([
                 'Content-Type'        => 'application/pdf',
-                'Content-Disposition' => "inline; filename={$timesheet['filename']}.pdf",
+                'Content-Disposition' => "inline; filename={$timesheet->filename}.pdf",
             ]);
 
         }
     }
-
-    private function mappedEmployee($employee, $request)
-    {
-        return $employee->setAttribute('period', [
-            $request->from,
-            $request->to
-        ]);
-    }
-
     
 }

@@ -20,7 +20,7 @@ class TimeSheetResource extends JsonResource
     {
         return [
             'fullname' => $fullname = $this->getFullname(),
-            'period'   => $period = 123,
+            'period'   => $period = $this->getPeriod(),
             'attendances' => $attendances = TimeSheetChildrenResource::collection(
                 $this->whenLoaded('attendances')
             ),
@@ -39,6 +39,11 @@ class TimeSheetResource extends JsonResource
                 'to'            => $this->period[1]
             ])->toJson()
         );
+    }
+
+    private function getPeriod()
+    {
+        return "{$this->period[0]} - {$this->period[1]}";
     }
 
     private function getTotalHours($attendances)

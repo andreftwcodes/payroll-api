@@ -62,11 +62,11 @@
         </div>
         <div class="row">
             <div class="column">
-            <p><strong>Name:</strong> {{ $timesheet['fullname'] }}</p>
-                <p><strong>Period:</strong> {{ $timesheet['period'] }}</p>
+            <p><strong>Name:</strong> {{ $timesheet->fullname }}</p>
+            <p><strong>Period:</strong> {{ $timesheet->period }}</p>
             </div>
             <div class="column">
-                <p align="right"><strong>Total Hours:</strong> {{ $timesheet['total_hours'] }}</p>
+                <p align="right"><strong>Total Hours:</strong> {{ $timesheet->total_hours }}</p>
             </div>
         </div>
         <table>
@@ -77,12 +77,12 @@
                     <th>Hours</th>
                     <th>Remarks</th>
                 </tr>
-                @foreach ($timesheet['attendances'] as $attendance)
+                @foreach ($timesheet->attendances as $attendance)
                 <tr>
-                    <td>{{ $attendance['date'] }}</td>
-                    <td>{{ $attendance['locale']->name }}</td>
-                    <td>{{ $attendance['hours_dsp'] }}</td>
-                    <td>{{ $attendance['remarks'] }}</td>
+                    <td>{{ $attendance->date }}</td>
+                    <td>{{ $attendance->locale->name }}</td>
+                    <td>{{ $attendance->hours_dsp }}</td>
+                    <td>{{ $attendance->remarks }}</td>
                 </tr>
                 @endforeach
             </tbody>

@@ -7,6 +7,16 @@ use App\Libraries\TimeCalculator;
 
 trait AttendanceTrait
 {
+    protected function timeIn()
+    {
+        return $this->time_logs()->get()->pluck('time_in')->first();
+    }
+
+    protected function timeOut()
+    {
+        return $this->time_logs()->get()->pluck('time_out')->last();
+    }
+    
     protected function getRemark()
     {
         $remark = 'On Time';

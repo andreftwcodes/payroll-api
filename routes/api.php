@@ -59,6 +59,12 @@ Route::group(['prefix' => 'reports-validator'], function () {
     Route::post('deduction-filters', 'Reports\Validator@deductionFilters');
 });
 
+Route::group(['prefix' => 'reports'], function () {
+    Route::get('get-timesheet', 'Reports\TimeSheetController@getTimeSheet');
+    Route::get('timesheet/viewpdf/{secret_key}', 'Reports\TimeSheetController@viewToPDF');
+    Route::resource('timesheet', 'Reports\TimeSheetController');
+});
+
 Route::group(['prefix' => 'system-theme'], function () {
     Route::get('theme-data', 'SystemTheme\ThemeController@getThemeData');
     Route::get('theme-menu/{user}', 'SystemTheme\SideBarMenuController@getMenu');

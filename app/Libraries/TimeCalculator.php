@@ -20,6 +20,11 @@ class TimeCalculator
         return $this->computeHoursWorked();
     }
 
+    public function getFormattedHours()
+    {
+        return number_format($this->getHours(), 2,'.', '');
+    }
+
     public function getWorkingHours()
     {
         $firstQuarter = Carbon::parse($this->data['sched_start_1'])

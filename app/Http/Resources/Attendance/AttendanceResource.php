@@ -43,14 +43,4 @@ class AttendanceResource extends JsonResource
         return "{$this->getFormattedTime($this->sched_start_1)} - {$this->getFormattedTime($this->sched_end_2)}";
     }
 
-    protected function timeIn()
-    {
-        return $this->time_logs()->get()->pluck('time_in')->first();
-    }
-
-    protected function timeOut()
-    {
-        return $this->time_logs()->get()->pluck('time_out')->last();
-    }
-
 }

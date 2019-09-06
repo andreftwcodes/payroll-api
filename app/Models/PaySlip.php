@@ -13,19 +13,35 @@ class PaySlip extends Model
         'to', 'from', 'contributions'
     ];
 
-    public function scopeFilterByYearMonth($query, $request)
+    public function scopeApplyFilters($query, $request)
     {
         $query->whereHas('payslip_periods', function (Builder $query) use ($request) {
 
-            $date = now()->format('Y-m');
+            if ($request->has(['from', 'to'])) {
 
-            if ($request->filled('year_month')) {
-                $date = $request->year_month;
+                $date = [
+                    $request->from,
+                    $request->to
+                ];
+
+            } else {
+
+                $date = [
+                    today()->startOfMonth(),
+                    today()
+                ];
+
             }
 
-            $date = explode('-', $date);
-            
-            $query->whereYear('date', $date[0])->whereMonth('date', $date[1]);
+            $query->whereBetween('date', $date);
+
+        });
+
+        $query->whereHas('employee', function (Builder $query) use ($request) {
+
+            if ($request->has('locale_id')) {
+                $query->whereIn('locale_id', $request->locale_id);
+            }
 
         });
 

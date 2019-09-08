@@ -35,7 +35,9 @@ class AttendanceResource extends JsonResource
 
     protected function status()
     {
-        return is_null($this->attendance_status);
+        return $this->employee->payslips()->checkPeriod(
+            request()->replace(['attended_at' => $this->attended_at])
+        )->doesntExist();
     }
 
     protected function scheduleDisplay()

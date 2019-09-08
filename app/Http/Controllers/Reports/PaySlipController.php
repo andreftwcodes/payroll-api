@@ -61,25 +61,17 @@ class PaySlipController extends Controller
 
     public function checkPeriod(Request $request, Employee $employee)
     {
-        $payslip = $employee->payslips()->get()->first(function ($payslip, $key) use ($request) {
-            return $payslip->payslip_periods()
-                ->whereBetween('date', $request->only('from', 'to'))
-                    ->exists();
-        });
+        $payslip = $employee->payslips()->checkPeriod($request);
 
         $response = [
             'exists' => false
         ];
-        
-        if (!is_null($payslip)) {
 
-            $period = collect($payslip->payslip_periods()->get());
-
+        if ($payslip->exists()) {
             $response = [
                 'exists' => true,
-                'message' => "Overlapping a existing period between {$period->first()->date} and {$period->last()->date}."
+                'message' => "Overlapping a existing period from {$payslip->first()->from} to {$payslip->first()->to}."
             ];
-
         }
 
         return response()->json($response);
@@ -88,11 +80,7 @@ class PaySlipController extends Controller
     public function closePeriod(Request $request, Employee $employee)
     {
         $payslip = $employee->payslips()->create(
-            $request->only('contributions')
-        );
-
-        $payslip->payslip_periods()->createMany(
-            $this->dateRanges($request->from, $request->to)
+            $request->only('from', 'to', 'contributions')
         );
 
         if ($request->filled('ca_amount_deductible')) {
@@ -122,10 +110,6 @@ class PaySlipController extends Controller
 
         }
 
-        $payslip->attendance_statuses()->createMany(
-            $this->getAttendanceIds($request, $employee)
-        );
-
         $eagerLoads = [
             'other',
             'ca_parent',
@@ -137,28 +121,5 @@ class PaySlipController extends Controller
             $employee->load($eagerLoads)
         );
     }
-
-    private function dateRanges($start, $end) {
-
-        $dates   = array();
-        $current = strtotime($start);
-        $end     = strtotime($end);
     
-        while($current <= $end) {
-            $dates[] = ['date' => date('Y-m-d', $current)];
-            $current = strtotime('+1 day', $current);
-        }
-    
-        return $dates;
-    }
-
-    private function getAttendanceIds($request, $employee)
-    {
-        $items = $employee->attendances()
-            ->select('id as attendance_id')
-                ->whereBetween('attended_at', $request->only('from', 'to'))
-                    ->get();
-
-        return $items->toArray();
-    }
 }

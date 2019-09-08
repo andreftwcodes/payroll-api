@@ -20,7 +20,7 @@ class AttendanceController extends Controller
     public function index(Request $request)
     {
         $attendance = AttendanceResource::collection(
-            Attendance::with(['employee', 'locale', 'time_logs', 'attendance_status'])
+            Attendance::with(['employee', 'employee.payslips', 'locale', 'time_logs'])
                 ->applyDateFilter($request)
                     ->get()
         );
@@ -156,9 +156,7 @@ class AttendanceController extends Controller
 
     private function isClosed($employee, $request)
     {
-        return $employee->payslips()->get()->contains(function ($item, $key) use ($request) {
-            return $item->payslip_periods->contains('date', $request->attended_at);
-        });
+        return $employee->payslips()->checkPeriod($request)->exists();
     }
 
     protected function timeLogs($request)

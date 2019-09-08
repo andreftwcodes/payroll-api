@@ -142,12 +142,12 @@ class PaySlip
 
     protected function grossPay()
     {
-        return $this->grossPay;
+        return round($this->grossPay, 2);
     }
 
     protected function totalDeductionAmount()
     {
-        return $this->deducAmount;
+        return round($this->deducAmount, 2);
     }
 
     protected function netPay()
@@ -231,7 +231,7 @@ class PaySlip
 
         }
 
-        return $grossPay;
+        return round($grossPay, 2);
     }
 
     private function __TimeCalculator($attendance)

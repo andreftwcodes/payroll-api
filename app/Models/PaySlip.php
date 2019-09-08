@@ -15,27 +15,21 @@ class PaySlip extends Model
 
     public function scopeApplyFilters($query, $request)
     {
-        $query->whereHas('payslip_periods', function (Builder $query) use ($request) {
+        $date = [
+            'from' => today()->startOfMonth(),
+            'to'   => today()
+        ];
 
-            if ($request->has(['from', 'to'])) {
+        if ($request->has(['from', 'to'])) {
 
-                $date = [
-                    $request->from,
-                    $request->to
-                ];
+            $date = [
+                'from' => $request->from,
+                'to'   => $request->to
+            ];
 
-            } else {
+        }
 
-                $date = [
-                    today()->startOfMonth(),
-                    today()
-                ];
-
-            }
-
-            $query->whereBetween('date', $date);
-
-        });
+        $query->whereDate('from', '=', $date['from'])->whereDate('to', '=', $date['to']);
 
         $query->whereHas('employee', function (Builder $query) use ($request) {
 
@@ -48,9 +42,21 @@ class PaySlip extends Model
         return $query;
     }
 
-    public function payslip_periods()
+    public function scopeCheckPeriod($query, $request)
     {
-        return $this->hasMany(PayslipPeriod::class, 'payslip_id');
+        $from = null;
+        $to   = null;
+
+        if ($request->has(['from', 'to'])) {
+            $from = $request->from;
+            $to   = $request->to;
+        } elseif ($request->has('attended_at')) {
+            $from = $attended_at = $request->attended_at;
+            $to   = $attended_at;
+        }
+
+        return $query->whereDate('from', '<=', $to)
+            ->whereDate('to', '>=', $from);
     }
 
     public function ca_children()
@@ -61,11 +67,6 @@ class PaySlip extends Model
     public function sss_loan_payment()
     {
         return $this->hasOne(SSSLoanPayment::class, 'payslip_id');
-    }
-
-    public function attendance_statuses()
-    {
-        return $this->hasMany(AttendanceStatus::class, 'payslip_id');
     }
 
     public function employee()

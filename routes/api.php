@@ -57,6 +57,7 @@ Route::group(['prefix' => 'sss-loan'], function () {
 
 Route::group(['prefix' => 'reports-validator'], function () {
     Route::post('deduction-filters', 'Reports\Validator@deductionFilters');
+    Route::post('payroll-periods/filters', 'Reports\Validator@payrollPeriodsFilters');
 });
 
 Route::group(['prefix' => 'reports'], function () {

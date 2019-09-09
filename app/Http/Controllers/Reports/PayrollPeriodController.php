@@ -19,7 +19,7 @@ class PayrollPeriodController extends Controller
         ];
 
         return PayrollPeriodIndexResource::collection(
-            PaySlip::with($with)->applyFilters($request)->get()
+            PaySlip::with($with)->applyFilters($request)->latest()->get()
         );
     }
 

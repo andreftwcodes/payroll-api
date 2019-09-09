@@ -15,21 +15,6 @@ class PaySlip extends Model
 
     public function scopeApplyFilters($query, $request)
     {
-        $date = [
-            'from' => today()->startOfMonth(),
-            'to'   => today()
-        ];
-
-        if ($request->has(['from', 'to'])) {
-
-            $date = [
-                'from' => $request->from,
-                'to'   => $request->to
-            ];
-
-        }
-
-        $query->whereDate('from', '=', $date['from'])->whereDate('to', '=', $date['to']);
 
         $query->whereHas('employee', function (Builder $query) use ($request) {
 
@@ -39,6 +24,13 @@ class PaySlip extends Model
 
         });
 
+        if ($request->has(['from', 'to'])) {
+
+            $query->whereDate('from', '=', $request->from)
+                  ->whereDate('to', '=', $request->to);
+
+        }
+        
         return $query;
     }
 

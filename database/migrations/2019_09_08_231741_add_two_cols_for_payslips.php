@@ -13,9 +13,15 @@ class AddTwoColsForPayslips extends Migration
      */
     public function up()
     {
-        Schema::table('payslips', function (Blueprint $table) {
-            $table->date('from')->after('employee_id');
-            $table->date('to')->after('from');
+        DB::transaction(function () {
+            
+            Schema::table('payslips', function (Blueprint $table) {
+                $table->date('from')->default(today())->after('employee_id');
+                $table->date('to')->default(today())->after('from');
+            });
+
+            DB::statement('ALTER TABLE payslips ALTER `from` DROP DEFAULT, ALTER `to` DROP DEFAULT');
+        
         });
     }
 

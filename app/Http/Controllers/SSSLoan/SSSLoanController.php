@@ -16,19 +16,23 @@ class SSSLoanController extends Controller
 {
     public function index()
     {
-        return (SSSLoanIndexResource::collection(
+        $SSSLoanIndexResource = SSSLoanIndexResource::collection(
             SSS_Loan::with('employee', 'sss_loan_payments')->get()
-        ))->additional([
+        );
+
+        $SSSLoanIndexResource->additional([
             'employees' => SSSLoanEmployeeResource::collection(
                 Employee::active()->get()
             )
         ]);
+
+        return $SSSLoanIndexResource;
     }
 
     public function store(SSSLoanStoreRequest $request)
     {
         $sss_loan = Employee::find($request->employee_id)->sss_loans()->create(
-            $request->only('loan_no', 'amount_loaned', 'amortization_amount', 'payment_terms', 'date_loaned')
+            $request->only('ref_no', 'amount_loaned', 'amortization_amount', 'loaned_at')
         );
 
         return new SSSLoanIndexResource(
@@ -41,7 +45,7 @@ class SSSLoanController extends Controller
         $sss_loan = SSS_Loan::find($id);
 
         $sss_loan->update(
-            $request->only('loan_no', 'amount_loaned', 'amortization_amount', 'payment_terms', 'date_loaned')
+            $request->only('ref_no', 'amount_loaned', 'amortization_amount', 'loaned_at')
         );
 
         return new SSSLoanIndexResource(

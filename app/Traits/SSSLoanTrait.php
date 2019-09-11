@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 
 trait SSSLoanTrait
 {
+    protected $payment_terms = 24; //months
+
     protected function balance()
     {
         $balance = $this->amount_loaned;

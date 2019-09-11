@@ -25,11 +25,10 @@ class SSSLoanStoreRequest extends FormRequest
     {
         return [
             'employee_id' => 'required|numeric|integer',
-            'loan_no' => 'required|numeric|integer|unique:sss_loans',
+            'ref_no' => 'required|numeric|integer|unique:sss_loans',
             'amount_loaned' => 'required|numeric|gt:0|regex:/^\d*(\.\d{1,2})?$/',
             'amortization_amount' => 'required|numeric|gt:0|regex:/^\d*(\.\d{1,2})?$/',
-            'payment_terms' => 'required|numeric|gt:0',
-            'date_loaned' => 'required|date'
+            'loaned_at' => 'required|date'
         ];
     }
 

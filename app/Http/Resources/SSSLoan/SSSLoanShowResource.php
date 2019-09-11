@@ -20,10 +20,10 @@ class SSSLoanShowResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'loan_no' => $this->loan_no,
+            'ref_no' => $this->ref_no,
             'employee' => new SSSLoanEmployeeResource($this->whenLoaded('employee')),
             'amount_loaned' => $this->formattedAmount($this->amount_loaned),
-            'date_loaned' => $this->date_loaned,
+            'loaned_at' => $this->loaned_at,
             'balance' => $this->formattedAmount($this->balance()),
             'progress' => "{$this->progress()}%",
             'payments' => SSSLoanPaymentsResource::collection(

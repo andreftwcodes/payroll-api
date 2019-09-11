@@ -19,13 +19,12 @@ class SSSLoanIndexResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'loan_no' => $this->loan_no,
+            'ref_no' => $this->ref_no,
             'employee' => new SSSLoanEmployeeResource($this->whenLoaded('employee')),
             'amount_loaned' => $this->amount_loaned,
             'amount_loaned_dsp' => $this->formattedAmount($this->amount_loaned),
             'amortization_amount' => $this->amortization_amount,
-            'payment_terms' => $this->payment_terms,
-            'date_loaned' => $this->date_loaned,
+            'loaned_at' => $this->loaned_at,
             'balance' => $this->formattedAmount($this->balance()),
             'progress' => "{$this->progress()}%"
         ];

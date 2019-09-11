@@ -2,6 +2,7 @@
 
 namespace App\Libraries;
 
+use Carbon\Carbon;
 use App\Libraries\SSS_Loan;
 use App\Models\SSS_Loan as SSS_Loan_Model;
 
@@ -36,10 +37,26 @@ class SSS_Loan
         return $this->sss_loan->amortization_amount;
     }
 
+    public static function canDeduct($loaned_at)
+    {
+        return today()->greaterThanOrEqualTo(
+            Carbon::parse($loaned_at)->addMonths(3)->startOfMonth() //Deduct after 2 months of loaned_at
+        );
+    }
+
+    public static function canNotDeduct($loaned_at)
+    {
+        return !self::canDeduct($loaned_at);
+    }
+
     private function _initSSSLoan()
     {
         if (!is_null($id = $this->id)) {
-            return SSS_Loan_Model::find($id);
+            if ($loan = SSS_Loan_Model::find($id)) {
+                if (self::canDeduct($loan->loaned_at)) {
+                    return $loan;
+                }
+            }
         }
     }
 

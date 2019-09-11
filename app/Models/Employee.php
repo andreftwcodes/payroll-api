@@ -85,6 +85,11 @@ class Employee extends Model
         return $this->hasOne(CA_PARENT::class);
     }
 
+    public function sss_loan()
+    {
+        return $this->hasOne(SSS_Loan::class);
+    }
+
     public function sss_loans()
     {
         return $this->hasMany(SSS_Loan::class);

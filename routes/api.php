@@ -1,9 +1,5 @@
 <?php
 
-use Carbon\Carbon;
-use App\Libraries\Calculator;
-use App\Libraries\TimeCalculator;
-
 Route::group(['prefix' => 'auth'], function () {
     Route::post('register', 'Auth\RegisterController@action');
     Route::post('login', 'Auth\LoginController@action');

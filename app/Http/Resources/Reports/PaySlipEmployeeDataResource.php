@@ -25,7 +25,7 @@ class PaySlipEmployeeDataResource extends JsonResource
                 'contributions' => $this->contributions(),
                 'cash_advance' => new CashAdvanceResource($this->whenLoaded('ca_parent')),
                 'sss_loan' => new SSSLoanResource(
-                    $this->whenLoaded('sss_loans')->first()
+                    $this->whenLoaded('sss_loan')
                 )
             ]
         ];

@@ -76,6 +76,14 @@ class TimeCalculator
         return $hours >= 0 ? $hours : 0;
     }
 
+    public function isLate()
+    {
+        $timeStart = Carbon::createFromTimeString($this->data['sched_start_1'])
+                        ->addMinutes(self::LATE_ALLOWANCE);
+
+        return strtotime(collect($this->data['time_logs'])->pluck('time_in')->first()) > strtotime($timeStart);
+    }
+
     protected function computeHoursWorked()
     {
         if (empty($this->data['time_logs'])) {
@@ -174,14 +182,6 @@ class TimeCalculator
 
         })->toArray();
 
-    }
-
-    protected function isLate()
-    {
-        $timeStart = Carbon::createFromTimeString($this->data['sched_start_1'])
-                        ->addMinutes(self::LATE_ALLOWANCE);
-
-        return strtotime(collect($this->data['time_logs'])->pluck('time_in')->first()) > strtotime($timeStart);
     }
 
 }

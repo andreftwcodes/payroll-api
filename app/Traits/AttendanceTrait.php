@@ -25,8 +25,8 @@ trait AttendanceTrait
            return 'Absent';
         }
 
-        if ($this->getExceedTime() > $this->getLateAllowance()) {
-            $remark = "Late : {$this->getExceedTime()} mins";
+        if ($this->timeCalc()->isLate()) {
+            $remark = "Late : {$this->getLateTime()} mins";
         }
 
         if ($hours = $this->timeCalc()->getHours()) {
@@ -44,22 +44,9 @@ trait AttendanceTrait
         return $remark;
     }
 
-    protected function getExceedTime()
+    protected function getLateTime()
     {
-        $parsedStart = Carbon::parse(
-            $start = $this->timeIn()
-        );
-
-        $parsedScheduleStart = Carbon::parse(
-            $scheduleStart = $this->sched_start_1
-        );
-
-        if ($parsedScheduleStart->greaterThan($parsedStart)) {
-            return 0;
-        }
-
-        return Carbon::parse($start)
-                ->diffInMinutes($scheduleStart);
+        return ($this->timeCalc()->getWorkingHours() - $this->timeCalc()->getHours()) * 60;
     }
 
     protected function timeCalc()
@@ -71,11 +58,6 @@ trait AttendanceTrait
             'sched_end_2'   => $this->sched_end_2,
             'time_logs'     => $this->time_logs()->get()
         ]);
-    }
-
-    protected function getLateAllowance()
-    {
-        return 15;
     }
 
     protected function getFormattedTime($time)

@@ -128,7 +128,7 @@ class PaySlip
     {
         return [
             'hours'  => number_format($this->overTimeHours, 2, '.', ''),
-            'amount' => number_format($this->overTimePay, 2)
+            'amount' => number_format($this->overTimePay, 3)
         ];
     }
 
@@ -136,7 +136,7 @@ class PaySlip
     {
         return [
             'hours'  => number_format($this->underTimeHours, 2, '.', ''),
-            'amount' => number_format($this->underTimePay, 2)
+            'amount' => number_format($this->underTimePay, 3)
         ];
     }
 

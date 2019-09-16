@@ -44,11 +44,14 @@ Route::group(['prefix' => 'cash-advance'], function () {
 });
 
 Route::group(['prefix' => 'sss-loan'], function () {
+
+    Route::get('check-can-loan/{employee}', 'SSSLoan\SSSLoanController@checkCanLoan');
     Route::resource('resource', 'SSSLoan\SSSLoanController');
 
     Route::post('payments/{sss_loan}', 'SSSLoan\SSSLoanPaymentController@store');
     Route::patch('payments/{sss_loan_payment}', 'SSSLoan\SSSLoanPaymentController@update');
     Route::delete('delete/{sss_loan_payment}', 'SSSLoan\SSSLoanPaymentController@destroy');
+
 });
 
 Route::group(['prefix' => 'reports-validator'], function () {

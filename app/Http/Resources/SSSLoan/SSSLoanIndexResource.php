@@ -24,6 +24,7 @@ class SSSLoanIndexResource extends JsonResource
             'amount_loaned' => $this->amount_loaned,
             'amount_loaned_dsp' => $this->formattedAmount($this->amount_loaned),
             'amortization_amount' => $this->amortization_amount,
+            'amortization_amount_dsp' => number_format($this->amortization_amount, 2),
             'loaned_at' => $this->loaned_at,
             'balance' => $this->formattedAmount($this->balance()),
             'progress' => "{$this->progress()}%"

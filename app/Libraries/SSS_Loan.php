@@ -40,7 +40,7 @@ class SSS_Loan
     public static function canDeduct($loaned_at)
     {
         return today()->greaterThanOrEqualTo(
-            Carbon::parse($loaned_at)->addMonths(3)->startOfMonth() //Deduct after 2 months of loaned_at
+            Carbon::parse($loaned_at)->addMonths(2)->startOfMonth() //Deduct after 1 months of loaned_at
         );
     }
 

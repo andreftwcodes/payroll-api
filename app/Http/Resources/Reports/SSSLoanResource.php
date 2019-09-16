@@ -28,7 +28,7 @@ class SSSLoanResource extends JsonResource
         $message = '';
 
         if (SSS_Loan::canNotDeduct($loaned_at = $this->loaned_at)) {
-            $message = '- SSS Loan deduction starts on ' . Carbon::parse($loaned_at)->addMonths(3)->format('F Y') . '.';
+            $message = '- SSS Loan deduction starts on ' . Carbon::parse($loaned_at)->addMonths(2)->format('F Y') . '.';
         }
 
         return $message;

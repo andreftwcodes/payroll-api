@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\SSSLoan;
 
+use Carbon\Carbon;
 use App\Traits\SSSLoanTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\SSSLoan\SSSLoanEmployeeResource;
@@ -26,9 +27,15 @@ class SSSLoanIndexResource extends JsonResource
             'amortization_amount' => $this->amortization_amount,
             'amortization_amount_dsp' => number_format($this->amortization_amount, 2),
             'loaned_at' => $this->loaned_at,
+            'loaned_dsp' => $this->formattedLoanedAt(),
             'balance' => $this->formattedAmount($this->balance()),
             'progress' => "{$this->progress()}%"
         ];
+    }
+
+    private function formattedLoanedAt()
+    {
+        return Carbon::parse($this->loaned_at)->format('F d, Y');
     }
 
 }

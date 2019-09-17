@@ -39,8 +39,12 @@ class SSS_Loan
 
     public static function canDeduct($loaned_at)
     {
+        /**
+         * The monthly amortization shall start on 2nd month following the date of loan.
+        */
+
         return today()->greaterThanOrEqualTo(
-            Carbon::parse($loaned_at)->addMonths(2)->startOfMonth() //Deduct after 1 months of loaned_at
+            Carbon::parse($loaned_at)->addMonths(2)->startOfMonth()
         );
     }
 

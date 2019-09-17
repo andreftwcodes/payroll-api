@@ -62,10 +62,14 @@ class SSSLoanController extends Controller
         SSS_Loan::find($id)->delete();
     }
 
-    public function checkCanLoan(Employee $employee)
+    public function verify(Request $request)
     {
+        $request->validate([
+            'employee_id' => 'required',
+            'subject'     => 'required'
+        ]);
 
-        $sss_loan = $employee->sss_loans()->has('sss_loan_payments', '<', 24);
+        $sss_loan = Employee::find($request->employee_id)->sss_loans()->has('sss_loan_payments', '<', 24);
 
         if (!is_null($item = $sss_loan->first())) {
             return response()->json([

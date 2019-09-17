@@ -66,8 +66,8 @@ class SideBarMenuController extends Controller
                 'childrens' => array(
                     array(
                         'icon' => 'people_outline',
-                        'title' => 'SSS',
-                        'to' => '/loans/sss',
+                        'title' => 'Government',
+                        'to' => '/loans/government',
                     )
                 )
             ),

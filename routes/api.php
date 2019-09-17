@@ -43,15 +43,9 @@ Route::group(['prefix' => 'cash-advance'], function () {
     Route::patch('amount_deductible/{ca_parent}', 'CashAdvance\CashAdvanceController@amount_deductible');
 });
 
-Route::group(['prefix' => 'sss-loan'], function () {
-
-    Route::get('check-can-loan/{employee}', 'SSSLoan\SSSLoanController@checkCanLoan');
-    Route::resource('resource', 'SSSLoan\SSSLoanController');
-
-    Route::post('payments/{sss_loan}', 'SSSLoan\SSSLoanPaymentController@store');
-    Route::patch('payments/{sss_loan_payment}', 'SSSLoan\SSSLoanPaymentController@update');
-    Route::delete('delete/{sss_loan_payment}', 'SSSLoan\SSSLoanPaymentController@destroy');
-
+Route::group(['prefix' => 'loans'], function () {
+    Route::post('government/verify', 'SSSLoan\SSSLoanController@verify');
+    Route::resource('government', 'SSSLoan\SSSLoanController');
 });
 
 Route::group(['prefix' => 'reports-validator'], function () {

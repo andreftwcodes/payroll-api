@@ -85,14 +85,14 @@ class Employee extends Model
         return $this->hasOne(CA_PARENT::class);
     }
 
-    public function sss_loan()
+    public function government_loan()
     {
-        return $this->hasOne(SSS_Loan::class);
+        return $this->hasOne(GovernmentLoan::class);
     }
 
-    public function sss_loans()
+    public function government_loans()
     {
-        return $this->hasMany(SSS_Loan::class);
+        return $this->hasMany(GovernmentLoan::class);
     }
 
     public function payslips()

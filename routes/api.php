@@ -44,8 +44,8 @@ Route::group(['prefix' => 'cash-advance'], function () {
 });
 
 Route::group(['prefix' => 'loans'], function () {
-    Route::post('government/verify', 'SSSLoan\SSSLoanController@verify');
-    Route::resource('government', 'SSSLoan\SSSLoanController');
+    Route::post('government/verify', 'Loans\GovernmentLoanController@verify');
+    Route::resource('government', 'Loans\GovernmentLoanController');
 });
 
 Route::group(['prefix' => 'reports-validator'], function () {

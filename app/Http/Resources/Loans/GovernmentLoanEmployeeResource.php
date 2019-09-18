@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\SSSLoan;
+namespace App\Http\Resources\Loans;
 
 use App\Traits\EmployeeTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SSSLoanEmployeeResource extends JsonResource
+class GovernmentLoanEmployeeResource extends JsonResource
 {
     use EmployeeTrait;
     

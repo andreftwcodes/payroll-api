@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Resources\SSSLoan;
+namespace App\Http\Resources\Loans;
 
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SSSLoanPaymentsResource extends JsonResource
+class GovernmentLoanPaymentsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,7 +17,7 @@ class SSSLoanPaymentsResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'amortization' => $this->sss_loan->amortization_amount,
+            'amortization' => $this->government_loan->amortization,
             'paid_at' => $this->paidAt()
         ];
     }

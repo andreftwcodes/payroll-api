@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Resources\SSSLoan;
+namespace App\Http\Resources\Loans;
 
 use Carbon\Carbon;
-use App\Traits\SSSLoanTrait;
+use App\Traits\LoanTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\SSSLoan\SSSLoanEmployeeResource;
+use App\Http\Resources\Loans\GovernmentLoanEmployeeResource;
 
-class SSSLoanIndexResource extends JsonResource
+class GovernmentLoanIndexResource extends JsonResource
 {
-    use SSSLoanTrait;
+    use LoanTrait;
     /**
      * Transform the resource into an array.
      *
@@ -21,11 +21,12 @@ class SSSLoanIndexResource extends JsonResource
         return [
             'id' => $this->id,
             'ref_no' => $this->ref_no,
-            'employee' => new SSSLoanEmployeeResource($this->whenLoaded('employee')),
+            'subject' => strtoupper($this->subject),
+            'employee' => new GovernmentLoanEmployeeResource($this->whenLoaded('employee')),
             'amount_loaned' => $this->amount_loaned,
             'amount_loaned_dsp' => $this->formattedAmount($this->amount_loaned),
-            'amortization_amount' => $this->amortization_amount,
-            'amortization_amount_dsp' => number_format($this->amortization_amount, 2),
+            'amortization_amount' => $this->amortization,
+            'amortization_amount_dsp' => number_format($this->amortization, 2),
             'loaned_at' => $this->loaned_at,
             'loaned_dsp' => $this->formattedLoanedAt(),
             'balance' => $this->formattedAmount($this->balance()),

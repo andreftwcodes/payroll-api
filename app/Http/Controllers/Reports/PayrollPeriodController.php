@@ -15,7 +15,7 @@ class PayrollPeriodController extends Controller
             'employee',
             'employee.locale:id,name',
             'ca_children',
-            'sss_loan_payment'
+            'government_loan_payments'
         ];
 
         return PayrollPeriodIndexResource::collection(

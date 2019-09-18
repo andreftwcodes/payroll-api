@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Reports;
 
 use App\Models\Employee;
-use App\Models\SSS_Loan;
-use App\Libraries\SSS_Loan as SSS_Loan_Library;
 use App\Libraries\PaySlip;
 use Illuminate\Http\Request;
+use App\Models\GovernmentLoan;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Controllers\Controller;
+use App\Libraries\Loan;
 use App\Http\Resources\Reports\PaySlipEmployeeDataResource;
 
 class PaySlipController extends Controller
@@ -50,8 +50,8 @@ class PaySlipController extends Controller
             'other',
             'ca_parent',
             'ca_parent.ca_children',
-            'sss_loan' => function ($query) {
-                $query->has('sss_loan_payments', '<', 24);
+            'government_loans' => function ($query) {
+                $query->has('government_loan_payments', '<', 24);
             }
         ];
 
@@ -98,20 +98,18 @@ class PaySlipController extends Controller
 
         }
 
-        if ($request->filled('sss_loan_id')) {
+        if ($request->filled('loan_id')) {
 
             if ($request->contributions) {
 
-                if ($loan = SSS_Loan::find($request->sss_loan_id)) {
-
-                    if (SSS_Loan_Library::canDeduct($loan->loaned_at)) {
-                        $loan->sss_loan_payments()->create([
+                GovernmentLoan::whereIn('id', $request->loan_id)->get()->each(function ($loan) use ($payslip) {
+                    if (Loan::canDeduct($loan->loaned_at)) {
+                        $loan->government_loan_payments()->create([
                             'payslip_id' => $payslip->id,
                             'paid_at'    => now()
                         ]);
                     }
-
-                }
+                });
 
             }
 
@@ -121,8 +119,8 @@ class PaySlipController extends Controller
             'other',
             'ca_parent',
             'ca_parent.ca_children',
-            'sss_loan' => function ($query) {
-                $query->has('sss_loan_payments', '<', 24);
+            'government_loans' => function ($query) {
+                $query->has('government_loan_payments', '<', 24);
             }
         ];
 

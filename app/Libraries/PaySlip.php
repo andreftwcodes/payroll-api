@@ -4,7 +4,7 @@ namespace App\Libraries;
 
 use Carbon\Carbon;
 use App\Models\Attendance;
-use App\Libraries\SSS_Loan;
+use App\Libraries\Loan;
 use Illuminate\Http\Request;
 use App\Libraries\Calculator;
 use App\Libraries\CashAdvance;
@@ -37,7 +37,7 @@ class PaySlip
 
     public function __construct($request = null, $employee = null)
     {
-        $this->request = $request;
+        $this->request  = $request;
         $this->employee = $employee;
         $this->setAttributes();
     }
@@ -169,7 +169,7 @@ class PaySlip
                 'to'            => $this->request->to,
                 'contributions' => $this->request->contributions,
                 'ca_amount_deductible' => $this->request->ca_amount_deductible,
-                'sss_loan_id' => $this->request->sss_loan_id
+                'loan_id' => $this->request->loan_id
             ])->toJson()
         );
     }
@@ -186,21 +186,21 @@ class PaySlip
             $this->request->ca_amount_deductible
         );
 
-        $sss_loan = new SSS_Loan(
-            $contributions->canDeduct() ? $this->request->sss_loan_id : null
+        $loan = new Loan(
+            $contributions->canDeduct() ? $this->request->loan_id : null
         );
 
         $dataList = collect([
             $contributions->getDataList(),
             $cash_advance->getDataList(),
-            $sss_loan->getDataList()
+            $loan->getDataList()
         ]);
 
         collect($dataList->flatten(1)->toArray())->each(function ($item, $key) {
             array_push($this->dataList, $item);
         });
 
-        $this->deducAmount += $contributions->getEmployeeShareAmount() + $cash_advance->getAmountDeductible() + $sss_loan->getAmountDeductible();
+        $this->deducAmount += $contributions->getEmployeeShareAmount() + $cash_advance->getAmountDeductible() + $loan->getAmountDeductible();
     }
 
     protected function getFormatted($value)

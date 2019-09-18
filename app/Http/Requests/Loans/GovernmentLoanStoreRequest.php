@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\SSSLoan;
+namespace App\Http\Requests\Loans;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SSSLoanStoreRequest extends FormRequest
+class GovernmentLoanStoreRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -24,11 +24,12 @@ class SSSLoanStoreRequest extends FormRequest
     public function rules()
     {
         return [
-            'employee_id' => 'required|numeric|integer',
-            'ref_no' => 'required|numeric|integer|unique:sss_loans',
+            'employee_id'   => 'required|numeric|integer',
+            'ref_no'        => 'required|numeric|integer|unique:government_loans',
+            'subject'       => 'required|string',
             'amount_loaned' => 'required|numeric|gt:0|regex:/^\d*(\.\d{1,2})?$/',
-            'amortization_amount' => 'required|numeric|gt:0|regex:/^\d*(\.\d{1,2})?$/',
-            'loaned_at' => 'required|date'
+            'amortization'  => 'required|numeric|gt:0|regex:/^\d*(\.\d{1,2})?$/',
+            'loaned_at'     => 'required|date'
         ];
     }
 
@@ -36,8 +37,8 @@ class SSSLoanStoreRequest extends FormRequest
     {
         return [
             'employee_id.required' => 'The employee field is required.',
-            'amount_loaned.regex' => 'The amount loaned must only be two decimal places.',
-            'amortization_amount.regex' => 'The amortization amount must only be two decimal places.'
+            'amount_loaned.regex'  => 'The amount loaned must only be two decimal places.',
+            'amortization.regex'   => 'The amortization must only be two decimal places.'
         ];
     }
 }

@@ -1,15 +1,15 @@
 <?php
 
-namespace App\Http\Resources\SSSLoan;
+namespace App\Http\Resources\Loans;
 
-use App\Traits\SSSLoanTrait;
+use App\Traits\LoanTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\SSSLoan\SSSLoanEmployeeResource;
-use App\Http\Resources\SSSLoan\SSSLoanPaymentsResource;
+use App\Http\Resources\Loans\GovernmentLoanEmployeeResource;
+use App\Http\Resources\Loans\GovernmentLoanPaymentsResource;
 
-class SSSLoanShowResource extends JsonResource
+class GovernmentLoanShowResource extends JsonResource
 {
-    use SSSLoanTrait;
+    use LoanTrait;
     /**
      * Transform the resource into an array.
      *
@@ -21,12 +21,13 @@ class SSSLoanShowResource extends JsonResource
         return [
             'id' => $this->id,
             'ref_no' => $this->ref_no,
-            'employee' => new SSSLoanEmployeeResource($this->whenLoaded('employee')),
+            'subject' => strtoupper($this->subject),
+            'employee' => new GovernmentLoanEmployeeResource($this->whenLoaded('employee')),
             'amount_loaned' => $this->formattedAmount($this->amount_loaned),
             'loaned_at' => $this->loaned_at,
             'balance' => $this->formattedAmount($this->balance()),
             'progress' => "{$this->progress()}%",
-            'payments' => SSSLoanPaymentsResource::collection(
+            'payments' => GovernmentLoanPaymentsResource::collection(
                 $this->payments()
             )
         ];

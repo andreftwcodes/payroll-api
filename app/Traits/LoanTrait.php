@@ -4,7 +4,7 @@ namespace App\Traits;
 
 use Illuminate\Http\Request;
 
-trait SSSLoanTrait
+trait LoanTrait
 {
     protected $payment_terms = 24; //months
 
@@ -28,12 +28,12 @@ trait SSSLoanTrait
 
     protected function payments()
     {
-        return $this->sss_loan_payments;
+        return $this->government_loan_payments;
     }
 
     protected function deductibleAmount()
     {
-        return $this->amortization_amount;
+        return $this->amortization;
     }
 
     protected function formattedAmount($value)

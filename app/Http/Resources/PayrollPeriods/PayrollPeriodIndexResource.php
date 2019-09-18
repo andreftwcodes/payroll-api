@@ -19,12 +19,17 @@ class PayrollPeriodIndexResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'employee' => new EmployeeResource($this->whenLoaded('employee')),
+            'id'         => $this->id,
+            'employee'   => new EmployeeResource($this->whenLoaded('employee')),
             'period_dsp' => $this->periodDsp(),
             'created_at' => $this->createdAt(),
-            'print_url' => $this->printUrl()
+            'print_url'  => $this->printUrl()
         ];
+    }
+
+    private function pluckedLoanIds()
+    {
+        return $this->government_loan_payments->pluck('government_loan_id');
     }
 
     private function periodDsp()
@@ -47,7 +52,7 @@ class PayrollPeriodIndexResource extends JsonResource
                 'to'   => $this->to,
                 'contributions' => $this->contributions,
                 'ca_amount_deductible' => !is_null($this->ca_children) ? $this->ca_children->debit : 0,
-                'sss_loan_id' => !is_null($this->sss_loan_payment) ? $this->sss_loan_payment->sss_loan_id : null
+                'loan_id' => $this->pluckedLoanIds()
             ]),
             $this->employee
         ))->getPrintUrl();

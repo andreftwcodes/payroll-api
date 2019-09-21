@@ -11,9 +11,7 @@ class Loan
 
     protected $loan = null;
 
-    protected $amount_deductible = 0;
-
-    public function __construct($id = null)
+    public function __construct($id)
     {
         $this->id   = $id;
         $this->loan = $this->_initLoan();
@@ -21,7 +19,11 @@ class Loan
 
     public function getDataList()
     {
-        return $this->loan->map(function ($item, $key) {
+        if (is_null($loan = $this->loan)) {
+            return array();
+        }
+
+        return $loan->map(function ($item, $key) {
             return array(
                 'name'   => strtoupper($item->subject) . " Loan",
                 'amount' => number_format($item->amortization, 2)
@@ -31,7 +33,11 @@ class Loan
 
     public function getAmountDeductible()
     {
-        return $this->loan->sum('amortization');
+        if (is_null($loan = $this->loan)) {
+            return 0;
+        }
+
+        return $loan->sum('amortization');
     }
 
     public static function canDeduct($loaned_at)

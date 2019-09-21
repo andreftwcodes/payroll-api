@@ -84,6 +84,11 @@ class SideBarMenuController extends Controller
                     // ),
                     array(
                         'icon' => 'people_outline',
+                        'title' => 'Attendance',
+                        'to' => '/reports/attendance',
+                    ),
+                    array(
+                        'icon' => 'people_outline',
                         'title' => 'Timesheet',
                         'to' => '/reports/timesheet',
                     ),

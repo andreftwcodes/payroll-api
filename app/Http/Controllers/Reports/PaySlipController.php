@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Reports;
 
+use App\Libraries\Loan;
 use App\Models\Employee;
 use App\Libraries\PaySlip;
 use Illuminate\Http\Request;
 use App\Models\GovernmentLoan;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Controllers\Controller;
-use App\Libraries\Loan;
+use App\Http\Resources\PaySlip\PaySlipFlagResource;
+use App\Http\Requests\PaySlip\PaySlipVerifyPeriodRequest;
 use App\Http\Resources\Reports\PaySlipEmployeeDataResource;
 
 class PaySlipController extends Controller
@@ -46,6 +48,29 @@ class PaySlipController extends Controller
 
     public function getEmployees(Request $request)
     {
+        return PaySlipEmployeeDataResource::collection(
+            Employee::applyFilter($request)->get()
+        );
+    }
+
+    public function verifyPeriod(PaySlipVerifyPeriodRequest $request)
+    {
+        $employee = Employee::find($request->employee_id);
+
+        $payslip = $employee->payslips()->checkPeriod($request);
+
+        if ($payslip->exists()) {
+
+            return response()->json([
+                'errors' => [
+                    'period' => [
+                        "- Overlapping a existing period from {$payslip->first()->from} to {$payslip->first()->to}."
+                    ]
+                ]
+            ], 422);
+
+        }
+
         $eagerLoads = [
             'other',
             'ca_parent',
@@ -55,27 +80,10 @@ class PaySlipController extends Controller
             }
         ];
 
-        return PaySlipEmployeeDataResource::collection(
-            Employee::with($eagerLoads)->applyFilter($request)->get()
+        return new PaySlipFlagResource(
+            $employee->load($eagerLoads)
         );
-    }
 
-    public function checkPeriod(Request $request, Employee $employee)
-    {
-        $payslip = $employee->payslips()->checkPeriod($request);
-
-        $response = [
-            'exists' => false
-        ];
-
-        if ($payslip->exists()) {
-            $response = [
-                'exists' => true,
-                'message' => "Overlapping a existing period from {$payslip->first()->from} to {$payslip->first()->to}."
-            ];
-        }
-
-        return response()->json($response);
     }
 
     public function closePeriod(Request $request, Employee $employee)

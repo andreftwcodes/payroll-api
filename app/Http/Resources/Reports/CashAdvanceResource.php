@@ -17,7 +17,6 @@ class CashAdvanceResource extends JsonResource
         return [
             'disabled' => $this->disabled(),
             'amount_deductible' => $this->amount_deductible,
-            'balance' => $this->balance(),
             'balance_display' => $this->formattedBalance(),
         ];
     }

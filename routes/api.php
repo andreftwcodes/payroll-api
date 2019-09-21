@@ -71,7 +71,7 @@ Route::get('/reports/pay/{employee}', 'Reports\PayReportController@pay');
 
 Route::get('/reports/payslip/data', 'Reports\PaySlipController@getEmployees');
 Route::get('/payslip/period/{employee}', 'Reports\PaySlipController@getPeriod');
-Route::get('/payslip/check-period/{employee}', 'Reports\PaySlipController@checkPeriod');
+Route::get('/payslip/verify-period', 'Reports\PaySlipController@verifyPeriod');
 Route::post('/payslip/close-period/{employee}', 'Reports\PaySlipController@closePeriod');
 
 Route::get('/payslip/pdf/{secret_key}', 'Reports\PaySlipController@viewToPDF');

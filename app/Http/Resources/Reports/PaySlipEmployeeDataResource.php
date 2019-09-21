@@ -3,9 +3,7 @@
 namespace App\Http\Resources\Reports;
 
 use App\Traits\EmployeeTrait;
-use App\Http\Resources\Reports\GovernmentLoanResource;
 use Illuminate\Http\Resources\Json\JsonResource;
-use App\Http\Resources\Reports\CashAdvanceResource;
 
 class PaySlipEmployeeDataResource extends JsonResource
 {
@@ -20,14 +18,7 @@ class PaySlipEmployeeDataResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'fullname' => $this->getFullname(),
-            'flags' => [
-                'contributions' => $this->contributions(),
-                'cash_advance' => new CashAdvanceResource($this->whenLoaded('ca_parent')),
-                'loans' => GovernmentLoanResource::collection(
-                    $this->whenLoaded('government_loans')
-                )
-            ]
+            'fullname' => $this->getFullname()
         ];
     }
 

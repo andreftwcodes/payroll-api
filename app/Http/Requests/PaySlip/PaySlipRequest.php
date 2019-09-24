@@ -24,7 +24,7 @@ class PaySlipRequest extends FormRequest
     public function rules()
     {
         return [
-            'amount_deductible' => 'required|numeric|gt:0|lte:'.$this->input('balance'),
+            'amount_deductible' => 'sometimes|required|numeric|gt:0|lte:'.$this->input('balance'),
         ];
     }
 }

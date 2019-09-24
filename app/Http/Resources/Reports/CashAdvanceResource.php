@@ -15,9 +15,10 @@ class CashAdvanceResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'disabled' => $this->disabled(),
+            'disabled'          => $this->disabled(),
             'amount_deductible' => $this->amount_deductible,
-            'balance_display' => $this->formattedBalance(),
+            'balance'           => $this->balance(),
+            'display'           => " | Balance: " . $this->formattedBalance(),
         ];
     }
 

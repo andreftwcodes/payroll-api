@@ -9,13 +9,14 @@ use Illuminate\Http\Request;
 use App\Models\GovernmentLoan;
 use Barryvdh\DomPDF\Facade as PDF;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PaySlip\PaySlipRequest;
 use App\Http\Resources\PaySlip\PaySlipFlagResource;
 use App\Http\Requests\PaySlip\PaySlipVerifyPeriodRequest;
 use App\Http\Resources\Reports\PaySlipEmployeeDataResource;
 
 class PaySlipController extends Controller
 {
-    public function getPeriod(Request $request, Employee $employee)
+    public function getPeriod(PaySlipRequest $request, Employee $employee)
     {
         $payslip = new PaySlip($request, $employee);
 

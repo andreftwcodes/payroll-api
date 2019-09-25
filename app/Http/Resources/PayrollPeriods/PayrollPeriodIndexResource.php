@@ -51,8 +51,8 @@ class PayrollPeriodIndexResource extends JsonResource
                 'from' => $this->from,
                 'to'   => $this->to,
                 'contributions' => $this->contributions,
-                'ca_amount_deductible' => !is_null($this->ca_children) ? $this->ca_children->debit : 0,
-                'loan_id' => $this->pluckedLoanIds()
+                'amount_deductible' => !is_null($this->ca_children) ? $this->ca_children->debit : 0,
+                'loan_ids' => $this->pluckedLoanIds()
             ]),
             $this->employee
         ))->getPrintUrl();

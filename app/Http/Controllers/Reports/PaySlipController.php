@@ -93,9 +93,9 @@ class PaySlipController extends Controller
             $request->only('from', 'to', 'contributions')
         );
 
-        if ($request->filled('ca_amount_deductible')) {
+        if ($request->filled('amount_deductible')) {
 
-            if (($debit = $request->ca_amount_deductible) !== 0) {
+            if (($debit = $request->amount_deductible) !== 0) {
 
                 $employee->ca_parent->ca_children()->create([
                     'payslip_id' => $payslip->id,
@@ -107,35 +107,19 @@ class PaySlipController extends Controller
 
         }
 
-        if ($request->filled('loan_id')) {
+        if ($request->filled('loan_ids')) {
 
-            if ($request->contributions) {
-
-                GovernmentLoan::whereIn('id', $request->loan_id)->get()->each(function ($loan) use ($payslip) {
-                    if (Loan::canDeduct($loan->loaned_at)) {
-                        $loan->government_loan_payments()->create([
-                            'payslip_id' => $payslip->id,
-                            'paid_at'    => now()
-                        ]);
-                    }
-                });
-
-            }
+            GovernmentLoan::whereIn('id', $request->loan_ids)->get()->each(function ($loan) use ($payslip) {
+                if (Loan::canDeduct($loan->loaned_at)) {
+                    $loan->government_loan_payments()->create([
+                        'payslip_id' => $payslip->id,
+                        'paid_at'    => now()
+                    ]);
+                }
+            });
 
         }
-
-        $eagerLoads = [
-            'other',
-            'ca_parent',
-            'ca_parent.ca_children',
-            'government_loans' => function ($query) {
-                $query->has('government_loan_payments', '<', 24);
-            }
-        ];
-
-        return new PaySlipEmployeeDataResource(
-            $employee->load($eagerLoads)
-        );
+        
     }
     
 }

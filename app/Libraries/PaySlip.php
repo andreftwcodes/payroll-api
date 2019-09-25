@@ -168,8 +168,8 @@ class PaySlip
                 'from'          => $this->request->from,
                 'to'            => $this->request->to,
                 'contributions' => $this->request->contributions,
-                'ca_amount_deductible' => $this->request->ca_amount_deductible,
-                'loan_id' => $this->request->loan_id
+                'amount_deductible' => $this->request->amount_deductible,
+                'loan_ids' => $this->request->loan_ids
             ])->toJson()
         );
     }
@@ -183,11 +183,11 @@ class PaySlip
         );
 
         $cash_advance = new CashAdvance(
-            $this->request->ca_amount_deductible
+            $this->request->amount_deductible
         );
 
         $loan = new Loan(
-            $contributions->canDeduct() ? $this->request->loan_id : null
+            $this->request->loan_ids
         );
 
         $dataList = collect([

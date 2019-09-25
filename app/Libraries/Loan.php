@@ -7,23 +7,23 @@ use App\Models\GovernmentLoan;
 
 class Loan
 {
-    protected $id;
+    protected $ids;
 
     protected $loan = null;
 
-    public function __construct($id)
+    public function __construct($ids)
     {
-        $this->id   = $id;
-        $this->loan = $this->_initLoan();
+        $this->ids   = $ids;
+        $this->loans = $this->_loans();
     }
 
     public function getDataList()
     {
-        if (is_null($loan = $this->loan)) {
+        if (is_null($loans = $this->loans)) {
             return array();
         }
 
-        return $loan->map(function ($item, $key) {
+        return $loans->map(function ($item, $key) {
             return array(
                 'name'   => strtoupper($item->subject) . " Loan",
                 'amount' => number_format($item->amortization, 2)
@@ -33,11 +33,11 @@ class Loan
 
     public function getAmountDeductible()
     {
-        if (is_null($loan = $this->loan)) {
+        if (is_null($loans = $this->loans)) {
             return 0;
         }
 
-        return $loan->sum('amortization');
+        return $loans->sum('amortization');
     }
 
     public static function canDeduct($loaned_at)
@@ -56,10 +56,10 @@ class Loan
         return !self::canDeduct($loaned_at);
     }
 
-    private function _initLoan()
+    private function _loans()
     {
-        if (!empty($id = $this->id)) {
-            if ($loans = GovernmentLoan::whereIn('id', $id)->get()) {
+        if (!empty($ids = $this->ids)) {
+            if ($loans = GovernmentLoan::whereIn('id', $ids)->get()) {
                 return $loans->filter(function ($item, $key) {
                     return self::canDeduct($item->loaned_at);
                 });

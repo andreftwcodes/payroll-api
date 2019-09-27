@@ -17,10 +17,10 @@ class GovernmentLoanResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'        => $this->id,
-            'ref_no'    => $this->ref_no,
-            'subject'   => $this->subject(),
-            'message'   => $this->message()
+            'id'           => $this->id,
+            'amortization' => number_format($this->amortization, 2),
+            'subject'      => $this->subject(),
+            'message'      => $this->message()
         ];
     }
 
@@ -34,7 +34,7 @@ class GovernmentLoanResource extends JsonResource
         $message = '';
 
         if (Loan::canNotDeduct($loaned_at = $this->loaned_at)) {
-            $message = "- {$this->subject()} Loan deduction starts on " . Carbon::parse($loaned_at)->addMonths(2)->format('F Y') . '.';
+            $message = "- Deduction starts on " . Carbon::parse($loaned_at)->addMonths(2)->format('F Y') . '.';
         }
 
         return $message;

@@ -20,6 +20,8 @@ class TimeSheetChildrenResource extends JsonResource
             'id' => $this->id,
             'date' => $this->attended_at,
             'locale' => $this->whenLoaded('locale'),
+            'time_in'   => $this->getFormattedTime($this->timeIn()),
+            'time_out'  => $this->getFormattedTime($this->timeOut()),
             'hours' => $this->timeCalc()->getHours(),
             'hours_dsp' => $this->timeCalc()->getFormattedHours(),
             'remarks' => $this->getRemark()

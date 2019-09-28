@@ -74,6 +74,8 @@
                 <tr>
                     <th>Date</th>
                     <th>Locale</th>
+                    <th>Time In</th>
+                    <th>Time Out</th>
                     <th>Hours</th>
                     <th>Remarks</th>
                 </tr>
@@ -81,6 +83,8 @@
                 <tr>
                     <td>{{ $attendance->date }}</td>
                     <td>{{ $attendance->locale->name }}</td>
+                    <td>{{ $attendance->time_in }}</td>
+                    <td>{{ $attendance->time_out }}</td>
                     <td>{{ $attendance->hours_dsp }}</td>
                     <td>{{ $attendance->remarks }}</td>
                 </tr>

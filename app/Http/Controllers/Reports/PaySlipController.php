@@ -56,6 +56,11 @@ class PaySlipController extends Controller
 
     public function verifyPeriod(PaySlipVerifyPeriodRequest $request)
     {
+        session(['period' => [
+            'from' => $request->from,
+            'to'   => $request->to
+        ]]);
+
         $employee = Employee::find($request->employee_id);
 
         $payslip = $employee->payslips()->checkPeriod($request);

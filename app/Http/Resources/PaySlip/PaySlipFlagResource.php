@@ -2,12 +2,14 @@
 
 namespace App\Http\Resources\PaySlip;
 
+use App\Traits\PaySlipTrait;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Http\Resources\Reports\CashAdvanceResource;
 use App\Http\Resources\Reports\GovernmentLoanResource;
 
 class PaySlipFlagResource extends JsonResource
 {
+    use PaySlipTrait;
     /**
      * Transform the resource into an array.
      *
@@ -28,6 +30,6 @@ class PaySlipFlagResource extends JsonResource
 
     protected function contributions()
     {
-        return (bool) $this->other->contributions;
+        return $this->other->contributions == 1 && $this->periodHasEndOfMonthDate();
     }
 }

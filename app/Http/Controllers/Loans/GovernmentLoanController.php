@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Loans;
 
 use App\Models\Employee;
+use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use App\Models\GovernmentLoan;
 use App\Http\Controllers\Controller;
@@ -34,8 +35,10 @@ class GovernmentLoanController extends Controller
 
     public function store(GovernmentLoanStoreRequest $request)
     {
+        $data = $request->only('subject', 'amount_loaned', 'amortization', 'loaned_at');
+        
         $loan = Employee::find($request->employee_id)->government_loans()->create(
-            $request->only('ref_no', 'subject', 'amount_loaned', 'amortization', 'loaned_at')
+            Arr::add($data, 'ref_no', time())
         );
 
         return new GovernmentLoanIndexResource(

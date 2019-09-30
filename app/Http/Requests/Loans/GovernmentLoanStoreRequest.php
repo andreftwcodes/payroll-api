@@ -25,7 +25,6 @@ class GovernmentLoanStoreRequest extends FormRequest
     {
         return [
             'employee_id'   => 'required|numeric|integer',
-            'ref_no'        => 'required|numeric|integer|unique:government_loans',
             'subject'       => 'required|string',
             'amount_loaned' => 'required|numeric|gt:0|regex:/^\d*(\.\d{1,2})?$/',
             'amortization'  => 'required|numeric|gt:0|regex:/^\d*(\.\d{1,2})?$/',

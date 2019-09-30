@@ -4,11 +4,13 @@ namespace App\Http\Resources\Reports;
 
 use Carbon\Carbon;
 use App\Libraries\Loan;
+use App\Traits\PaySlipTrait;
 use App\Models\GovernmentLoan;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GovernmentLoanResource extends JsonResource
 {
+    use PaySlipTrait;
     /**
      * Transform the resource into an array.
      *
@@ -28,7 +30,7 @@ class GovernmentLoanResource extends JsonResource
 
     private function disabled()
     {
-        return $this->hasDeducted();
+        return $this->canNotDeduct() || $this->hasDeducted();
     }
 
     private function subject()
@@ -39,10 +41,11 @@ class GovernmentLoanResource extends JsonResource
     private function message()
     {
         $message = '';
+
         $period  = $this->period();
 
-        if (Loan::canNotDeduct($loaned_at = $this->loaned_at)) {
-            $message = '- Deduction starts on ' . Carbon::parse($loaned_at)->addMonths(2)->format('F Y') . '.';
+        if ($this->canNotDeduct()) {
+            $message = '- Deduction starts on ' . Carbon::parse($this->loaned_at)->addMonths(2)->format('F Y') . '.';
         } elseif ($this->hasDeducted()) {
             $message = '- Deducted for the month of ' . Carbon::parse($period['from'])->format('F Y') . '.';
         }
@@ -50,9 +53,9 @@ class GovernmentLoanResource extends JsonResource
         return $message;
     }
 
-    private function period()
+    private function canNotDeduct()
     {
-        return session('period');
+        return Loan::canNotDeduct($this->loaned_at);
     }
 
     private function hasDeducted()

@@ -12,11 +12,11 @@ trait PaySlipTrait
         
         $period = $this->period();
 
-        $endOfMonthDate = Carbon::parse($to = $period['to'])->endOfMonth()->toDateString();
+        $endOfMonthDate = Carbon::parse($from = $period['from'])->endOfMonth()->toDateString();
         
         return in_array(
             $endOfMonthDate,
-            $this->dateRange($period['from'], $to)
+            $this->dateRange($from, $period['to'])
         );
 
     }

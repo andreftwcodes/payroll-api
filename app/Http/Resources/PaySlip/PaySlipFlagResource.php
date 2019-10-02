@@ -19,17 +19,18 @@ class PaySlipFlagResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'employee_id' => $this->id,
+            'employee_id'   => $this->id,
             'contributions' => $this->contributions(),
-            'cash_advance' => new CashAdvanceResource($this->whenLoaded('ca_parent')),
-            'loans' => GovernmentLoanResource::collection(
-                $this->whenLoaded('government_loans')
-            )
+            'cash_advance'  => new CashAdvanceResource($this->whenLoaded('ca_parent')),
+            'loans'         => GovernmentLoanResource::collection($this->whenLoaded('government_loans'))
         ];
     }
 
-    protected function contributions()
+    private function contributions()
     {
-        return $this->other->contributions == 1 && $this->periodHasEndOfMonthDate();
+        return [
+            'disabled' => $truthy = $this->other->contributions == 1 && $this->periodHasEndOfMonthDate(),
+            'checked'  => $truthy
+        ];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasOtherTrait;
 use App\Traits\HasHistoryRateTrait;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 
 class Employee extends Model
 {
@@ -48,6 +49,13 @@ class Employee extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 1);
+    }
+
+    public function scopeHasContributions($query)
+    {
+        return $query->whereHas('other', function (Builder $query) {
+            $query->where('contributions', 1);
+        });
     }
 
     public function rate_history()

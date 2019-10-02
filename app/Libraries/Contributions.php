@@ -50,7 +50,19 @@ class Contributions
 
     public function getPhilHealthER()
     {
-        return !is_null($this->philhealth) ? ($this->basicRate * .0275) / 2 : 0;
+        $amount = 0;
+
+        if (!is_null($this->philhealth)) {
+            if ($this->basicRate <= 10000) {
+                $amount = 275;
+            } elseif ($this->basicRate >= 10000.01 && $this->basicRate <= 39999.99) {
+                $amount = $this->basicRate * .0275;
+            } elseif ($this->basicRate >= 40000) {
+                $amount = 1100;
+            }
+        }
+
+        return $amount / 2;
     }
     
     public function getSSSEE()
@@ -60,12 +72,12 @@ class Contributions
     
     public function getPagIbigEE()
     {
-        return !is_null($this->pagibig) ? 100 : 0;
+        return $this->getPagIbigER();
     }
 
     public function getPhilHealthEE()
     {
-        return !is_null($this->philhealth) ? ($this->basicRate * .0275) / 2 : 0;
+        return $this->getPhilHealthER();
     }
     
     public function getEmployerShareAmount()

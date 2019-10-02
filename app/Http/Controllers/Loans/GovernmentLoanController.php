@@ -26,7 +26,7 @@ class GovernmentLoanController extends Controller
 
         $loans->additional([
             'employees' => GovernmentLoanEmployeeResource::collection(
-                Employee::active()->get()
+                Employee::hasContributions()->active()->get()
             )
         ]);
 

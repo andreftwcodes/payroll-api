@@ -30,7 +30,7 @@ class GovernmentLoanResource extends JsonResource
 
     private function disabled()
     {
-        return $this->canNotDeduct() || $this->hasDeducted();
+        return $this->canNotDeduct() || $this->hasDeducted() || $this->periodHasEndOfMonthDate();
     }
 
     private function subject()
@@ -40,14 +40,15 @@ class GovernmentLoanResource extends JsonResource
 
     private function message()
     {
-        $message = '';
-
         $period  = $this->period();
 
+        $message = [
+            'label'    => Carbon::parse($period['from'])->format('F Y'),
+            'response' => $this->hasDeducted()
+        ];
+
         if ($this->canNotDeduct()) {
-            $message = '- Deduction starts on ' . Carbon::parse($this->loaned_at)->addMonths(2)->format('F Y') . '.';
-        } elseif ($this->hasDeducted()) {
-            $message = '- Deducted for the month of ' . Carbon::parse($period['from'])->format('F Y') . '.';
+            $message = 'Deduction starts on ' . Carbon::parse($this->loaned_at)->addMonths(2)->format('F Y') . '.';
         }
 
         return $message;
@@ -64,8 +65,8 @@ class GovernmentLoanResource extends JsonResource
 
         return GovernmentLoan::find($this->id)
             ->government_loan_payments()
-            ->whereMonth('paid_at', Carbon::parse($from = $period['from'])->format('m'))
-            ->whereYear('paid_at', Carbon::parse($from)->format('Y'))
-            ->exists();
+                ->whereMonth('paid_at', Carbon::parse($from = $period['from'])->format('m'))
+                    ->whereYear('paid_at', Carbon::parse($from)->format('Y'))
+                        ->exists();
     }
 }

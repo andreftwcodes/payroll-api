@@ -126,6 +126,20 @@ class AttendanceController extends Controller
         }
     }
 
+    public function destroy($id)
+    {
+        $attendance = Attendance::find($id);
+
+        $attendance->delete();
+
+        return $this->getDropDownEmployees(
+            new Request([
+                'employee_id' => $attendance->employee_id,
+                'attended_at' => $attendance->attended_at
+            ])
+        );
+    }
+
     private function getDropDownEmployees($request)
     {
         $with = [
@@ -137,6 +151,12 @@ class AttendanceController extends Controller
             },
             'locale'
         ];
+
+        if ($request->has('employee_id')) {
+            return new AttendanceEmployeeDropDownResource(
+                Employee::with($with)->find($request->employee_id)
+            );
+        }
 
         return AttendanceEmployeeDropDownResource::collection(
             Employee::with($with)

@@ -29,31 +29,12 @@ class TimeSheetChildrenResource extends JsonResource
 
     private function __timeLogs()
     {
-        
-        $str   = '';
-
-        foreach ($items = $this->time_logs()->get()->toArray() as $key => $item) {
-            $str .= $this->getFormattedTime($item['time_in']) . ' - ' . $this->getFormattedTime($item['time_out']);
-            $str .= !empty($str) && next($items) ? ' / ' : '';
-        }
-
-        $get_width = function ($items) {
-
-            $width = 132;
-            
-            if ($count = count($items)) {
-                $width = $count === 1 ? ($width - 8) : $width;
-                $width = $count * $width;
-            }
-
-            return $width . 'px';
-
-        };
-
-        return [
-            'width' => $get_width($items),
-            'items' => $str
-        ];
+        return $this->time_logs()->get()->map(function ($item, $key) {
+            return array(
+                'time_in'  => $this->getFormattedTime($item['time_in']),
+                'time_out' => $this->getFormattedTime($item['time_out'])
+            );
+        });
     }
 
 }

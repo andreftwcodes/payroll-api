@@ -16,16 +16,6 @@ class hdr_contribution extends Model
         return $builder->where('flag', 'sss');
     }
 
-    public function scopePagibig(Builder $builder)
-    {
-        return $builder->where('flag', 'pagibig');
-    }
-
-    public function scopePhilhealth(Builder $builder)
-    {
-        return $builder->where('flag', 'philhealth');
-    }
-
     public function scopeUsedAt(Builder $builder, $used_at)
     {
         return $builder->where('used_at', '<=', $used_at)->orderBy('used_at', 'desc');

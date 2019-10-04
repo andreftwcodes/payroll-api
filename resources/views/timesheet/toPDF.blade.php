@@ -8,10 +8,10 @@
     <style>
         * {
             font-family: Arial, Helvetica, sans-serif;
-            font-size: 15px;
+            font-size: 13px;
         }
         .print-area {
-            margin: 0 50px;
+            /* margin: 0 50px; */
         }
 
         table, td, th {  
@@ -74,19 +74,17 @@
                 <tr>
                     <th>Date</th>
                     <th>Locale</th>
-                    <th>Time In</th>
-                    <th>Time Out</th>
+                    <th>Time In & Time Out</th>
                     <th>Hours</th>
                     <th>Remarks</th>
                 </tr>
                 @foreach ($timesheet->attendances as $attendance)
                 <tr>
-                    <td>{{ $attendance->date }}</td>
+                    <td width="70px">{{ $attendance->date }}</td>
                     <td>{{ $attendance->locale->name }}</td>
-                    <td>{{ $attendance->time_in }}</td>
-                    <td>{{ $attendance->time_out }}</td>
-                    <td>{{ $attendance->hours_dsp }}</td>
-                    <td>{{ $attendance->remarks }}</td>
+                    <td width="{{ $attendance->time_logs->width }}">{{ $attendance->time_logs->items }}</td>
+                    <td width="35px">{{ $attendance->hours_dsp }}</td>
+                    <td width="120px">{{ $attendance->remarks }}</td>
                 </tr>
                 @endforeach
             </tbody>

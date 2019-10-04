@@ -28,8 +28,8 @@ class Contributions
     public function __construct($basicRate = 0, $date = null, $deduct = false)
     {
         $this->basicRate = $basicRate;
-        $this->date = $date;
-        $this->deduct = $deduct;
+        $this->date      = $date;
+        $this->deduct    = $deduct;
         $this->setDeductions();
     }
 
@@ -40,19 +40,25 @@ class Contributions
     
     public function getSSSER()
     {
-        return !is_null($this->sss) ? $this->sss->er : 0;
+        $amount = 0;
+        
+        if ($this->canDeduct()) {
+            $amount = !is_null($this->sss) ? $this->sss->er : 0;
+        }
+
+        return $amount;
     }
 
     public function getPagIbigER()
     {
-       return !is_null($this->pagibig) ? 100 : 0;
+       return $this->canDeduct() ? 100 : 0;
     }
 
     public function getPhilHealthER()
     {
         $amount = 0;
 
-        if (!is_null($this->philhealth)) {
+        if ($this->canDeduct()) {
             if ($this->basicRate <= 10000) {
                 $amount = 275;
             } elseif ($this->basicRate >= 10000.01 && $this->basicRate <= 39999.99) {
@@ -67,7 +73,13 @@ class Contributions
     
     public function getSSSEE()
     {
-        return !is_null($this->sss) ? $this->sss->ee : 0;
+        $amount = 0;
+        
+        if ($this->canDeduct()) {
+            $amount = !is_null($this->sss) ? $this->sss->ee : 0;
+        }
+
+        return $amount;
     }
     
     public function getPagIbigEE()
@@ -127,31 +139,15 @@ class Contributions
 
     protected function setDeductions()
     {
-        if ($this->canDeduct()) {
 
-            $sss        = Contribution::sss()->usedAt($this->date)->first();
-            $pagibig    = Contribution::pagibig()->usedAt($this->date)->first();
-            $philhealth = Contribution::philhealth()->usedAt($this->date)->first();
+        $sss = Contribution::sss()->usedAt($this->date)->first();
 
-            if (!is_null($sss)) {
-                $this->sss = $sss->ranges()
-                    ->applyFilter($this->basicRate)
+        if (!is_null($sss)) {
+            $this->sss = $sss->ranges()
+                ->applyFilter($this->basicRate)
                     ->first();
-            }
-
-            if (!is_null($pagibig)) {
-                $this->pagibig = $pagibig->ranges()
-                    ->applyFilter($this->basicRate)
-                    ->first();
-            }
-
-            if (!is_null($philhealth)) {
-                $this->philhealth = $philhealth->ranges()
-                    ->applyFilter($this->basicRate)
-                    ->first();
-            }
-
         }
+
     }
 
 }

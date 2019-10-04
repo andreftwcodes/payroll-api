@@ -29,7 +29,8 @@ class TimeSheetController extends Controller
                 ]);
                 $query->orderBy('attended_at', 'asc');
             },
-            'attendances.locale:id,name'
+            'attendances.locale:id,name',
+            'attendances.time_logs'
         ];
 
         return new TimeSheetResource(
@@ -54,7 +55,7 @@ class TimeSheetController extends Controller
                         ->getData()
                             ->data;
 
-            $pdf = PDF::loadView('timesheet.toPDF', compact('timesheet'));
+            $pdf = PDF::loadView('timesheet.toPDF', compact('timesheet'))->setPaper('a4', 'landscape');
    
             return response($pdf->output(), 200)->withHeaders([
                 'Content-Type'        => 'application/pdf',

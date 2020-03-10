@@ -59,13 +59,31 @@ class Contributions
         $amount = 0;
 
         if ($this->canDeduct()) {
-            if ($this->basicRate <= 10000) {
-                $amount = 275;
-            } elseif ($this->basicRate >= 10000.01 && $this->basicRate <= 39999.99) {
-                $amount = $this->basicRate * .0275;
-            } elseif ($this->basicRate >= 40000) {
-                $amount = 1100;
+
+            $yearFrom = Carbon::parse($this->date)->format('Y');
+
+            if ($yearFrom === '2019') {
+
+                if ($this->basicRate <= 10000) {
+                    $amount = 275;
+                } elseif ($this->basicRate >= 10000.01 && $this->basicRate <= 39999.99) {
+                    $amount = $this->basicRate * .0275;
+                } elseif ($this->basicRate >= 40000) {
+                    $amount = 1100;
+                }
+
+            } elseif ($yearFrom === '2020') {
+
+                if ($this->basicRate <= 10000) {
+                    $amount = 300;
+                } elseif ($this->basicRate >= 10000.01 && $this->basicRate <= 59999.99) {
+                    $amount = $this->basicRate * .03;
+                } elseif ($this->basicRate >= 60000) {
+                    $amount = 1800;
+                }
+
             }
+            
         }
 
         return $amount / 2;

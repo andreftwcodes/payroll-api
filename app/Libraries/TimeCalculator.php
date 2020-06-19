@@ -51,6 +51,8 @@ class TimeCalculator
             $start = Carbon::parse($item['time_in']);
             $end   = Carbon::parse($item['time_out']);
 
+            $sched_start_2 = Carbon::parse($this->data['sched_start_2'])->format('H:i');
+
             $start = ($key === 0) ? $start->addHour() : $start;
 
             $start->subMinutes(
@@ -62,9 +64,15 @@ class TimeCalculator
             );
 
             for ($d = $start; $d <= $end; $d->addHour()) {
-                if (in_array($d->format('H:i'), $this->nightShiftTimeSet())) {
-                    $hours++;
+
+                if ($d->format('H:i') !== $sched_start_2) {
+
+                    if (in_array($d->format('H:i'), $this->nightShiftTimeSet())) {
+                        $hours++;
+                    }
+                    
                 }
+
             }
 
         }

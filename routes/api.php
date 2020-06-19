@@ -7,6 +7,10 @@ Route::group(['prefix' => 'auth'], function () {
     Route::get('me', 'Auth\MeController@action');
 });
 
+Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
+    
+});
+
 Route::middleware(['auth:api'])->group(function () {
 
     Route::get('attendances/verify-employee/{employee}', 'Attendance\AttendanceController@verifyEmployee');
@@ -31,9 +35,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::resource('contribution-ranges', 'Contributions\ContributionRangesController');
     Route::resource('payroll-periods', 'Reports\PayrollPeriodController');
 
-    Route::post('/testing', function (\Illuminate\Http\Request $request) { //test route
-        
-    });
+    
 
     Route::group(['prefix' => 'cash-advance'], function () {
         Route::get('index', 'CashAdvance\CashAdvanceController@index');
@@ -54,12 +56,6 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('payroll-periods/filters', 'Reports\Validator@payrollPeriodsFilters');
     });
 
-    Route::group(['prefix' => 'reports'], function () {
-        Route::get('get-timesheet', 'Reports\TimeSheetController@getTimeSheet');
-        Route::get('timesheet/viewpdf/{secret_key}', 'Reports\TimeSheetController@viewToPDF');
-        Route::resource('timesheet', 'Reports\TimeSheetController');
-    });
-
     Route::group(['prefix' => 'system-theme'], function () {
         Route::get('theme-menu/{user}', 'SystemTheme\SideBarMenuController@getMenu');
     });
@@ -74,9 +70,15 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/payslip/verify-period', 'Reports\PaySlipController@verifyPeriod');
     Route::post('/payslip/close-period/{employee}', 'Reports\PaySlipController@closePeriod');
 
-    Route::get('/payslip/pdf/{secret_key}', 'Reports\PaySlipController@viewToPDF');
-
 });
+
+Route::group(['prefix' => 'reports'], function () {
+    Route::get('get-timesheet', 'Reports\TimeSheetController@getTimeSheet');
+    Route::get('timesheet/viewpdf/{secret_key}', 'Reports\TimeSheetController@viewToPDF');
+    Route::resource('timesheet', 'Reports\TimeSheetController')->middleware('auth:api');
+});
+
+Route::get('/payslip/pdf/{secret_key}', 'Reports\PaySlipController@viewToPDF');
 
 Route::group(['prefix' => 'system-theme'], function () {
     Route::get('theme-data', 'SystemTheme\ThemeController@getThemeData');

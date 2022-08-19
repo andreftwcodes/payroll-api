@@ -66,10 +66,10 @@ class Contributions
 
                 if ($this->basicRate <= 10000) {
                     $amount = 275;
-                } elseif ($this->basicRate >= 10000.01 && $this->basicRate <= 39999.99) {
+                } elseif ($this->basicRate >= 10000.01 && $this->basicRate <= 49999.99) {
                     $amount = $this->basicRate * .0275;
-                } elseif ($this->basicRate >= 40000) {
-                    $amount = 1100;
+                } elseif ($this->basicRate >= 50000) {
+                    $amount = 1375;
                 }
 
             } elseif ($yearFrom === '2020') {
@@ -80,6 +80,46 @@ class Contributions
                     $amount = $this->basicRate * .03;
                 } elseif ($this->basicRate >= 60000) {
                     $amount = 1800;
+                }
+
+            } elseif ($yearFrom === '2021') {
+
+                if ($this->basicRate <= 10000) {
+                    $amount = 350;
+                } elseif ($this->basicRate >= 10000.01 && $this->basicRate <= 69999.99) {
+                    $amount = $this->basicRate * .035;
+                } elseif ($this->basicRate >= 70000) {
+                    $amount = 2450;
+                }
+
+            } elseif ($yearFrom === '2022') {
+
+                if ($this->basicRate <= 10000) {
+                    $amount = 400;
+                } elseif ($this->basicRate >= 10000.01 && $this->basicRate <= 79999.99) {
+                    $amount = $this->basicRate * .04;
+                } elseif ($this->basicRate >= 80000) {
+                    $amount = 3200;
+                }
+
+            } elseif ($yearFrom === '2023') {
+
+                if ($this->basicRate <= 10000) {
+                    $amount = 450;
+                } elseif ($this->basicRate >= 10000.01 && $this->basicRate <= 89999.99) {
+                    $amount = $this->basicRate * .045;
+                } elseif ($this->basicRate >= 90000) {
+                    $amount = 4050;
+                }
+
+            } elseif ($yearFrom === '2024' || $yearFrom === '2025') {
+
+                if ($this->basicRate <= 10000) {
+                    $amount = 500;
+                } elseif ($this->basicRate >= 10000.01 && $this->basicRate <= 99999.99) {
+                    $amount = $this->basicRate * .05;
+                } elseif ($this->basicRate >= 100000) {
+                    $amount = 5000;
                 }
 
             }

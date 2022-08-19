@@ -29,8 +29,8 @@ class PaySlipFlagResource extends JsonResource
     private function contributions()
     {
         return [
-            'disabled' => $truthy = $this->other->contributions == 1 && $this->periodHasEndOfMonthDate(),
-            'checked'  => $truthy
+            'disabled' => $this->other->contributions != 1,
+            'checked'  => $this->other->contributions == 1 && $this->periodHasEndOfMonthDate()
         ];
     }
 }

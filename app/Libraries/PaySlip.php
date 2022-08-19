@@ -176,11 +176,15 @@ class PaySlip
 
     protected function setDeductions()
     {
-        $contributions = new Contributions(
-            $this->getMonthlyGrossPay(),
-            $this->request->from,
-            $this->request->contributions
-        );
+        $contributions = false;
+
+        if ($this->employee->hasContributions()) {
+            
+            $contributions = $this->request->contributions;
+
+        }
+        
+        $contributions = new Contributions($this->getMonthlyGrossPay(), $this->request->from, $contributions);
 
         $cash_advance = new CashAdvance(
             $this->request->amount_deductible

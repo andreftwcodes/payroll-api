@@ -58,11 +58,6 @@ class Employee extends Model
         });
     }
 
-    public function hasContributions()
-    {
-        return $this->other->contributions;
-    }
-
     public function rate_history()
     {
         return $this->hasMany(HistoryRate::class);

@@ -178,7 +178,7 @@ class PaySlip
     {
         $contributions = false;
 
-        if ($this->employee->hasContributions()) {
+        if ($this->employee->other->contributions) {
             
             $contributions = $this->request->contributions;
 
